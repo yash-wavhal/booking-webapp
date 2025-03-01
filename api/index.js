@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import cors from "cors";
 import authRoute from "./routes/auth.js";
 import hotelsRoute from "./routes/hotels.js";
 import roomsRoute from "./routes/rooms.js";
@@ -28,6 +29,7 @@ mongoose.connection.on("connected", () => {
 });
 
 // middlewares
+app.use(cors());
 app.use(cookieParser());
 app.use(express.json());        // used so that it can access the json data
 
