@@ -1,29 +1,42 @@
 import Hotel from "../models/Hotel.js";
 
 export const createHotel = async (req, res, next) => {
-    const newHotel = new Hotel(req.body);    // Creates a new instance of the Hotel model using the data received.
+    const newHotel = new Hotel({
+        ...req.body,
+        ownerId: req.user.id,
+    });
     try {
-        const savedHotel = await newHotel.save();    // Saves the newly created hotel document in the MongoDB database.
-        res.status(200).json(savedHotel);
-    } catch(err) {
+        const savedHotel = await newHotel.save();
+        res.status(201).json(savedHotel);
+    } catch (err) {
         next(err);
     }
 };
 
 export const updateHotel = async (req, res, next) => {
     try {
-        const updatedHotel = await Hotel.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true});
+        const updatedHotel = await Hotel.findByIdAndUpdate(
+            req.params.id,
+            { $set: req.body },
+            { new: true }
+        );
+        if (!updatedHotel) {
+            return res.status(404).json({ message: "Hotel not found" });
+        }
         res.status(200).json(updatedHotel);
-    } catch(err) {
+    } catch (err) {
         next(err);
     }
 };
 
 export const deleteHotel = async (req, res, next) => {
     try {
-        await Hotel.findByIdAndDelete(req.params.id);    // Saves the newly created hotel document in the MongoDB database.
-        res.status(200).json("Hotel has been deleted.");
-    } catch(err) {
+        const deletedHotel = await Hotel.findByIdAndDelete(req.params.id);
+        if (!deletedHotel) {
+            return res.status(404).json({ message: "Hotel not found" });
+        }
+        res.status(200).json({ message: "Hotel has been deleted." });
+    } catch (err) {
         next(err);
     }
 };
@@ -31,8 +44,11 @@ export const deleteHotel = async (req, res, next) => {
 export const getHotel = async (req, res, next) => {
     try {
         const hotel = await Hotel.findById(req.params.id);
+        if (!hotel) {
+            return res.status(404).json({ message: "Hotel not found" });
+        }
         res.status(200).json(hotel);
-    } catch(err) {
+    } catch (err) {
         next(err);
     }
 };
@@ -41,38 +57,52 @@ export const getHotels = async (req, res, next) => {
     try {
         const hotels = await Hotel.find();
         res.status(200).json(hotels);
-    } catch(err) {
+    } catch (err) {
         next(err);
     }
 };
 
+export const getHotelsOfUser = async (req, res, next) => {
+  const userId = req.params.id;
+  try {
+    const hotels = await Hotel.find({ ownerId: userId });
+    res.status(200).json(hotels);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const countByCity = async (req, res, next) => {
-    const cities = req.query.cities.split(",");
+    const cities = req.query.cities?.split(",");
+    if (!cities) {
+        return res.status(400).json({ message: "Please provide cities query parameter." });
+    }
     try {
         const list = await Promise.all(cities.map(city => {
-            return Hotel.countDocuments({city: city});    // It will count how many times each city is repeated
-        }))
+            return Hotel.countDocuments({ city }); 
+        }));
+
         res.status(200).json(list);
-    } catch(err) {
+    } catch (err) {
         next(err);
     }
 };
 
 export const countByType = async (req, res, next) => {
     try {
-        const hotelCount = await Hotel.countDocuments({type: "hotel"});
-        const apartmentCount = await Hotel.countDocuments({type: "apartment"});
-        const resortCount = await Hotel.countDocuments({type: "resort"});
-        const villaCount = await Hotel.countDocuments({type: "villa"});
-        const cabinCount = await Hotel.countDocuments({type: "cabin"});
+        const hotelCount = await Hotel.countDocuments({ type: "hotel" });
+        const apartmentCount = await Hotel.countDocuments({ type: "apartment" });
+        const resortCount = await Hotel.countDocuments({ type: "resort" });
+        const villaCount = await Hotel.countDocuments({ type: "villa" });
+        const cabinCount = await Hotel.countDocuments({ type: "cabin" });
         res.status(200).json([
-            {type: "hotel", count: hotelCount},
-            {type: "apartment", count: apartmentCount},
-            {type: "resort", count: resortCount},
-            {type: "villa", count: villaCount},
-            {type: "cabin", count: cabinCount},
+            { type: "hotel", count: hotelCount },
+            { type: "apartment", count: apartmentCount },
+            { type: "resort", count: resortCount },
+            { type: "villa", count: villaCount },
+            { type: "cabin", count: cabinCount },
         ]);
-    } catch(err) {
+    } catch (err) {
         next(err);
     }
 };

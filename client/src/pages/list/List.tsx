@@ -7,12 +7,41 @@ import { format } from "date-fns";
 import { DateRange } from "react-date-range";
 import SearchItem from "../../components/searchItem/SearchItem";
 
-const List = () => {
+interface DateRangeItem {
+  startDate: Date;
+  endDate: Date;
+  key: string;
+}
+
+interface Options {
+  adult: number;
+  children: number;
+  room: number;
+}
+
+const List: React.FC = () => {
   const location = useLocation();
-  const [destination, setDestination] = useState(location.state.destination);
-  const [date, setDate] = useState(location.state.date);
-  const [openDate, setOpenDate] = useState(false);
-  const [options, setOptions] = useState(location.state.options);
+
+  const [destination, setDestination] = useState<string>(
+    location.state?.destination || ""
+  );
+  const [date, setDate] = useState<DateRangeItem[]>(
+    location.state?.date || [
+      {
+        startDate: new Date(),
+        endDate: new Date(),
+        key: "selection",
+      },
+    ]
+  );
+  const [openDate, setOpenDate] = useState<boolean>(false);
+  const [options, setOptions] = useState<Options>(
+    location.state?.options || {
+      adult: 1,
+      children: 0,
+      room: 1,
+    }
+  );
 
   return (
     <div>
@@ -34,7 +63,9 @@ const List = () => {
               )} to ${format(date[0].endDate, "MM/dd/yyyy")}`}</span>
               {openDate && (
                 <DateRange
-                  onChange={(item) => setDate([item.selection])}
+                  onChange={(item: { selection: DateRangeItem }) =>
+                    setDate([item.selection])
+                  }
                   minDate={new Date()}
                   ranges={date}
                 />
@@ -61,7 +92,7 @@ const List = () => {
                     type="number"
                     min={1}
                     className="lsOptionInput"
-                    placeholder={options.adult}
+                    placeholder={options.adult.toString()}
                   />
                 </div>
                 <div className="lsOptionItem">
@@ -70,7 +101,7 @@ const List = () => {
                     type="number"
                     min={0}
                     className="lsOptionInput"
-                    placeholder={options.children}
+                    placeholder={options.children.toString()}
                   />
                 </div>
                 <div className="lsOptionItem">
@@ -79,7 +110,7 @@ const List = () => {
                     type="number"
                     min={1}
                     className="lsOptionInput"
-                    placeholder={options.room}
+                    placeholder={options.room.toString()}
                   />
                 </div>
               </div>
@@ -87,15 +118,9 @@ const List = () => {
             <button>Search</button>
           </div>
           <div className="listResult">
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
+            {[...Array(9).keys()].map((i) => (
+              <SearchItem key={i} />
+            ))}
           </div>
         </div>
       </div>

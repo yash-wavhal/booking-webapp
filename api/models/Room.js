@@ -18,9 +18,19 @@ const RoomSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        roomNumbers: [{number: Number, unavailableDates: {type: [Date]}}],
+        roomNumbers: [
+            {
+                number: { type: Number, required: true },
+                unavailableDates: { type: [Date], default: [] },
+            },
+        ],
+        hotelId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Hotel",
+            required: true,
+        },
     },
-    {timestamps: true}
+    { timestamps: true }
 );
 
 export default mongoose.model("Room", RoomSchema);

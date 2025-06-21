@@ -12,10 +12,10 @@ const router = express.Router();
 router.put("/:id", verifyUser, updateUser);
 
 // DELETE
-router.delete("/:id", verifyUser, deleteUser);
+router.delete("/:id", verifyAdmin, deleteUser);
 
 // GET
-router.get("/:id", verifyUser, getUser);
+router.get("/:id", verifyAdmin, getUser);
 
 // GETALL
 router.get("/", verifyAdmin, getUsers);
