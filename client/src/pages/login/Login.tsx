@@ -1,6 +1,7 @@
 import { useState, FormEvent, ChangeEvent } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 interface LoginData {
   email: string;
@@ -8,6 +9,7 @@ interface LoginData {
 }
 
 export default function Login() {
+  const {setIsAuthenticated} = useAuth();
   const [data, setData] = useState<LoginData>({ email: "", password: "" });
   const navigate = useNavigate();
 
@@ -20,7 +22,7 @@ export default function Login() {
     e.preventDefault();
     try {
       await axios.post("/auth/login", data);
-      alert("Login successful!");
+      setIsAuthenticated(true);
       navigate("/"); // Redirect to the home page
     } catch (err: any) {
       alert(err.response?.data?.message || "Login failed");

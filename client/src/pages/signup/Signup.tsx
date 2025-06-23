@@ -21,7 +21,6 @@ export default function Signup() {
     e.preventDefault();
     try {
       await axios.post("/auth/register", data);
-      alert("Signup successful!");
 
       await axios.post("/auth/login", {
         email: data.email,

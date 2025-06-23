@@ -14,6 +14,7 @@ import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 interface HeaderProps {
   type?: string;
@@ -31,15 +32,8 @@ interface DateRangeItem {
   key: string;
 }
 
-const [date, setDate] = useState<DateRangeItem[]>([
-  {
-    startDate: new Date(),
-    endDate: new Date(),
-    key: "selection",
-  },
-]);
-
 const Header: React.FC<HeaderProps> = ({ type }) => {
+  const {isAuthenticated} = useAuth();
   const [destination, setDestination] = useState<string>("");
   const [openDate, setOpenDate] = useState<boolean>(false);
   const [date, setDate] = useState([
@@ -74,6 +68,10 @@ const Header: React.FC<HeaderProps> = ({ type }) => {
   const handleDateChange = (item: { [key: string]: DateRangeItem }) => {
     setDate([item.selection]);
   };
+
+  const handleClick = () => {
+    navigate("/login");
+  }
 
   return (
     <div className="header">
@@ -113,7 +111,7 @@ const Header: React.FC<HeaderProps> = ({ type }) => {
               Get rewarded for your travels – unlock instant savings of 10% or
               more with a free Lamabooking account
             </p>
-            <button className="headerBtn">Sign in / Register</button>
+            {!isAuthenticated && <button className="headerBtn" onClick={handleClick}>Sign in / Register</button>}
             <div className="headerSearch">
               <div className="headerSearchItem">
                 <FontAwesomeIcon icon={faBed} className="headerIcon" />
