@@ -107,14 +107,16 @@ export const countAllCities = async (req, res, next) => {
         {
             $group: {
                 _id: "$city",
-                count: { $sum: 1 }
+                count: { $sum: 1 },
+                desc: { $first: "$desc" }
             }
         },
         {
             $project: {
                 _id: 0,
                 city: "$_id",
-                count: 1
+                count: 1,
+                desc: 1
             }
         },
         {

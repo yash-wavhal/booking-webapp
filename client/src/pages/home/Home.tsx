@@ -23,7 +23,7 @@ const Home: React.FC = () => {
         <FeaturedProperties/> */}
         <WhyToBookHere />
         <UserReviews/>
-        <MailList/>
+        {/* <MailList/> */}
         <Footer/>
       </div>
     </div>

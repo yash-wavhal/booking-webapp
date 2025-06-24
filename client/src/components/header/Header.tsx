@@ -1,12 +1,17 @@
-import { faBed, faCalendarDays, faPerson } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBed,
+  faCalendarDays,
+  faPerson,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DateRange } from "react-date-range";
 import { useState } from "react";
-import "react-date-range/dist/styles.css"; 
+import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { ArrowDown, ArrowDownNarrowWideIcon } from "lucide-react";
 
 interface Options {
   adult: number;
@@ -28,7 +33,11 @@ const Header: React.FC = () => {
     { startDate: new Date(), endDate: new Date(), key: "selection" },
   ]);
   const [openOptions, setOpenOptions] = useState(false);
-  const [options, setOptions] = useState<Options>({ adult: 1, children: 0, room: 1 });
+  const [options, setOptions] = useState<Options>({
+    adult: 1,
+    children: 0,
+    room: 1,
+  });
 
   const navigate = useNavigate();
 
@@ -53,14 +62,15 @@ const Header: React.FC = () => {
 
   return (
     <div className="relative bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-6 py-14 flex flex-col items-center text-center">
+      <div className="max-w-auto mx-auto px-6 py-28 flex flex-col items-center text-center">
         {/* Big Headline */}
         <h1 className="text-5xl font-extrabold mb-4 drop-shadow-lg animate-fadeIn">
           Find Your Perfect Stay
         </h1>
         {/* Subtitle */}
         <p className="max-w-2xl mb-8 text-lg font-light tracking-wide animate-fadeIn delay-200">
-          Unlock exclusive deals, 24/7 support & free cancellations on every booking
+          Unlock exclusive deals, 24/7 support & free cancellations on every
+          booking
         </p>
 
         {/* Trust Badges */}
@@ -220,6 +230,23 @@ const Header: React.FC = () => {
           “Hotel Booking made my vacation stress-free! Best prices and excellent
           support.” — <strong>Rohan S.</strong>
         </p>
+      </div>
+      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2">
+        <div className="animate-bounce">
+          <svg
+            className="w-6 h-6 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M19 14l-7 7m0 0l-7-7m7 7V3"
+            />
+          </svg>
+        </div>
       </div>
 
       {/* Fade in animation styles */}

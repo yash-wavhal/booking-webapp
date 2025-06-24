@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { Box, Card, CardMedia, CardContent, Typography } from "@mui/material";
 
 interface PropertyType {
   type: string;
@@ -15,6 +16,11 @@ const PropertyList: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
+  const scrollLeft = () =>
+    scrollRef.current?.scrollBy({ left: -1000, behavior: "smooth" });
+  const scrollRight = () =>
+    scrollRef.current?.scrollBy({ left: 1000, behavior: "smooth" });
+
   const images = [
     "https://cf.bstatic.com/xdata/images/xphoto/square300/57584488.webp?k=bf724e4e9b9b75480bbe7fc675460a089ba6414fe4693b83ea3fdd8e938832a6&o=",
     "https://cf.bstatic.com/static/img/theme-index/carousel_320x240/card-image-apartments_300/9f60235dc09a3ac3f0a93adbc901c61ecd1ce72e.jpg",
@@ -23,64 +29,69 @@ const PropertyList: React.FC = () => {
     "https://cf.bstatic.com/static/img/theme-index/carousel_320x240/card-image-chalet_300/8ee014fcc493cb3334e25893a1dee8c6d36ed0ba.jpg",
   ];
 
-  if (error) {
+  if (error)
     return (
       <div className="text-center p-4 text-red-500">Error loading data</div>
     );
-  }
-
-  const scrollLeft = () =>
-    scrollRef.current?.scrollBy({ left: -1000, behavior: "smooth" });
-  const scrollRight = () =>
-    scrollRef.current?.scrollBy({ left: 1000, behavior: "smooth" });
 
   return (
-    <div className="max-w-6xl mx-auto my-6 relative">
-      <h2 className="text-2xl font-bold mb-3">Explore Property Types</h2>
-
-      {/* Left Button */}
+    <div className="max-w-7xl mx-auto my-6 relative">
+      <h2 className="text-3xl text-gray-900 font-bold ml-4 mb-3">
+        EXPLORE PROPERTY TYPES
+      </h2>
       <button
-        className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white shadow z-10 hover:bg-gray-100"
+        className="absolute left-0 top-1/2 transform -translate-y-1/2 p-2 bg-white rounded-full shadow z-10"
         onClick={scrollLeft}
         aria-label="Scroll Left"
       >
         <FaChevronLeft />
       </button>
-
-      <div
+      <Box
         ref={scrollRef}
-        className="flex overflow-x-auto space-x-4 p-2 scrollbar-hide"
+        sx={{
+          display: "flex",
+          overflowX: "auto",
+          gap: 2,
+          p: 2,
+          scrollbarWidth: "none",
+        }}
       >
         {loading ? (
           <div>Loading, please wait...</div>
         ) : (
           data?.map((item, i) => (
-            <div
+            <Card
               key={i}
-              className="min-w-[250px] rounded-lg shadow-lg cursor-pointer hover:scale-105 transform transition"
+              sx={{
+                minWidth: 300,
+                minHeight: 400,
+                borderRadius: 2,
+                boxShadow: 3,
+                cursor: "pointer",
+              }}
               onClick={() =>
                 navigate(`/hotels/type/${encodeURIComponent(item.type)}`)
               }
+              className="hover:scale-105 transform transition"
             >
-              <img
-                src={images[i] || images[0]}
+              <CardMedia
+                component="img"
+                image={images[i] || images[0]}
                 alt={item.type}
-                className="h-40 w-full rounded-t-lg object-cover"
+                sx={{ height: 250, objectFit: "cover" }}
               />
-              <div className="p-3">
-                <h3 className="text-lg font-bold">{item.type}</h3>
-                <p className="text-gray-600">
+              <CardContent>
+                <Typography variant="h6">{item.type}</Typography>
+                <Typography variant="body2" color="text.secondary">
                   {item.count} {item.type}
-                </p>
-              </div>
-            </div>
+                </Typography>
+              </CardContent>
+            </Card>
           ))
         )}
-      </div>
-
-      {/* Right Button */}
+      </Box>
       <button
-        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white shadow z-10 hover:bg-gray-100"
+        className="absolute right-0 top-1/2 transform -translate-y-1/2 p-2 bg-white rounded-full shadow z-10"
         onClick={scrollRight}
         aria-label="Scroll Right"
       >

@@ -39,8 +39,8 @@ const MostBookedHotels: React.FC = () => {
     scrollRef.current?.scrollBy({ left: 1000, behavior: "smooth" });
 
   return (
-    <div className="max-w-6xl mx-auto my-6 relative">
-      <h2 className="text-2xl font-bold mb-3">Most Booked Hotels</h2>
+    <div className="max-w-7xl mx-auto my-6 relative">
+      <h2 className="text-3xl text-gray-900 ml-4 font-bold mb-3">MOST BOOKED HOTELS</h2>
       <button
         className="absolute left-0 top-1/2 transform -translate-y-1/2 p-2 bg-white rounded-full shadow z-10"
         onClick={scrollLeft}
@@ -62,7 +62,8 @@ const MostBookedHotels: React.FC = () => {
           <Card
             key={hotel._id}
             sx={{
-              minWidth: 250,
+              minWidth: 300,
+              minHeight: 400,
               borderRadius: 2,
               boxShadow: 3,
               cursor: "pointer",
@@ -78,7 +79,7 @@ const MostBookedHotels: React.FC = () => {
               }
               alt={hotel.name}
               sx={{
-                height: 160,
+                height: 250,
                 objectFit: "cover",
                 borderTopLeftRadius: 8,
                 borderTopRightRadius: 8,

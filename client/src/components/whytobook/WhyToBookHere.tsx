@@ -49,9 +49,9 @@ const benefits: Benefit[] = [
 
 const WhyBookHere: React.FC = () => {
   return (
-    <div className="bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 max-w-auto mx-auto my-12 p-20 text-center">
-      <h2 className="text-3xl font-bold text-gray-800">Why Book Here?</h2>
-      <p className="text-gray-600 mt-2">
+    <div className="bg-gray-900 max-w-auto mx-auto p-20 text-center">
+      <h2 className="text-3xl font-bold text-white">WHY TO BOOK HERE?</h2>
+      <p className="text-white mt-2">
         Book with confidence and enjoy a seamless travel experience
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">

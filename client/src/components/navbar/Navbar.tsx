@@ -39,7 +39,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-indigo-100 text-gray-900 shadow-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto flex justify-between items-center p-4">
+      <div className="max-w-7xl mx-auto flex justify-between items-center p-3">
         <span
           onClick={() => navigate("/")}
           className="text-3xl font-extrabold cursor-pointer select-none tracking-wide drop-shadow-md"
@@ -51,13 +51,13 @@ const Navbar = () => {
           <div className="flex space-x-4">
             <button
               onClick={() => navigate("/signup")}
-              className="bg-white text-indigo-800 font-semibold rounded-lg px-5 py-2 shadow-md hover:bg-indigo-50 transition"
+              className="bg-white text-gray-900 font-semibold rounded-lg px-5 py-2 shadow-md hover:bg-gray-900 hover:text-white transition"
             >
               Register
             </button>
             <button
               onClick={() => navigate("/login")}
-              className="border border-white text-white rounded-lg px-5 py-2 hover:bg-white hover:text-indigo-800 transition"
+              className="border border-gray-900 font-semibold text-gray-900 rounded-lg px-5 py-2 hover:bg-gray-900 hover:text-white transition"
             >
               Login
             </button>

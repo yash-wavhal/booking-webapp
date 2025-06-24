@@ -41,8 +41,8 @@ const reviews: Review[] = [
 
 const UserReviews: React.FC = () => {
   return (
-    <div className="bg-blue-100 max-w-6xl mx-auto my-12 p-10 text-center">
-      <h2 className="text-3xl font-bold text-gray-800">What Our Guests Say</h2>
+    <div className="bg-inherit max-w-6xl mx-auto my-12 p-20 text-center">
+      <h2 className="text-3xl font-bold text-gray-800">WHAT OUR GUESTS SAY</h2>
       <p className="text-gray-600 mt-2">Real reviews from satisfied customers</p>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8">
         {reviews.map((user) => (
