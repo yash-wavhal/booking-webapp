@@ -34,15 +34,15 @@ const MostBookedHotels: React.FC = () => {
   }
 
   const scrollLeft = () =>
-    scrollRef.current?.scrollBy({ left: -300, behavior: "smooth" });
+    scrollRef.current?.scrollBy({ left: -1000, behavior: "smooth" });
   const scrollRight = () =>
-    scrollRef.current?.scrollBy({ left: 300, behavior: "smooth" });
+    scrollRef.current?.scrollBy({ left: 1000, behavior: "smooth" });
 
   return (
     <div className="max-w-6xl mx-auto my-6 relative">
       <h2 className="text-2xl font-bold mb-3">Most Booked Hotels</h2>
       <button
-        className="absolute left-0 top-1/2 transform -translate-y-1/2 p-2 bg-white rounded-full shadow"
+        className="absolute left-0 top-1/2 transform -translate-y-1/2 p-2 bg-white rounded-full shadow z-10"
         onClick={scrollLeft}
       >
         <FaChevronLeft />
@@ -55,10 +55,7 @@ const MostBookedHotels: React.FC = () => {
           overflowX: "auto",
           gap: 2,
           p: 2,
-          scrollbarWidth: "none", // Firefox
-          "&::-webkit-scrollbar": {
-            display: "none", // Chrome, Safari, Opera
-          },
+          scrollbarWidth: "none",
         }}
       >
         {data?.map((hotel) => (
@@ -71,12 +68,13 @@ const MostBookedHotels: React.FC = () => {
               cursor: "pointer",
             }}
             onClick={() => setSelectedHotel(hotel)}
+            className="hover:scale-105 transform transition"
           >
             <CardMedia
               component="img"
               image={
                 hotel.photos?.[0] ||
-                "https://via.placeholder.com/300x200.png?text=No+Image"
+                "https://img.freepik.com/free-photo/type-entertainment-complex-popular-resort-with-pools-water-parks-turkey-with-more-than-5-million-visitors-year-amara-dolce-vita-luxury-hotel-resort-tekirova-kemer_146671-18728.jpg?ga=GA1.1.1461544118.1750686394&semt=ais_items_boosted&w=740"
               }
               alt={hotel.name}
               sx={{
@@ -94,6 +92,10 @@ const MostBookedHotels: React.FC = () => {
               <Typography variant="subtitle1" fontWeight="bold">
                 ₹{hotel.cheapestPrice} / night
               </Typography>
+              <Typography className="bg-blue-900 text-white w-16 px-3 py-1 rounded-sm font-bold shadow-md flex items-center">
+                  <span>{hotel.rating}</span>
+                  <span className="ml-1">★</span>
+                </Typography>
             </CardContent>
           </Card>
         ))}
@@ -128,12 +130,12 @@ const MostBookedHotels: React.FC = () => {
             <p>
               <strong>Distance:</strong> {selectedHotel.distance}
             </p>
-            <p>
+            {/* <p>
               <strong>Rating:</strong> {selectedHotel.rating} ★
-            </p>
-            <p>
+            </p> */}
+            {/* <p>
               <strong>Bookings:</strong> {selectedHotel.bookingsCount}
-            </p>
+            </p> */}
             <p>
               <strong>Price:</strong> ₹{selectedHotel.cheapestPrice}
             </p>

@@ -1,54 +1,75 @@
-import { useEffect } from "react";
+import React, { useRef } from "react";
 import useFetch from "../../hooks/useFetch";
-import "./featured.css";
-import axios from "axios";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Featured = () => {
-  const { data, loading, error } = useFetch<number[]>("/hotels/countByCity?cities=berlin,madrid,London");
+  const { data, loading, error } = useFetch("/hotels/getallcitiescount");
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+
+  const scrollLeft = () =>
+    scrollRef.current?.scrollBy({ left: -1000, behavior: "smooth" });
+  const scrollRight = () =>
+    scrollRef.current?.scrollBy({ left: 1000, behavior: "smooth" });
+
+  if (loading) {
+    return <div className="text-center p-4">Loading...</div>;
+  }
+  if (error) {
+    return (
+      <div className="text-center p-4 text-red-500">Something went wrong!</div>
+    );
+  }
 
   return (
-    <div className="featured">
-      {loading ? (
-        "Loading Please Wait..."
-      ) : (
-        <>
-          <div className="featuredItem">
-            <img
-              src="https://cf.bstatic.com/xdata/images/city/max500/957801.webp?k=a969e39bcd40cdcc21786ba92826063e3cb09bf307bcfeac2aa392b838e9b7a5&o="
-              alt=""
-              className="featuredImg"
-            />
-            <div className="featuredTitles">
-              <h1>Berlin</h1>
-              <h2>{data && data[0]} properties</h2>
-            </div>
-          </div>
+    <div className="max-w-6xl mx-auto my-6 relative">
+      <h2 className="text-2xl font-bold mb-3">Top Cities</h2>
 
-          <div className="featuredItem">
-            <img
-              src="https://cf.bstatic.com/xdata/images/city/max500/690334.webp?k=b99df435f06a15a1568ddd5f55d239507c0156985577681ab91274f917af6dbb&o="
-              alt=""
-              className="featuredImg"
-            />
-            <div className="featuredTitles">
-              <h1>Madrid</h1>
-              <h2>{data && data[1]} properties</h2>
-            </div>
-          </div>
+      {/* Scroll buttons */}
+      <button
+        className="absolute left-0 top-1/2 transform -translate-y-1/2 p-2 bg-white rounded-full shadow z-10"
+        onClick={scrollLeft}
+        aria-label="Scroll Left"
+      >
+        <FaChevronLeft />
+      </button>
 
-          <div className="featuredItem">
+      <div
+        ref={scrollRef}
+        className="flex overflow-x-auto space-x-4 p-2 scrollbar-hide scroll-smooth"
+      >
+        {data?.map((item: any) => (
+          <div
+            key={item.city}
+            className="min-w-[250px] rounded-lg shadow-lg cursor-pointer hover:scale-105 transform transition"
+            onClick={() => navigate(`/hotels/city/${encodeURIComponent(item.city)}`)}
+          >
             <img
-              src="https://cf.bstatic.com/xdata/images/city/max500/689422.webp?k=2595c93e7e067b9ba95f90713f80ba6e5fa88a66e6e55600bd27a5128808fdf2&o="
-              alt=""
-              className="featuredImg"
+              src={
+                "https://img.freepik.com/free-vector/flat-hotel-facade-background_23-2148161522.jpg?ga=GA1.1.1461544118.1750686394&semt=ais_hybrid&w=740"
+              }
+              alt={item.city}
+              className="h-40 w-full rounded-t-lg object-cover"
             />
-            <div className="featuredTitles">
-              <h1>London</h1>
-              <h2>{data && data[2]} properties</h2>
+            <div className="p-3">
+              <h3 className="text-lg font-bold">{item.city}</h3>
+              <p className="text-gray-600">{item.count} properties</p>
             </div>
           </div>
-        </>
-      )}
+        ))}
+
+        {/* Add some right padding or empty space so last card doesn't get hidden behind button */}
+        <div className="min-w-[50px]" />
+      </div>
+
+      <button
+        className="absolute right-0 top-1/2 transform -translate-y-1/2 p-2 bg-white rounded-full shadow z-10"
+        onClick={scrollRight}
+        aria-label="Scroll Right"
+      >
+        <FaChevronRight />
+      </button>
     </div>
   );
 };

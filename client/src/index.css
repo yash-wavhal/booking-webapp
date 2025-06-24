@@ -4,3 +4,11 @@
 @tailwind utilities;
 
 /* You can also add your global styles here, if any. */
+/* in your global.css or tailwind styles */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

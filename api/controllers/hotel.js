@@ -101,6 +101,33 @@ export const countByCity = async (req, res, next) => {
     }
 };
 
+export const countAllCities = async (req, res, next) => {
+  try {
+    const results = await Hotel.aggregate([
+        {
+            $group: {
+                _id: "$city",
+                count: { $sum: 1 }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                city: "$_id",
+                count: 1
+            }
+        },
+        {
+            $sort: { count: -1 }
+        }
+    ]);
+
+    res.status(200).json(results);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const countByType = async (req, res, next) => {
     try {
         const hotelCount = await Hotel.countDocuments({ type: "hotel" });

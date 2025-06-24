@@ -6,22 +6,23 @@ import MailList from "../../components/mailList/MailList";
 import MostBookedHotels from "../../components/mostBookedHotels/MostBookedHotels";
 import Navbar from "../../components/navbar/Navbar";
 import PropertyList from "../../components/propertyList/PropertyList";
+import UserReviews from "../../components/userReviews/UserReviews";
+import WhyToBookHere from "../../components/whytobook/WhyToBookHere"
 import "./home.css";
 
 const Home: React.FC = () => {
   return (
-    <div>
+    <div className="bg-indigo-100">
       <Navbar />
       <Header/>
       <div className="homeContainer">
-        {/* <h1>Most Booked Hotels</h1> */}
         <MostBookedHotels/>
-        <h1>Hotels from different cities</h1>
         <Featured/>
-        <h1 className="homeTitle">Browse by property type</h1>
         <PropertyList/>
-        <h1 className="homeTitle">Homes guests love</h1>
-        <FeaturedProperties/>
+        {/* <h1 className="homeTitle">Homes guests love</h1>
+        <FeaturedProperties/> */}
+        <WhyToBookHere />
+        <UserReviews/>
         <MailList/>
         <Footer/>
       </div>

@@ -1,5 +1,7 @@
+import React, { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
-import "./propertyList.css";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 interface PropertyType {
   type: string;
@@ -7,7 +9,11 @@ interface PropertyType {
 }
 
 const PropertyList: React.FC = () => {
-  const { data, loading, error } = useFetch<PropertyType[]>("/hotels/countByType");
+  const { data, loading, error } = useFetch<PropertyType[]>(
+    "/hotels/countByType"
+  );
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const images = [
     "https://cf.bstatic.com/xdata/images/xphoto/square300/57584488.webp?k=bf724e4e9b9b75480bbe7fc675460a089ba6414fe4693b83ea3fdd8e938832a6&o=",
@@ -18,27 +24,68 @@ const PropertyList: React.FC = () => {
   ];
 
   if (error) {
-    return <div>Error loading data</div>;
+    return (
+      <div className="text-center p-4 text-red-500">Error loading data</div>
+    );
   }
 
+  const scrollLeft = () =>
+    scrollRef.current?.scrollBy({ left: -1000, behavior: "smooth" });
+  const scrollRight = () =>
+    scrollRef.current?.scrollBy({ left: 1000, behavior: "smooth" });
+
   return (
-    <div className="pList">
-      {loading ? (
-        "Loading Please Wait ..."
-      ) : (
-        <>
-          {data &&
-            data.map((item: PropertyType, i: number) => (
-              <div key={i} className="pListItem">
-                <img src={images[i] || images[0]} alt={item.type} className="pListImg" />
-                <div className="pListTitles">
-                  <h1>{item.type}</h1>
-                  <h2>{item.count} {item.type}</h2>
-                </div>
+    <div className="max-w-6xl mx-auto my-6 relative">
+      <h2 className="text-2xl font-bold mb-3">Explore Property Types</h2>
+
+      {/* Left Button */}
+      <button
+        className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white shadow z-10 hover:bg-gray-100"
+        onClick={scrollLeft}
+        aria-label="Scroll Left"
+      >
+        <FaChevronLeft />
+      </button>
+
+      <div
+        ref={scrollRef}
+        className="flex overflow-x-auto space-x-4 p-2 scrollbar-hide"
+      >
+        {loading ? (
+          <div>Loading, please wait...</div>
+        ) : (
+          data?.map((item, i) => (
+            <div
+              key={i}
+              className="min-w-[250px] rounded-lg shadow-lg cursor-pointer hover:scale-105 transform transition"
+              onClick={() =>
+                navigate(`/hotels/type/${encodeURIComponent(item.type)}`)
+              }
+            >
+              <img
+                src={images[i] || images[0]}
+                alt={item.type}
+                className="h-40 w-full rounded-t-lg object-cover"
+              />
+              <div className="p-3">
+                <h3 className="text-lg font-bold">{item.type}</h3>
+                <p className="text-gray-600">
+                  {item.count} {item.type}
+                </p>
               </div>
-            ))}
-        </>
-      )}
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Right Button */}
+      <button
+        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white shadow z-10 hover:bg-gray-100"
+        onClick={scrollRight}
+        aria-label="Scroll Right"
+      >
+        <FaChevronRight />
+      </button>
     </div>
   );
 };
