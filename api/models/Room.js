@@ -29,6 +29,10 @@ const RoomSchema = new mongoose.Schema(
             ref: "Hotel",
             required: true,
         },
+        photos: {
+            type: [String],
+            required: false,
+        },
     },
     { timestamps: true }
 );

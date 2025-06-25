@@ -59,6 +59,15 @@ export const getRoom = async (req, res, next) => {
   }
 };
 
+export const getRoomsByHotel = async (req, res) => {
+  try {
+    const rooms = await Room.find({ hotelId: req.params.id }); 
+    res.json(rooms); 
+  } catch(err) {
+    next(err);
+  }
+};
+
 export const getRooms = async (req, res, next) => {
   try {
     const rooms = await Room.find();
