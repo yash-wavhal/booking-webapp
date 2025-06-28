@@ -1,7 +1,7 @@
 import express from "express";
 import Hotel from "../models/Hotel.js";
 import { createError } from "../utils/error.js";
-import { countAllCities, countByCity, countByType, createHotel, deleteHotel, getHotel, getHotels, getHotelsOfUser, getMostBookedHotels, updateHotel } from "../controllers/hotel.js";
+import { countAllCities, countByCity, countByType, createHotel, deleteHotel, getHotel, getHotels, getHotelsByCityName, getHotelsByHotelType, getHotelsOfUser, getMostBookedHotels, updateHotel } from "../controllers/hotel.js";
 import { verifyHotelOwner, verifyUser } from "../utils/verifyToken.js";
 
 const router = express.Router();
@@ -23,6 +23,9 @@ router.get("/", getHotels);
 router.get("/user/:id", getHotelsOfUser);
 
 router.get("/mostbooked", getMostBookedHotels);
+router.get("/hotelsbycityname/:city", getHotelsByCityName);
+
+router.get("/type/:hotelType", getHotelsByHotelType);
 
 // GET counts
 router.get("/getallcitiescount", countAllCities);

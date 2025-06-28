@@ -75,6 +75,26 @@ export const getMostBookedHotels = async (req, res, next) => {
     }
 };
 
+export const getHotelsByCityName = async (req, res, next) => {
+    const cityName = req.params.city;
+    try {
+        const hotels = await Hotel.find({city: cityName});
+        res.status(200).json(hotels);
+    } catch(err) {
+        next(err);
+    }
+}
+
+export const getHotelsByHotelType = async (req, res, next) => {
+    const type = req.params.hotelType;
+    try {
+        const hotels = await Hotel.find({type: type});
+        res.status(200).json(hotels);
+    } catch(err) {
+        next(err);
+    }
+}
+
 export const getHotelsOfUser = async (req, res, next) => {
   const userId = req.params.id;
   try {

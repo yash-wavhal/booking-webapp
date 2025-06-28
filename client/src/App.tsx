@@ -10,6 +10,8 @@ import Home from "./pages/home/Home";
 import "./index.css";
 import "./App.css";
 import { AuthProvider } from "./context/AuthContext";
+import HotelByCityPage from "./pages/hotelbycity/HotelByCityPage";
+import HotelByTypePage from "./pages/hotelbytype/HotelByTypePage";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/hotels" element={<List />} />
           <Route path="/hotels/:hotelid" element={<Hotel />} />
+          <Route path="/hotels/city/:city" element={<HotelByCityPage />} />
+          <Route path="/hotels/type/:type" element={<HotelByTypePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>

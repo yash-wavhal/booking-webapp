@@ -117,15 +117,19 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
       <div className="bg-white rounded-3xl shadow-xl overflow-hidden max-w-7xl mx-auto my-10">
         <div className="relative w-full h-[400px]">
           <img
-            src={hotel.photos[0]}
+            src={hotel.photos[0] || "/demo_hotel_image.avif"}
             alt="Main hotel"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-end p-6">
-            <h1 className="text-white text-4xl font-extrabold drop-shadow-lg">{hotel.name}</h1>
+            <h1 className="text-white text-4xl font-extrabold drop-shadow-lg">
+              {hotel.name}
+            </h1>
             <div className="text-white mt-1 font-medium flex items-center space-x-2">
               <FontAwesomeIcon icon={faLocationDot} />
-              <span>{hotel.address} • {hotel.city}</span>
+              <span>
+                {hotel.address} • {hotel.city}
+              </span>
             </div>
           </div>
         </div>
@@ -138,27 +142,40 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
                 Excellent location – {hotel.distance} from center
               </div>
               <p className="mt-3 text-indigo-700 text-lg font-medium">
-                Book over <strong>${hotel.cheapestPrice}</strong> & get a free airport taxi!
+                Book over <strong>${hotel.cheapestPrice}</strong> & get a free
+                airport taxi!
               </p>
             </div>
             <div className="bg-indigo-100 rounded-lg p-5 text-center w-48 shadow">
               <p className="text-indigo-800 font-bold text-lg">Rating</p>
-              <div className="flex justify-center mt-1 space-x-1">{renderStars(hotel.rating)}</div>
-              <p className="text-indigo-900 text-2xl font-extrabold mt-2">{hotel.rating.toFixed(1)}</p>
+              <div className="flex justify-center mt-1 space-x-1">
+                {renderStars(hotel.rating)}
+              </div>
+              <p className="text-indigo-900 text-2xl font-extrabold mt-2">
+                {hotel.rating.toFixed(1)}
+              </p>
             </div>
           </div>
 
           {/* Photo Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {photosToShow.map((url, i) => (
+            {photosToShow && photosToShow.length > 0 ? (
+              photosToShow.map((url, i) => (
+                <img
+                  key={i}
+                  src={url}
+                  alt={`hotel photo ${i + 1}`}
+                  className="rounded-xl h-40 w-full object-cover shadow-md hover:scale-105 transition-transform cursor-pointer"
+                  onClick={() => handleOpen(i)}
+                />
+              ))
+            ) : (
               <img
-                key={i}
-                src={url}
-                alt={`hotel photo ${i + 1}`}
-                className="rounded-xl h-40 w-full object-cover shadow-md hover:scale-105 transition-transform cursor-pointer"
-                onClick={() => handleOpen(i)}
+                src="/demo_hotel_image.avif"
+                alt="default hotel"
+                className="rounded-xl h-40 w-full object-cover shadow-md"
               />
-            ))}
+            )}
           </div>
 
           {/* Show More / Less */}
@@ -168,7 +185,11 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
                 onClick={() => setShowAllPhotos(!showAllPhotos)}
                 className="mt-4 px-6 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition"
               >
-                {showAllPhotos ? "Show Less" : `Show More (${hotel.photos.length - PHOTOS_PREVIEW_LIMIT} more)`}
+                {showAllPhotos
+                  ? "Show Less"
+                  : `Show More (${
+                      hotel.photos.length - PHOTOS_PREVIEW_LIMIT
+                    } more)`}
               </button>
             </div>
           )}
@@ -176,14 +197,21 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
           {/* Description Section */}
           <div className="flex flex-col md:flex-row gap-10">
             <div className="md:flex-1 space-y-4">
-              <h2 className="text-3xl font-bold text-indigo-900">{hotel.title}</h2>
-              <p className="text-gray-700 text-lg leading-relaxed">{hotel.desc}</p>
+              <h2 className="text-3xl font-bold text-indigo-900">
+                {hotel.title}
+              </h2>
+              <p className="text-gray-700 text-lg leading-relaxed">
+                {hotel.desc}
+              </p>
             </div>
 
             <div className="md:w-80 bg-indigo-50 rounded-2xl p-6 flex flex-col justify-between shadow-inner">
-              <h3 className="text-xl font-bold mb-2 text-indigo-900">Perfect for a long stay!</h3>
+              <h3 className="text-xl font-bold mb-2 text-indigo-900">
+                Perfect for a long stay!
+              </h3>
               <p className="text-indigo-700">
-                Located in <strong>{hotel.city}</strong>, this hotel has a top location score!
+                Located in <strong>{hotel.city}</strong>, this hotel has a top
+                location score!
               </p>
             </div>
           </div>
