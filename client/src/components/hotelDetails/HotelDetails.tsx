@@ -27,9 +27,9 @@ interface HotelDetailsProps {
 const PHOTOS_PREVIEW_LIMIT = 6;
 
 const HotelDetails = ({ hotel }: HotelDetailsProps) => {
-  const [slideNumber, setSlideNumber] = useState<number>(0);
-  const [open, setOpen] = useState<boolean>(false);
-  const [showAllPhotos, setShowAllPhotos] = useState<boolean>(false);
+  const [slideNumber, setSlideNumber] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [showAllPhotos, setShowAllPhotos] = useState(false);
 
   const photosToShow = showAllPhotos
     ? hotel.photos
@@ -89,7 +89,6 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
 
   return (
     <>
-      {/* Image Slider Modal */}
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4">
           <FontAwesomeIcon
@@ -115,69 +114,79 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-lg p-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-          <div>
-            <h1 className="text-4xl font-extrabold text-indigo-900">{hotel.name}</h1>
-            <div className="flex items-center space-x-2 mt-2 text-indigo-600 font-medium">
+      <div className="bg-white rounded-3xl shadow-xl overflow-hidden max-w-7xl mx-auto my-10">
+        <div className="relative w-full h-[400px]">
+          <img
+            src={hotel.photos[0]}
+            alt="Main hotel"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-end p-6">
+            <h1 className="text-white text-4xl font-extrabold drop-shadow-lg">{hotel.name}</h1>
+            <div className="text-white mt-1 font-medium flex items-center space-x-2">
               <FontAwesomeIcon icon={faLocationDot} />
-              <span>{hotel.address}</span>
+              <span>{hotel.address} • {hotel.city}</span>
             </div>
-            <div className="mt-3 inline-block bg-green-100 text-green-800 rounded-full px-4 py-1 font-semibold shadow-inner">
-              Excellent location – {hotel.distance} from center
-            </div>
-          </div>
-          <div className="bg-indigo-100 rounded-lg p-4 text-center w-36 shadow-inner">
-            <div className="font-semibold text-indigo-800 text-lg">Rating</div>
-            <div className="flex justify-center mt-1 space-x-1">{renderStars(hotel.rating)}</div>
-            <div className="mt-2 font-bold text-indigo-900 text-xl">{hotel.rating.toFixed(1)}</div>
           </div>
         </div>
 
-        <p className="mt-5 text-yellow-800 font-semibold text-lg">
-          Book a stay over ${hotel.cheapestPrice} and get a free airport taxi
-        </p>
-
-        {/* Photo grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-6">
-          {photosToShow.map((url, i) => (
-            <img
-              key={i}
-              src={url}
-              alt={`hotel photo ${i + 1}`}
-              className="w-full h-40 rounded-lg cursor-pointer object-cover hover:scale-105 transition-transform shadow-md"
-              onClick={() => handleOpen(i)}
-            />
-          ))}
-        </div>
-
-        {/* Show More / Show Less button */}
-        {hotel.photos.length > PHOTOS_PREVIEW_LIMIT && (
-          <div className="flex justify-center mt-4">
-            <button
-              onClick={() => setShowAllPhotos(!showAllPhotos)}
-              className="px-6 py-2 rounded-md bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition"
-            >
-              {showAllPhotos ? "Show Less" : `Show More (${hotel.photos.length - PHOTOS_PREVIEW_LIMIT} more)`}
-            </button>
-          </div>
-        )}
-
-        {/* Description & Pricing */}
-        <div className="mt-10 flex flex-col md:flex-row gap-8">
-          <section className="md:flex-1 space-y-4">
-            <h2 className="text-3xl font-bold text-indigo-900">{hotel.title}</h2>
-            <p className="text-gray-700 text-lg leading-relaxed">{hotel.desc}</p>
-          </section>
-
-          <section className="md:w-80 bg-indigo-50 rounded-lg p-6 shadow-inner flex flex-col justify-between">
+        <div className="p-8 space-y-8">
+          {/* Summary Row */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
             <div>
-              <h3 className="text-2xl font-extrabold mb-4 text-indigo-900">Perfect for a long stay!</h3>
-              <p className="text-indigo-700">
-                Located in the heart of <strong>{hotel.city}</strong>, this property has an excellent location rating.
+              <div className="inline-block bg-green-100 text-green-800 rounded-full px-4 py-1 font-semibold">
+                Excellent location – {hotel.distance} from center
+              </div>
+              <p className="mt-3 text-indigo-700 text-lg font-medium">
+                Book over <strong>${hotel.cheapestPrice}</strong> & get a free airport taxi!
               </p>
             </div>
-          </section>
+            <div className="bg-indigo-100 rounded-lg p-5 text-center w-48 shadow">
+              <p className="text-indigo-800 font-bold text-lg">Rating</p>
+              <div className="flex justify-center mt-1 space-x-1">{renderStars(hotel.rating)}</div>
+              <p className="text-indigo-900 text-2xl font-extrabold mt-2">{hotel.rating.toFixed(1)}</p>
+            </div>
+          </div>
+
+          {/* Photo Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            {photosToShow.map((url, i) => (
+              <img
+                key={i}
+                src={url}
+                alt={`hotel photo ${i + 1}`}
+                className="rounded-xl h-40 w-full object-cover shadow-md hover:scale-105 transition-transform cursor-pointer"
+                onClick={() => handleOpen(i)}
+              />
+            ))}
+          </div>
+
+          {/* Show More / Less */}
+          {hotel.photos.length > PHOTOS_PREVIEW_LIMIT && (
+            <div className="text-center">
+              <button
+                onClick={() => setShowAllPhotos(!showAllPhotos)}
+                className="mt-4 px-6 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition"
+              >
+                {showAllPhotos ? "Show Less" : `Show More (${hotel.photos.length - PHOTOS_PREVIEW_LIMIT} more)`}
+              </button>
+            </div>
+          )}
+
+          {/* Description Section */}
+          <div className="flex flex-col md:flex-row gap-10">
+            <div className="md:flex-1 space-y-4">
+              <h2 className="text-3xl font-bold text-indigo-900">{hotel.title}</h2>
+              <p className="text-gray-700 text-lg leading-relaxed">{hotel.desc}</p>
+            </div>
+
+            <div className="md:w-80 bg-indigo-50 rounded-2xl p-6 flex flex-col justify-between shadow-inner">
+              <h3 className="text-xl font-bold mb-2 text-indigo-900">Perfect for a long stay!</h3>
+              <p className="text-indigo-700">
+                Located in <strong>{hotel.city}</strong>, this hotel has a top location score!
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </>
