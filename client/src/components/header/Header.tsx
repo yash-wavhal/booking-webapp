@@ -10,8 +10,6 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { ArrowDown, ArrowDownNarrowWideIcon } from "lucide-react";
 
 interface Options {
   adult: number;
@@ -26,7 +24,6 @@ interface DateRangeItem {
 }
 
 const Header: React.FC = () => {
-  const { isAuthenticated } = useAuth();
   const [destination, setDestination] = useState("");
   const [openDate, setOpenDate] = useState(false);
   const [date, setDate] = useState<DateRangeItem[]>([
@@ -53,7 +50,17 @@ const Header: React.FC = () => {
       alert("Please enter a destination");
       return;
     }
-    navigate("/hotels", { state: { destination, date, options } });
+
+    const queryParams = new URLSearchParams({
+      destination,
+      startDate: date[0].startDate.toISOString(),
+      endDate: date[0].endDate.toISOString(),
+      adult: String(options.adult),
+      children: String(options.children),
+      room: String(options.room),
+    });
+
+    navigate(`/hotels/search?${queryParams.toString()}`);
   };
 
   const handleDateChange = (item: { [key: string]: DateRangeItem }) => {

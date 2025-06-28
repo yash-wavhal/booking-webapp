@@ -19,7 +19,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/hotels" element={<List />} />
+          <Route path="/hotels/search" element={<List />} />
           <Route path="/hotels/:hotelid" element={<Hotel />} />
           <Route path="/hotels/city/:city" element={<HotelByCityPage />} />
           <Route path="/hotels/type/:type" element={<HotelByTypePage />} />

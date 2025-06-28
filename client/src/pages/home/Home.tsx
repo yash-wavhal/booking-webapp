@@ -12,7 +12,7 @@ import "./home.css";
 
 const Home: React.FC = () => {
   return (
-    <div className="bg-indigo-100">
+    <div className="bg-gradient-to-b from-indigo-50 to-white">
       <Navbar />
       <Header/>
       <div className="homeContainer">

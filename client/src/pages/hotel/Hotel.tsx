@@ -5,6 +5,7 @@ import Footer from "../../components/footer/Footer";
 import useFetch from "../../hooks/useFetch";
 import HotelDetails from "../../components/hotelDetails/HotelDetails";
 import RoomCard from "../../components/roomDetails/RoomCard";
+import Header from "../../components/header/Header";
 
 interface Hotel {
   name: string;
