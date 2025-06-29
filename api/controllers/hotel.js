@@ -1,4 +1,5 @@
 import Hotel from "../models/Hotel.js";
+import Room from "../models/Room.js";
 
 export const createHotel = async (req, res, next) => {
     const newHotel = new Hotel({
@@ -52,6 +53,41 @@ export const getHotel = async (req, res, next) => {
         next(err);
     }
 };
+
+export const searchHotels = async (req, res, next) => {
+    try {
+        const {destination, startDate, endDate, adult, children, room} = req.query;
+        const hotels = await Hotel.find({city: new RegExp(`^${destination}$`, "i")});
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const totalPeoples = Number(adult) + Number(children);
+        const availableHotels = [];
+        for(const hotel of hotels) {
+            const rooms = await Room.find({
+                hotelId: hotel._id,
+                maxPeople: {$gte: totalPeoples},
+                roomNumbers: {
+                    $not: {
+                        $elemMatch: {
+                            unavailableDates: {
+                                $elemMatch: {
+                                    $gte: start,
+                                    $lte: end,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+            if(rooms.length > 0) {
+                availableHotels.push(hotel);
+            }
+        }
+        res.status(200).json(availableHotels);
+    } catch(err) {
+        next(err);
+    }
+}
 
 export const getHotels = async (req, res, next) => {
     try {
