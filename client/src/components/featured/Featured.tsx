@@ -6,7 +6,7 @@ import { Box, Card, CardMedia, CardContent, Typography } from "@mui/material";
 
 const Featured = () => {
   const { data, loading, error } = useFetch("/hotels/getallcitiescount");
-  console.log(data);
+  // console.log(data);
   const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 

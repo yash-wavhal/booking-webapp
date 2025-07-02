@@ -2,6 +2,8 @@ import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import { createError } from "../utils/error.js";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const register = async (req, res, next) => {
     try {
@@ -19,6 +21,7 @@ export const register = async (req, res, next) => {
         next(err);
     }
 };
+// console.log("process.env.JWT", process.env.JWT_SECRET);   //undefined
 
 export const login = async (req, res, next) => {
     try {
@@ -32,7 +35,7 @@ export const login = async (req, res, next) => {
         }
         const token = jwt.sign(
             {id: user._id, isAdmin: user.isAdmin},
-            process.env.JWT
+            process.env.JWT_SECRET
         );
         const {password, isAdmin, ...otherDetails} = user._doc;    // purpose is we dont wnat to send the password ans isAdmin in response so we sent ...otherDetails(that is details other than password and isAdmin)
         res.cookie("access_token", token, {

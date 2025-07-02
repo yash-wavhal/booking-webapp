@@ -1,15 +1,8 @@
-import {
-  faBed,
-  faCalendarDays,
-  faPerson,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { DateRange } from "react-date-range";
 import { useState } from "react";
-import "react-date-range/dist/styles.css";
-import "react-date-range/dist/theme/default.css";
+import { DateRange } from "react-date-range";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import { FaBed, FaCalendarDay, FaUser } from "react-icons/fa"; // react-icons imports
 
 interface Options {
   adult: number;
@@ -69,15 +62,14 @@ const Header: React.FC = () => {
 
   return (
     <div className="relative bg-gray-900 text-white">
-      <div className="max-w-auto mx-auto px-6 py-28 flex flex-col items-center text-center">
+      <div className="max-w-auto mx-auto px-6 py-32 flex flex-col items-center text-center">
         {/* Big Headline */}
         <h1 className="text-5xl font-extrabold mb-4 drop-shadow-lg animate-fadeIn">
           Find Your Perfect Stay
         </h1>
         {/* Subtitle */}
         <p className="max-w-2xl mb-8 text-lg font-light tracking-wide animate-fadeIn delay-200">
-          Unlock exclusive deals, 24/7 support & free cancellations on every
-          booking
+          Unlock exclusive deals, 24/7 support & free cancellations on every booking
         </p>
 
         {/* Trust Badges */}
@@ -112,10 +104,9 @@ const Header: React.FC = () => {
         <div className="bg-white rounded-xl p-6 w-full max-w-4xl shadow-lg flex flex-wrap gap-6 justify-center">
           {/* Destination Input */}
           <div className="relative flex-1 min-w-[220px]">
-            <FontAwesomeIcon
-              icon={faBed}
+            <FaBed
               className="absolute top-1/2 left-4 transform -translate-y-1/2 text-indigo-700"
-              size="lg"
+              size={24}
             />
             <input
               type="text"
@@ -128,10 +119,9 @@ const Header: React.FC = () => {
 
           {/* Date Picker */}
           <div className="relative flex-1 min-w-[220px] cursor-pointer">
-            <FontAwesomeIcon
-              icon={faCalendarDays}
+            <FaCalendarDay
               className="absolute top-1/2 left-4 transform -translate-y-1/2 text-indigo-700"
-              size="lg"
+              size={24}
               onClick={() => {
                 setOpenDate(!openDate);
                 setOpenOptions(false);
@@ -165,10 +155,9 @@ const Header: React.FC = () => {
 
           {/* Guests & Rooms */}
           <div className="relative flex-1 min-w-[220px] cursor-pointer">
-            <FontAwesomeIcon
-              icon={faPerson}
+            <FaUser
               className="absolute top-1/2 left-4 transform -translate-y-1/2 text-indigo-700"
-              size="lg"
+              size={24}
               onClick={() => {
                 setOpenOptions(!openOptions);
                 setOpenDate(false);

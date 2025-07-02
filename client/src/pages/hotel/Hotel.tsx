@@ -5,7 +5,6 @@ import Footer from "../../components/footer/Footer";
 import useFetch from "../../hooks/useFetch";
 import HotelDetails from "../../components/hotelDetails/HotelDetails";
 import RoomCard from "../../components/roomDetails/RoomCard";
-import Header from "../../components/header/Header";
 
 interface Hotel {
   name: string;
@@ -42,6 +41,9 @@ const Hotel = () => {
     loading: roomsLoading,
     error: roomsError,
   } = useFetch<Room[]>(`/rooms/byhotel/${hotelid}`);
+
+  // console.log("room", rooms);
+  // console.log("hotel", hotel);
 
   if (hotelLoading || roomsLoading) {
     return (

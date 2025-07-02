@@ -10,7 +10,7 @@ import cookieParser from "cookie-parser";
 
 const app = express();
 dotenv.config();
-
+// console.log("Mongo URI:", process.env.MONGO);
 main().then((res) => {
     console.log("Connection successful");
     // console.log(res);

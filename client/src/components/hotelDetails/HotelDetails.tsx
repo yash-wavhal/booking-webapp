@@ -1,14 +1,13 @@
 import { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faLocationDot,
-  faStar as faStarSolid,
-  faStarHalfAlt,
-  faXmark,
-  faChevronLeft,
-  faChevronRight,
-  faStar as faStarRegular,
-} from "@fortawesome/free-solid-svg-icons";
+  FaLocationDot,
+  FaStar as FaStarSolid,
+  FaStarHalf,
+  FaStar as FaStarRegular,
+  FaXmark,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa6";
 
 interface HotelDetailsProps {
   hotel: {
@@ -59,29 +58,17 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
 
     for (let i = 0; i < fullStars; i++) {
       stars.push(
-        <FontAwesomeIcon
-          key={"full" + i}
-          icon={faStarSolid}
-          className="text-yellow-500"
-        />
+        <FaStarSolid key={"full" + i} className="text-yellow-500" />
       );
     }
     if (hasHalfStar) {
       stars.push(
-        <FontAwesomeIcon
-          key="half"
-          icon={faStarHalfAlt}
-          className="text-yellow-500"
-        />
+        <FaStarHalf key="half" className="text-yellow-500" />
       );
     }
     while (stars.length < 5) {
       stars.push(
-        <FontAwesomeIcon
-          key={"empty" + stars.length}
-          icon={faStarRegular}
-          className="text-gray-300"
-        />
+        <FaStarRegular key={"empty" + stars.length} className="text-gray-300" />
       );
     }
     return stars;
@@ -91,13 +78,11 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
     <>
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4">
-          <FontAwesomeIcon
-            icon={faXmark}
+          <FaXmark
             className="absolute top-6 right-6 text-white text-4xl cursor-pointer hover:text-red-400 transition"
             onClick={() => setOpen(false)}
           />
-          <FontAwesomeIcon
-            icon={faChevronLeft}
+          <FaChevronLeft
             className="absolute left-6 text-white text-4xl cursor-pointer hover:text-gray-300 transition"
             onClick={() => handleMove("l")}
           />
@@ -106,8 +91,7 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
             alt={`hotel image ${slideNumber + 1}`}
             className="max-h-[80vh] max-w-full rounded-lg shadow-lg object-cover mx-auto"
           />
-          <FontAwesomeIcon
-            icon={faChevronRight}
+          <FaChevronRight
             className="absolute right-6 text-white text-4xl cursor-pointer hover:text-gray-300 transition"
             onClick={() => handleMove("r")}
           />
@@ -126,7 +110,7 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
               {hotel.name}
             </h1>
             <div className="text-white mt-1 font-medium flex items-center space-x-2">
-              <FontAwesomeIcon icon={faLocationDot} />
+              <FaLocationDot />
               <span>
                 {hotel.address} • {hotel.city}
               </span>
@@ -187,9 +171,7 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
               >
                 {showAllPhotos
                   ? "Show Less"
-                  : `Show More (${
-                      hotel.photos.length - PHOTOS_PREVIEW_LIMIT
-                    } more)`}
+                  : `Show More (${hotel.photos.length - PHOTOS_PREVIEW_LIMIT} more)`}
               </button>
             </div>
           )}
@@ -197,12 +179,8 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
           {/* Description Section */}
           <div className="flex flex-col md:flex-row gap-10">
             <div className="md:flex-1 space-y-4">
-              <h2 className="text-3xl font-bold text-indigo-900">
-                {hotel.title}
-              </h2>
-              <p className="text-gray-700 text-lg leading-relaxed">
-                {hotel.desc}
-              </p>
+              <h2 className="text-3xl font-bold text-indigo-900">{hotel.title}</h2>
+              <p className="text-gray-700 text-lg leading-relaxed">{hotel.desc}</p>
             </div>
 
             <div className="md:w-80 bg-indigo-50 rounded-2xl p-6 flex flex-col justify-between shadow-inner">
