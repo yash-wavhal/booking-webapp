@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface RoomPhotosLightboxProps {
   photos: string[];
@@ -24,23 +24,26 @@ const RoomPhotosLightbox = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4">
-      <FaTimes
+      <X
         className="absolute top-6 right-6 text-white text-4xl cursor-pointer hover:text-red-400 transition"
         onClick={onClose}
       />
-      <FaChevronLeft
+
+      <ChevronLeft
         className="absolute left-6 text-white text-4xl cursor-pointer hover:text-gray-300 transition"
         onClick={prevPhoto}
       />
+
       <img
         src={photos[currentIndex]}
         alt={`Room photo ${currentIndex + 1}`}
         className="max-h-[80vh] max-w-full rounded-lg shadow-lg object-contain mx-auto"
       />
-      <FaChevronRight
+      <ChevronRight
         className="absolute right-6 text-white text-4xl cursor-pointer hover:text-gray-300 transition"
         onClick={nextPhoto}
       />
+
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Box, Card, CardMedia, CardContent, Typography } from "@mui/material";
 
 interface PropertyType {
@@ -44,7 +44,7 @@ const PropertyList: React.FC = () => {
         onClick={scrollLeft}
         aria-label="Scroll Left"
       >
-        <FaChevronLeft />
+        <ChevronLeft />
       </button>
       <Box
         ref={scrollRef}
@@ -95,7 +95,7 @@ const PropertyList: React.FC = () => {
         onClick={scrollRight}
         aria-label="Scroll Right"
       >
-        <FaChevronRight />
+        <ChevronRight />
       </button>
     </div>
   );

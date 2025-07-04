@@ -126,3 +126,33 @@
 .optionCounterButton:disabled {
   cursor: not-allowed;
 }
+.custom-date-range {
+  font-family: 'Inter', sans-serif;
+  --rdr-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--rdr-shadow);
+  border-radius: 1rem;
+}
+
+.custom-date-range .rdrMonth {
+  padding: 1rem 1.25rem;
+}
+
+.custom-date-range .rdrDayNumber span {
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+}
+
+.custom-date-range .rdrDayStart .rdrDayNumber span,
+.custom-date-range .rdrDayEnd .rdrDayNumber span {
+  background-color: #4f46e5 !important;
+  color: white !important;
+  font-weight: 700;
+  border-radius: 0.75rem;
+}
+
+.custom-date-range .rdrDayInRange .rdrDayNumber span {
+  background-color: #e0e7ff !important;
+  color: #4f46e5 !important;
+}
+

@@ -1,13 +1,11 @@
 import { useState } from "react";
 import {
-  FaLocationDot,
-  FaStar as FaStarSolid,
-  FaStarHalf,
-  FaStar as FaStarRegular,
-  FaXmark,
-  FaChevronLeft,
-  FaChevronRight,
-} from "react-icons/fa6";
+  MapPin,
+  Star,
+  X,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
 interface HotelDetailsProps {
   hotel: {
@@ -46,55 +44,53 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
           ? hotel.photos.length - 1
           : prev - 1
         : prev === hotel.photos.length - 1
-        ? 0
-        : prev + 1
+          ? 0
+          : prev + 1
     );
   };
 
   const renderStars = (rating: number) => {
     const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating - fullStars >= 0.5;
+    const fullStars = Math.round(rating); // rounded for simplicity
 
     for (let i = 0; i < fullStars; i++) {
       stars.push(
-        <FaStarSolid key={"full" + i} className="text-yellow-500" />
-      );
-    }
-    if (hasHalfStar) {
-      stars.push(
-        <FaStarHalf key="half" className="text-yellow-500" />
+        <Star key={"full" + i} className="text-yellow-500 fill-yellow-500" />
       );
     }
     while (stars.length < 5) {
       stars.push(
-        <FaStarRegular key={"empty" + stars.length} className="text-gray-300" />
+        <Star key={"empty" + stars.length} className="text-gray-300" />
       );
     }
     return stars;
   };
 
+
   return (
     <>
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4">
-          <FaXmark
+          <X
             className="absolute top-6 right-6 text-white text-4xl cursor-pointer hover:text-red-400 transition"
             onClick={() => setOpen(false)}
           />
-          <FaChevronLeft
+
+          <ChevronLeft
             className="absolute left-6 text-white text-4xl cursor-pointer hover:text-gray-300 transition"
             onClick={() => handleMove("l")}
           />
+
           <img
             src={hotel.photos[slideNumber]}
             alt={`hotel image ${slideNumber + 1}`}
             className="max-h-[80vh] max-w-full rounded-lg shadow-lg object-cover mx-auto"
           />
-          <FaChevronRight
+          <ChevronRight
             className="absolute right-6 text-white text-4xl cursor-pointer hover:text-gray-300 transition"
             onClick={() => handleMove("r")}
           />
+
         </div>
       )}
 
@@ -110,7 +106,7 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
               {hotel.name}
             </h1>
             <div className="text-white mt-1 font-medium flex items-center space-x-2">
-              <FaLocationDot />
+              <MapPin />
               <span>
                 {hotel.address} • {hotel.city}
               </span>
@@ -136,7 +132,10 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
                 {renderStars(hotel.rating)}
               </div>
               <p className="text-indigo-900 text-2xl font-extrabold mt-2">
-                {hotel.rating.toFixed(1)}
+                <p className="text-indigo-900 text-2xl font-extrabold mt-2">
+                  {typeof hotel.rating === "number" ? hotel.rating.toFixed(1) : "N/A"}
+                </p>
+
               </p>
             </div>
           </div>

@@ -1,12 +1,11 @@
 import React, { useRef } from "react";
 import useFetch from "../../hooks/useFetch";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Box, Card, CardMedia, CardContent, Typography } from "@mui/material";
 
 const Featured = () => {
   const { data, loading, error } = useFetch("/hotels/getallcitiescount");
-  // console.log(data);
   const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -24,12 +23,14 @@ const Featured = () => {
   return (
     <div className="max-w-7xl mx-auto my-6 relative">
       <h2 className="text-3xl text-gray-900 font-bold ml-4 mb-3">TOP CITIES</h2>
+      
       <button
         className="absolute left-0 top-1/2 transform -translate-y-1/2 p-2 bg-white rounded-full shadow z-10"
         onClick={scrollLeft}
       >
-        <FaChevronLeft />
+        <ChevronLeft className="w-6 h-6" />
       </button>
+
       <Box
         ref={scrollRef}
         sx={{
@@ -78,11 +79,12 @@ const Featured = () => {
           </Card>
         ))}
       </Box>
+
       <button
         className="absolute right-0 top-1/2 transform -translate-y-1/2 p-2 bg-white rounded-full shadow z-10"
         onClick={scrollRight}
       >
-        <FaChevronRight />
+        <ChevronRight className="w-6 h-6" />
       </button>
     </div>
   );

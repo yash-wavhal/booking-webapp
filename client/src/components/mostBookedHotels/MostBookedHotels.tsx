@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import useFetch from "../../hooks/useFetch";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Box, Card, CardMedia, CardContent, Typography } from "@mui/material";
 
@@ -45,7 +45,7 @@ const MostBookedHotels: React.FC = () => {
         className="absolute left-0 top-1/2 transform -translate-y-1/2 p-2 bg-white rounded-full shadow z-10"
         onClick={scrollLeft}
       >
-        <FaChevronLeft />
+        <ChevronLeft />
       </button>
 
       <Box
@@ -106,7 +106,7 @@ const MostBookedHotels: React.FC = () => {
         className="absolute right-0 top-1/2 transform -translate-y-1/2 p-2 bg-white rounded-full shadow"
         onClick={scrollRight}
       >
-        <FaChevronRight />
+        <ChevronRight />
       </button>
 
       {selectedHotel && (

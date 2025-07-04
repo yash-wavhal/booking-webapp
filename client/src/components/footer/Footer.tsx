@@ -1,25 +1,25 @@
 import React from "react";
-import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-gray-300 py-12">
       <div className="max-w-auto mx-auto px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          
-          {/* Branding */}
+
           <div>
             <h2 className="text-4xl font-bold text-yellow-500">Hotel Booking</h2>
-            <p className="mt-3 text-gray-400 text-sm">Your trusted travel partner for seamless hotel and accommodation bookings across the globe.</p>
+            <p className="mt-3 text-gray-400 text-sm">
+              Your trusted travel partner for seamless hotel and accommodation bookings across the globe.
+            </p>
             <div className="flex space-x-3 mt-4">
-              <FaFacebookF className="hover:text-yellow-500 cursor-pointer" />
-              <FaTwitter className="hover:text-yellow-500 cursor-pointer" />
-              <FaInstagram className="hover:text-yellow-500 cursor-pointer" />
-              <FaLinkedin className="hover:text-yellow-500 cursor-pointer" />
+              <Facebook className="hover:text-yellow-500 cursor-pointer" />
+              <Twitter className="hover:text-yellow-500 cursor-pointer" />
+              <Instagram className="hover:text-yellow-500 cursor-pointer" />
+              <Linkedin className="hover:text-yellow-500 cursor-pointer" />
             </div>
           </div>
 
-          {/* Links */}
           <div>
             <h3 className="font-semibold text-white text-lg">Destination</h3>
             <ul className="mt-3 space-y-2 text-sm">
@@ -48,7 +48,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Newsletter */}
         <div className="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <div className="text-sm text-gray-400">© 2022 Hotel Booking. All Rights Reserved</div>
           <div className="mt-4 md:mt-0 flex space-x-3 items-center">

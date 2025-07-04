@@ -1,5 +1,5 @@
 import React from "react";
-import { FaStar } from "react-icons/fa";
+import { Star } from "lucide-react";
 
 interface Review {
   id: number;
@@ -61,10 +61,10 @@ const UserReviews: React.FC = () => {
               <h3 className="text-lg font-semibold">{user.name}</h3>
               <div className="flex justify-center mt-1">
                 {[...Array(user.rating)].map((_, index) => (
-                  <FaStar key={index} className="text-yellow-400" />
+                  <Star key={`filled-${index}`} className="text-yellow-400 fill-yellow-400" />
                 ))}
                 {[...Array(5 - user.rating)].map((_, index) => (
-                  <FaStar key={index} className="text-gray-300" />
+                  <Star key={`empty-${index}`} className="text-gray-300" />
                 ))}
               </div>
               <p className="text-gray-600 mt-3 italic">“{user.review}”</p>
