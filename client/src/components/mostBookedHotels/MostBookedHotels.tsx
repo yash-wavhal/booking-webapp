@@ -58,7 +58,7 @@ const MostBookedHotels: React.FC = () => {
           scrollbarWidth: "none",
         }}
       >
-        {data?.map((hotel) => (
+        {(Array.isArray(data) ? data : []).map((hotel) => (
           <Card
             key={hotel._id}
             sx={{

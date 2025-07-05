@@ -41,7 +41,7 @@ const Featured = () => {
           scrollbarWidth: "none",
         }}
       >
-        {data?.map((item: any) => (
+        {(Array.isArray(data) ? data : []).map((item: any) => (
           <Card
             key={item.city}
             sx={{

@@ -59,7 +59,7 @@ const PropertyList: React.FC = () => {
         {loading ? (
           <div>Loading, please wait...</div>
         ) : (
-          data?.map((item, i) => (
+          (Array.isArray(data) ? data : []).map((item, i) => (
             <Card
               key={i}
               sx={{

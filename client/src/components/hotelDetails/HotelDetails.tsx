@@ -28,9 +28,10 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
   const [open, setOpen] = useState(false);
   const [showAllPhotos, setShowAllPhotos] = useState(false);
 
+  const photos = hotel.photos ?? [];
   const photosToShow = showAllPhotos
-    ? hotel.photos
-    : hotel.photos.slice(0, PHOTOS_PREVIEW_LIMIT);
+    ? photos
+    : photos.slice(0, PHOTOS_PREVIEW_LIMIT);
 
   const handleOpen = (i: number) => {
     setSlideNumber(i);
@@ -38,12 +39,13 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
   };
 
   const handleMove = (dir: "l" | "r") => {
+    const photosLength = hotel.photos?.length || 0;
     setSlideNumber((prev) =>
       dir === "l"
         ? prev === 0
-          ? hotel.photos.length - 1
+          ? photosLength - 1
           : prev - 1
-        : prev === hotel.photos.length - 1
+        : prev === photosLength - 1
           ? 0
           : prev + 1
     );
@@ -132,9 +134,9 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
                 {renderStars(hotel.rating)}
               </div>
               <p className="text-indigo-900 text-2xl font-extrabold mt-2">
-                <p className="text-indigo-900 text-2xl font-extrabold mt-2">
-                  {typeof hotel.rating === "number" ? hotel.rating.toFixed(1) : "N/A"}
-                </p>
+                {/* <p className="text-indigo-900 text-2xl font-extrabold mt-2"> */}
+                {typeof hotel.rating === "number" ? hotel.rating.toFixed(1) : "N/A"}
+                {/* </p> */}
 
               </p>
             </div>
