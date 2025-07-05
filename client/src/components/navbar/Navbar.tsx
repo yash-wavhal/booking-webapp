@@ -9,9 +9,11 @@ const Navbar = () => {
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
   const handleLogout = async () => {
     try {
-      await axios.post("/auth/logout");
+      await axios.post(`${BASE_URL}/auth/logout`);
       setIsAuthenticated(false);
       navigate("/");
     } catch (err: any) {

@@ -1,5 +1,7 @@
-import axios from "axios"; 
+import axios from "axios";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+
 axios.defaults.withCredentials = true;
 
 interface UserData {
@@ -26,11 +28,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const location = useLocation();
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
   useEffect(() => {
+    const publicPaths = ["/", "/login", "/signup"];
+
+    if (publicPaths.includes(location.pathname)) {
+      setIsLoading(false);
+      return;
+    }
+
     const fetchUser = async () => {
       try {
-        const res = await axios.get("/auth/me", { withCredentials: true });
-        // console.log("context", res.data.user);
+        const res = await axios.get(`${BASE_URL}/auth/me`, { withCredentials: true });
         setUser(res.data.user);
         setIsAuthenticated(true);
       } catch {
@@ -39,8 +50,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsLoading(false);
       }
     };
+
     fetchUser();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, location.pathname]);
 
   return (
     <AuthContext.Provider value={{ user, isLoading, isAuthenticated, setIsAuthenticated }}>

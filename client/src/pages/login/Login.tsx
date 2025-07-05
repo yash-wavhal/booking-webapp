@@ -17,11 +17,11 @@ export default function Login() {
     const { name, value } = e.target;
     setData((prev) => ({ ...prev, [name]: value }));
   };
-  
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await axios.post("/auth/login", data);
+      await axios.post(`${BASE_URL}/auth/login`, data);
       setIsAuthenticated(true);
       navigate("/"); // Redirect to the home page
     } catch (err: any) {

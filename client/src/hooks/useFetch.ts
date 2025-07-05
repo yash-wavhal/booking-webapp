@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
 
+
 function useFetch<T = any>(url: string) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<AxiosError | null>(null);
 
-  // Use environment variable or fallback
-  const BASE_URL =
-    process.env.API_BASE_URL;
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   // console.log("BASE_URL", BASE_URL);
 

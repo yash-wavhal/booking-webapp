@@ -16,11 +16,13 @@ export default function Signup() {
     const { name, value } = e.target;
     setData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await axios.post("/auth/register", data);
+      await axios.post(`${BASE_URL}/auth/register`, data);
 
       await axios.post("/auth/login", {
         email: data.email,
