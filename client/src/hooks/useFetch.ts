@@ -8,7 +8,7 @@ function useFetch<T = any>(url: string) {
 
   // Use environment variable or fallback
   const BASE_URL =
-    process.env.API_BASE_URL || "http://localhost:8080/api";
+    process.env.API_BASE_URL;
 
   console.log("BASE_URL", BASE_URL);
 
