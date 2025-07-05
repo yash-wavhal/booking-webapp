@@ -1,6 +1,7 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 interface SignupData {
   username: string;
@@ -9,6 +10,7 @@ interface SignupData {
 }
 
 export default function Signup() {
+  const {setIsAuthenticated} = useAuth();
   const [data, setData] = useState<SignupData>({ username: "", email: "", password: "" });
   const navigate = useNavigate();
 
@@ -18,16 +20,18 @@ export default function Signup() {
   };
 
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  // console.log(BASE_URL);
   
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await axios.post(`${BASE_URL}/auth/register`, data);
 
-      await axios.post("/auth/login", {
+      await axios.post(`${BASE_URL}/auth/login`, {
         email: data.email,
         password: data.password,
       });
+      setIsAuthenticated(true);
       navigate("/");
     } catch (err: any) {
       alert(err.response?.data?.message || "Signup failed");
