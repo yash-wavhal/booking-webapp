@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Box, Card, CardMedia, CardContent, Typography } from "@mui/material";
+import CityCardSkeleton from "../skeletons/HomeSkeleton";
 
 interface PropertyType {
   type: string;
@@ -35,10 +36,10 @@ const PropertyList: React.FC = () => {
     );
 
   return (
-    <div className="max-w-7xl mx-auto my-6 relative">
-      <h2 className="text-3xl text-gray-900 font-bold ml-4 mb-3">
+    <div className="max-w-7xl mx-auto relative mb-10">
+      {/* <h2 className="text-3xl text-gray-900 font-bold ml-4 mb-3">
         EXPLORE PROPERTY TYPES
-      </h2>
+      </h2> */}
       <button
         className="absolute left-0 top-1/2 transform -translate-y-1/2 p-2 bg-white rounded-full shadow z-10"
         onClick={scrollLeft}
@@ -56,10 +57,10 @@ const PropertyList: React.FC = () => {
           scrollbarWidth: "none",
         }}
       >
-        {loading ? (
-          <div>Loading, please wait...</div>
-        ) : (
-          (Array.isArray(data) ? data : []).map((item, i) => (
+        {(loading ? Array(4).fill(null) : Array.isArray(data) ? data : []).map((item, i) =>
+          loading ? (
+            <CityCardSkeleton key={i} />
+          ) : (
             <Card
               key={i}
               sx={{
@@ -87,7 +88,7 @@ const PropertyList: React.FC = () => {
                 </Typography>
               </CardContent>
             </Card>
-          ))
+          )
         )}
       </Box>
       <button

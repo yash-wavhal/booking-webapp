@@ -13,18 +13,27 @@ import "./home.css";
 const Home: React.FC = () => {
   return (
     <div className="bg-gradient-to-b from-indigo-50 to-white">
+      
       <Navbar />
-      <Header/>
+
+      <Header />
+
       <div className="homeContainer">
-        <MostBookedHotels/>
-        <Featured/>
-        <PropertyList/>
-        {/* <h1 className="homeTitle">Homes guests love</h1>
-        <FeaturedProperties/> */}
+
+        <h2 className="text-3xl text-gray-900 font-bold ml-4 mt-10">MOST BOOKED HOTELS</h2>
+        <MostBookedHotels />
+
+        <h2 className="text-3xl text-gray-900 font-bold ml-4 mt-10">TOP CITIES</h2>
+        <Featured />
+
+        <h2 className="text-3xl text-gray-900 font-bold ml-4 mt-10">EXPLORE PROPERTY TYPES</h2>
+        <PropertyList />
+
         <WhyToBookHere />
-        <UserReviews/>
-        {/* <MailList/> */}
-        <Footer/>
+
+        <UserReviews />
+
+        <Footer />
       </div>
     </div>
   );

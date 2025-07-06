@@ -7,6 +7,17 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { user, isLoading, isAuthenticated, setIsAuthenticated } = useAuth();
   const [showMenu, setShowMenu] = useState<boolean>(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 750);
+    };
+
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   const menuRef = useRef<HTMLDivElement>(null);
 
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -40,7 +51,10 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="bg-indigo-100 text-gray-900 shadow-md sticky top-0 z-50">
+    <nav
+      className={`${isScrolled ? "bg-transparent backdrop-blur-sm" : "bg-indigo-100"
+        } text-gray-900 shadow-md sticky top-0 z-50 transition-all duration-300`}
+    >
       <div className="max-w-7xl mx-auto flex justify-between items-center p-3">
         <span
           onClick={() => navigate("/")}

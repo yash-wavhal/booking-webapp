@@ -1,5 +1,5 @@
 import React from "react";
-import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Facebook, Twitter, Instagram, Linkedin, Github } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -13,21 +13,37 @@ const Footer = () => {
               Your trusted travel partner for seamless hotel and accommodation bookings across the globe.
             </p>
             <div className="flex space-x-3 mt-4">
-              <Facebook className="hover:text-yellow-500 cursor-pointer" />
-              <Twitter className="hover:text-yellow-500 cursor-pointer" />
-              <Instagram className="hover:text-yellow-500 cursor-pointer" />
-              <Linkedin className="hover:text-yellow-500 cursor-pointer" />
+              <a href="https://www.linkedin.com/in/yash-wavhal-5b0982257" target="_blank" rel="noopener noreferrer">
+                <Linkedin className="hover:text-yellow-500 cursor-pointer" />
+              </a>
+
+              <a href="https://github.com/yash-wavhal/" target="_blank" rel="noopener noreferrer">
+                <Github className="hover:text-yellow-500 cursor-pointer" />
+              </a>
+
+              <a href="https://x.com/yash_wavhal" target="_blank" rel="noopener noreferrer">
+                <Twitter className="hover:text-yellow-500 cursor-pointer" />
+              </a>
+
+              <a href="https://booking-webapp.vercel.app/" target="_blank" rel="noopener noreferrer">
+                <Instagram className="hover:text-yellow-500 cursor-pointer" />
+              </a>
+
+              <a href="https://booking-webapp.vercel.app/" target="_blank" rel="noopener noreferrer">
+                <Facebook className="hover:text-yellow-500 cursor-pointer" />
+              </a>
+
             </div>
           </div>
 
-          <div>
+          {/* <div>
             <h3 className="font-semibold text-white text-lg">Destination</h3>
             <ul className="mt-3 space-y-2 text-sm">
               {["Countries", "Regions", "Cities", "Districts", "Airports", "Hotels"].map((item) => (
                 <li key={item} className="hover:text-yellow-500 cursor-pointer">{item}</li>
               ))}
             </ul>
-          </div>
+          </div> */}
 
           <div>
             <h3 className="font-semibold text-white text-lg">Stays</h3>
