@@ -54,6 +54,7 @@ app.use((err, req, res, next) => {        // This middleware is used to send err
     });
 });
 
-app.listen(8080, () => {
-    console.log("Connected to the backend!");
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
