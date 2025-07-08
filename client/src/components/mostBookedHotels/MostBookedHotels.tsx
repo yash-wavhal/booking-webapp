@@ -21,6 +21,7 @@ interface Hotel {
 
 const MostBookedHotels: React.FC = () => {
   const { data, loading, error } = useFetch<Hotel[]>("/hotels/mostbooked");
+  console.log(data);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [selectedHotel, setSelectedHotel] = useState<Hotel | null>(null);
   const navigate = useNavigate();
@@ -92,7 +93,7 @@ const MostBookedHotels: React.FC = () => {
                   {hotel.city}
                 </Typography>
                 <Typography variant="subtitle1" fontWeight="bold">
-                  ₹{hotel.cheapestPrice} / night
+                  Available at affordable rates
                 </Typography>
                 <Typography className="bg-blue-900 text-white w-16 px-3 py-1 rounded-sm font-bold shadow-md flex items-center">
                   <span>{hotel.rating}</span>
@@ -111,45 +112,50 @@ const MostBookedHotels: React.FC = () => {
       </button>
 
       {selectedHotel && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg p-4 max-w-sm w-full relative">
-            <h3 className="text-xl font-bold">{selectedHotel.name}</h3>
+        <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50 px-4">
+          <div className="bg-white rounded-2xl shadow-lg max-w-md w-full p-6 relative animate-fadeIn">
+            {/* Title */}
+            <h3 className="text-2xl font-bold text-indigo-800 mb-2">
+              {selectedHotel.name}
+            </h3>
+
+            {/* Image */}
             <img
               src={
                 selectedHotel.photos?.[0] ||
                 "https://via.placeholder.com/600x400.png?text=No+Image"
               }
               alt={selectedHotel.name}
-              className="w-full h-48 rounded mt-2 object-cover"
+              className="w-full h-52 object-cover rounded-lg mb-4"
             />
-            <p className="mt-3">{selectedHotel.desc}</p>
-            <p>
-              <strong>City:</strong> {selectedHotel.city}
-            </p>
-            <p>
-              <strong>Address:</strong> {selectedHotel.address}
-            </p>
-            <p>
-              <strong>Distance:</strong> {selectedHotel.distance}
-            </p>
-            {/* <p>
-              <strong>Rating:</strong> {selectedHotel.rating} ★
-            </p> */}
-            {/* <p>
-              <strong>Bookings:</strong> {selectedHotel.bookingsCount}
-            </p> */}
-            <p>
-              <strong>Price:</strong> ₹{selectedHotel.cheapestPrice}
-            </p>
-            <div className="mt-3 flex justify-end space-x-2">
+
+            {/* Details */}
+            <div className="text-sm text-gray-700 space-y-1">
+              <p className="font-semibold text-gray-900">{selectedHotel.desc}</p>
+              <p>
+                <span className="font-semibold text-gray-900">City:</span> {selectedHotel.city}
+              </p>
+              <p>
+                <span className="font-semibold text-gray-900">Address:</span> {selectedHotel.address}
+              </p>
+              <p>
+                <span className="font-semibold text-gray-900">Distance:</span> {selectedHotel.distance}
+              </p>
+              {/* <p>
+                <span className="font-medium text-gray-900">Price:</span> ₹{selectedHotel.cheapestPrice}
+              </p> */}
+            </div>
+
+            {/* Buttons */}
+            <div className="mt-5 flex justify-end gap-3">
               <button
-                className="bg-gray-300 rounded px-3 py-1"
+                className="px-4 py-2 rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300 transition"
                 onClick={() => setSelectedHotel(null)}
               >
                 Close
               </button>
               <button
-                className="bg-blue-600 text-white rounded px-3 py-1"
+                className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
                 onClick={() => {
                   navigate(`/hotels/${selectedHotel._id}`);
                   setSelectedHotel(null);

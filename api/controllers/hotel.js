@@ -103,7 +103,7 @@ export const getMostBookedHotels = async (req, res, next) => {
         const hotels = await Hotel.find()
             .sort({bookingsCount: -1})
             .limit(10)
-            .select("name city adderss distance photos title desc rating bookingsCount cheapestPrice")
+            .select("name city address distance photos title desc rating bookingsCount cheapestPrice")
 
         res.status(200).json(hotels);
     } catch (err) {

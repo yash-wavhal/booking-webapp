@@ -71,7 +71,7 @@ const Hotel = () => {
     <div className="bg-gradient-to-b from-indigo-50 to-white min-h-screen">
       <Navbar />
 
-      <main className="max-w-7xl mx-auto p-6">
+      <main className="max-w-7xl mx-auto p-10 pt-0">
         <HotelDetails hotel={hotel} />
 
         <section className="mt-14">
@@ -99,7 +99,7 @@ const Hotel = () => {
         </section>
       </main>
 
-      <MailList />
+      {/* <MailList /> */}
       <Footer />
     </div>
   );

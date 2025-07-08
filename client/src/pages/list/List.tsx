@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { DateRange } from "react-date-range";
 import SearchItem from "../../components/searchItem/SearchItem";
 import useFetch from "../../hooks/useFetch";
+import Footer from "../../components/footer/Footer";
 
 interface DateRangeItem {
   startDate: Date;
@@ -88,9 +89,9 @@ const List: React.FC = () => {
   };
 
   return (
-    <div>
-      {/* <Navbar /> */}
-      <div className="bg-gray-900 rounded-xl p-4 w-full max-w-5xl mx-auto shadow-md mt-6">
+    <div className="bg-gradient-to-b from-indigo-50 to-white">
+      <Navbar />
+      <div className="bg-white rounded-xl p-4 w-full max-w-5xl mx-auto shadow-md mt-6">
         <div className="flex flex-wrap gap-4 items-center justify-between">
           {/* Destination */}
           <div className="relative flex-1 min-w-[200px]">
@@ -213,6 +214,7 @@ const List: React.FC = () => {
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

@@ -11,7 +11,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const onScroll = () => {
-      setIsScrolled(window.scrollY > 750);
+      setIsScrolled(window.scrollY > 10);
     };
 
     window.addEventListener("scroll", onScroll);
@@ -52,7 +52,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`${isScrolled ? "bg-transparent backdrop-blur-sm" : "bg-indigo-100"
+      className={`${isScrolled ? "bg-white/40 backdrop-blur-xl" : "bg-indigo-100"
         } text-gray-900 shadow-md sticky top-0 z-50 transition-all duration-300`}
     >
       <div className="max-w-7xl mx-auto flex justify-between items-center p-3">

@@ -20,7 +20,7 @@ interface SearchItemProps {
 const SearchItem: React.FC<SearchItemProps> = ({ hotel }) => {
   const navigate = useNavigate();
   return (
-    <div className="border border-gray-300 p-4 rounded-md flex justify-between gap-5 mb-5 shadow-sm">
+    <div className="border bg-white border-gray-300 p-4 rounded-md flex justify-between gap-5 mb-5 shadow-sm">
       {/* Image */}
       <img
         src={hotel.photos?.[0] || "/default-hotel.jpg"}
