@@ -21,7 +21,9 @@ export default function Login() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      console.log("before request");
       await axios.post(`${BASE_URL}/auth/login`, data);
+      console.log("after request");
       setIsAuthenticated(true);
       navigate("/"); // Redirect to the home page
     } catch (err: any) {
