@@ -7,7 +7,7 @@ import { verifyHotelOwner, verifyUser } from "../utils/verifyToken.js";
 const router = express.Router();
 
 // CREATE (user can create their own hotel listing)
-router.post("/", verifyUser, createHotel);
+router.post("/create", verifyUser, createHotel);
 
 // UPDATE (user can only update their own hotel)
 router.put("/:id", verifyUser, verifyHotelOwner, updateHotel);
