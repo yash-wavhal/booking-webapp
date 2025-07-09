@@ -13,22 +13,24 @@ import { AuthProvider } from "./context/AuthContext";
 import HotelByCityPage from "./pages/hotelbycity/HotelByCityPage";
 import HotelByTypePage from "./pages/hotelbytype/HotelByTypePage";
 import ProtectedRoute from "./components/protectrouters/ProtectedRoute";
+import CreateHotel from "./pages/createhotel/CreateHotel";
 
 function App() {
   return (
+    <AuthProvider>
       <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/hotels/search" element={<ProtectedRoute><List /></ProtectedRoute>} />
-            <Route path="/hotels/:hotelid" element={<ProtectedRoute><Hotel /></ProtectedRoute>} />
-            <Route path="/hotels/city/:city" element={<ProtectedRoute><HotelByCityPage /></ProtectedRoute>} />
-            <Route path="/hotels/type/:type" element={<ProtectedRoute><HotelByTypePage /></ProtectedRoute>} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-          </Routes>
-        </AuthProvider>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/hotels/search" element={<ProtectedRoute><List /></ProtectedRoute>} />
+          <Route path="/hotels/create" element={<ProtectedRoute><CreateHotel /></ProtectedRoute>} />
+          <Route path="/hotels/:hotelid" element={<ProtectedRoute><Hotel /></ProtectedRoute>} />
+          <Route path="/hotels/city/:city" element={<ProtectedRoute><HotelByCityPage /></ProtectedRoute>} />
+          <Route path="/hotels/type/:type" element={<ProtectedRoute><HotelByTypePage /></ProtectedRoute>} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Routes>
       </BrowserRouter>
+    </AuthProvider>
   );
 }
 

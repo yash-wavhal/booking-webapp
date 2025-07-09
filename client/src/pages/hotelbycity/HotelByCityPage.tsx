@@ -17,7 +17,7 @@ interface Hotel {
   cheapestPrice: number;
 }
 
-function HotelByCityPage() {
+const HotelByCityPage = () => {
   const { city } = useParams();
   const {
     data: hotels,

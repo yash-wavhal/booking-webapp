@@ -17,7 +17,7 @@ export const register = async (req, res, next) => {
         });
         await newUser.save();
         res.status(200).send("User has been created successfully!");
-    } catch(err) {
+    } catch (err) {
         next(err);
     }
 };
@@ -25,32 +25,37 @@ export const register = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
     try {
-        const user = await User.findOne({email: req.body.email});
-        if(!user) {
+        const user = await User.findOne({ email: req.body.email });
+        if (!user) {
             return next(createError(404, "User not found!"));
         }
         const isPasswordCorrect = await bcrypt.compare(req.body.password, user.password);
-        if(!isPasswordCorrect) {
+        if (!isPasswordCorrect) {
             return next(createError(400, "password is not correct!"));
         }
         const token = jwt.sign(
-            {id: user._id, isAdmin: user.isAdmin},
+            { id: user._id, isAdmin: user.isAdmin },
             process.env.JWT_SECRET
         );
-        const {password, isAdmin, ...otherDetails} = user._doc;    // purpose is we dont wnat to send the password ans isAdmin in response so we sent ...otherDetails(that is details other than password and isAdmin)
+        const { password, isAdmin, ...otherDetails } = user._doc;    // purpose is we dont wnat to send the password ans isAdmin in response so we sent ...otherDetails(that is details other than password and isAdmin)
         res.cookie("access_token", token, {
             httpOnly: true,
-        }).status(200).json({...otherDetails});
-    } catch(err) {
+            maxAge: 1000 * 60 * 60 * 24 * 3,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+        })
+            .status(200)
+            .json({ ...otherDetails });
+    } catch (err) {
         next(err);
     }
 };
 
 export const logout = async (req, res, next) => {
     try {
-        res.clearCookie("access_token"); 
+        res.clearCookie("access_token");
         res.status(200).json({ message: "Logged out successfully" });
-    } catch(err) {
+    } catch (err) {
         next(err);
     }
 };

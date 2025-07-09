@@ -17,7 +17,7 @@ interface Hotel {
   cheapestPrice: number;
 }
 
-function HotelByTypePage() {
+const HotelByTypePage = () => {
   const { type } = useParams();
   const navigate = useNavigate();
 

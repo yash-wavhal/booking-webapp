@@ -44,9 +44,17 @@ const Navbar = () => {
 
   if (isLoading) {
     return (
-      <div className="bg-indigo-100 text-gray-900 p-4 flex justify-center">
-        Loading...
-      </div>
+      <nav
+        className={`bg-indigo-100 text-gray-900 shadow-md sticky top-0 z-50 transition-all duration-300`}
+      >
+        <div className="max-w-7xl mx-auto flex justify-between items-center p-3 min-h-[56px] animate-pulse">
+          <div className="h-8 w-48 bg-gray-300 rounded"></div>
+          <div className="flex space-x-4">
+            <div className="h-8 w-24 bg-gray-300 rounded-lg"></div>
+            <div className="h-8 w-24 bg-gray-300 rounded-lg"></div>
+          </div>
+        </div>
+      </nav>
     );
   }
 
@@ -79,20 +87,25 @@ const Navbar = () => {
             </button>
           </div>
         ) : (
-          <div className="relative" ref={menuRef}>
+          <div className="relative flex items-center space-x-3 md:space-x-4" ref={menuRef}>
+            {/* Create Hotel Button */}
+            <button
+              onClick={() => navigate("/hotels/create")}
+              aria-label="Create Hotel"
+              className="border-2 border-gray-900 rounded-lg px-4 py-2 font-bold text-gray-900 hover:bg-gray-900 hover:text-white transition"
+            >
+              Create Hotel
+            </button>
+
+            {/* User Menu Button */}
             <button
               onClick={() => setShowMenu((prev) => !prev)}
               aria-label="User menu"
-              className="
-                flex items-center space-x-2 border-2 border-gray-900 rounded px-4 py-2
-                text-gray-900 font-bold hover:bg-gray-900 hover:text-white
-                focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2
-                transition
-              "
+              className="flex items-center space-x-2 border-2 border-gray-900 rounded-lg px-4 py-2 font-bold text-gray-900 hover:bg-gray-900 hover:text-white transition focus:outline-none focus:ring-gray-900"
             >
               <span className="select-none">User</span>
               <svg
-                className="w-6 h-6"
+                className="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -101,15 +114,16 @@ const Navbar = () => {
                 viewBox="0 0 24 24"
                 aria-hidden="true"
               >
-                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"></path>
-                <path d="M6 20c0-3.31 2.69-6 6-6s6 2.69 6 6"></path>
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z" />
+                <path d="M6 20c0-3.31 2.69-6 6-6s6 2.69 6 6" />
               </svg>
             </button>
 
+            {/* Dropdown Menu */}
             {showMenu && (
               <div
-                className="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-lg text-gray-900 font-medium
-                           ring-1 ring-black ring-opacity-5 origin-top-right"
+                className="absolute right-4 mt-44 w-44 bg-white rounded-lg shadow-lg text-gray-900 font-medium ring-1 ring-black ring-opacity-5 origin-top-right z-50"
+                role="menu"
               >
                 <div
                   onClick={() => {
@@ -117,6 +131,8 @@ const Navbar = () => {
                     setShowMenu(false);
                   }}
                   className="block px-4 py-2 hover:bg-indigo-100 cursor-pointer rounded-t-lg"
+                  role="menuitem"
+                  tabIndex={0}
                 >
                   Profile
                 </div>
@@ -126,12 +142,16 @@ const Navbar = () => {
                     setShowMenu(false);
                   }}
                   className="block px-4 py-2 hover:bg-indigo-100 cursor-pointer"
+                  role="menuitem"
+                  tabIndex={0}
                 >
                   Settings
                 </div>
                 <div
                   onClick={handleLogout}
                   className="block px-4 py-2 hover:bg-red-100 cursor-pointer text-red-600 rounded-b-lg"
+                  role="menuitem"
+                  tabIndex={0}
                 >
                   Logout
                 </div>

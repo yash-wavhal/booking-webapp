@@ -20,7 +20,7 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   isLoading: true,
   isAuthenticated: false,
-  setIsAuthenticated: () => {},
+  setIsAuthenticated: () => { },
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -28,31 +28,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const location = useLocation();
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
-    const publicPaths = ["/", "/login", "/signup"];
-
-    if (publicPaths.includes(location.pathname)) {
-      setIsLoading(false);
-      return;
-    }
 
     const fetchUser = async () => {
       try {
         const res = await axios.get(`${BASE_URL}/auth/me`, { withCredentials: true });
         setUser(res.data.user);
         setIsAuthenticated(true);
-      } catch {
+      } catch (err: any) {
+        if (err.response?.status === 401) {
+          console.warn("⚠️ Unauthorized. User is not logged in.");
+        } else {
+          console.error("❌ An unexpected error occurred:", err);
+        }
         setUser(null);
+        setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchUser();
-  }, [isAuthenticated, location.pathname]);
+  }, [isAuthenticated]);
 
   return (
     <AuthContext.Provider value={{ user, isLoading, isAuthenticated, setIsAuthenticated }}>
