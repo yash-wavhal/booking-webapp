@@ -17,8 +17,8 @@ import HotelCreationStepper from "./pages/hotelcreationstepper/HotelCreationStep
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/hotels/search" element={<ProtectedRoute><List /></ProtectedRoute>} />
@@ -29,8 +29,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
