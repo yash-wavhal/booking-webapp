@@ -16,6 +16,7 @@ interface Room {
 }
 
 const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
+  // console.log("newHotelId", newHotelId);
   const [showModal, setShowModal] = useState(false);
   const [rooms, setRooms] = useState<Room[]>([]);
 
@@ -28,13 +29,17 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [editIdx, setEditIdx] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchRooms = async () => {
-      if (!newHotelId) return;
+      if (!newHotelId) {
+        alert("No hotelid")
+        return;
+      }
       try {
         const res = await axios.get(`${BASE_URL}/rooms/byhotel/${newHotelId}`);
-        console.log(res);
+        // console.log(res);
         setRooms(res.data);
       } catch (err) {
         console.log(err);
@@ -50,23 +55,30 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
     }
   };
 
-  const uploadPhotosToBackend = async (files: File[]): Promise<string[]> => {
+  const uploadPhotosToBackend = async (): Promise<string[]> => {
     const formData = new FormData();
-    files.forEach((file) => formData.append("images", file));
+    photoFiles.forEach((file) => formData.append("images", file));
 
-    const res = await axios.post(`${BASE_URL}/upload/images`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-      withCredentials: true,
-    });
-
-    return res.data.imageUrls;
+    try {
+      const res = await axios.post(`${BASE_URL}/upload/images`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
+      return res.data.imageUrls;
+    } catch (err) {
+      console.log(err);
+      alert("Error during uploading Photos To Backend")
+      return [];
+    }
   };
 
   const handleEditRoom = async () => {
-    if (!title || price <= 0 || maxPeople <= 0 || !desc) {
+    if (!title || price <= 0 || maxPeople <= 0 || !desc || roomNumbersInput.length == 0) {
       alert("Please fill all required fields.");
       return;
     }
+
+    setIsLoading(true);
 
     const roomNumbers = roomNumbersInput
       .split(",")
@@ -76,15 +88,73 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
 
     if (roomNumbers.some((r) => isNaN(r.number))) {
       alert("Please enter valid room numbers (comma separated numbers).");
+      setIsLoading(false);
       return;
     }
 
-    let photoUrls: string[] = [];
+    let newPhotoUrls: string[] = [];
     if (photoFiles.length > 0) {
-      photoUrls = await uploadPhotosToBackend(photoFiles);
+      newPhotoUrls = await uploadPhotosToBackend();
     }
 
+    // Get the current room being edited to access its old photos
+    const currentRoom = rooms.find((room) => room._id === editIdx);
+    const existingPhotoUrls = currentRoom?.photos || [];
+
+    // Combine old and new photos
+    const combinedPhotoUrls = [...existingPhotoUrls, ...newPhotoUrls];
+
     const updatedRoom = {
+      title,
+      price,
+      maxPeople,
+      desc,
+      roomNumbers,
+      photos: combinedPhotoUrls,
+      hotelId: newHotelId,
+    };
+
+    try {
+      const res = await axios.put(`${BASE_URL}/rooms/${newHotelId}/${editIdx}`, updatedRoom, {
+        withCredentials: true,
+      });
+
+      setRooms((prev) =>
+        prev.map((room) => (room._id === editIdx ? res.data : room))
+      );
+
+      // Reset form
+      setTitle("");
+      setPrice(0);
+      setMaxPeople(1);
+      setDesc("");
+      setRoomNumbersInput("");
+      setPhotoFiles([]);
+      setEditIdx("");
+      setIsEditing(false);
+      setShowModal(false);
+    } catch (err) {
+      console.error("Error updating room:", err);
+      alert("Failed to update room.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    const roomNumbers = roomNumbersInput
+      .split(",")
+      .map((num) => num.trim())
+      .filter((num) => num !== "")
+      .map((num) => ({ number: Number(num) }));
+
+    let photoUrls: string[] = [];
+    if (photoFiles.length > 0) {
+      photoUrls = await uploadPhotosToBackend();
+    }
+
+    const roomData = {
       title,
       price,
       maxPeople,
@@ -93,54 +163,25 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
       photos: photoUrls,
       hotelId: newHotelId,
     };
-
-    const res = await axios.put(`${BASE_URL}/rooms/${editIdx}`, updatedRoom);
-    setRooms(prev => prev.map((room) => room._id === editIdx ? res.data : room));
-
-    // Reset form
-    setTitle("");
-    setPrice(0);
-    setMaxPeople(1);
-    setDesc("");
-    setRoomNumbersInput("");
-    setPhotoFiles([]);
-    setShowModal(false);
-  };
-
-  const handleSubmit = async () => {
-    const roomNumbers = roomNumbersInput
-      .split(",")
-      .map((num) => num.trim())
-      .filter((num) => num !== "")
-      .map((num) => ({ number: Number(num) }));
-
-    const roomData = {
-      title,
-      price,
-      maxPeople,
-      desc,
-      roomNumbers,
-      photos: photoFiles,
-      hotelId: newHotelId,
-    };
-
-    console.log(roomData);
+    // console.log("submit id", newHotelId);
+    // console.log(roomData);
 
     try {
       const res = await axios.post(`${BASE_URL}/rooms/${newHotelId}`, roomData, {
         withCredentials: true,
       });
+      // console.log(res);
 
       setRooms(prev => [...prev, res.data]);
       alert("Room added successfully!");
 
-      // Optional: Clear form
       setTitle("");
       setPrice(0);
       setMaxPeople(1);
       setDesc("");
       setRoomNumbersInput("");
       setPhotoFiles([]);
+      setIsLoading(false);
       setShowModal(false);
     } catch (err) {
       console.error(err);
@@ -151,8 +192,9 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
 
   const handleCrossClick = async (idx: string) => {
     try {
+      // console.log("cross id", idx);
       const res = await axios.delete(`${BASE_URL}/rooms/${idx}/${newHotelId}`);
-      console.log(res);
+      // console.log(res);
       setRooms(res.data);
     } catch (err) {
       console.log(err);
@@ -185,7 +227,7 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
       {rooms.length > 0 && (
         <div className="space-y-3 mb-6">
           <h3 className="text-lg font-semibold">Rooms Added:</h3>
-          {rooms.map((room, idx) => (
+          {rooms.map((room) => (
             <div key={room._id} className="p-3 border rounded bg-gray-100">
               <div className="flex justify-between items-start">
                 <p className="font-semibold">{room.title}</p>
@@ -204,13 +246,13 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
               <p className="text-sm">
                 Room Numbers: {room.roomNumbers.map(r => r.number).join(", ")}
               </p>
-              {photoFiles.length > 0 && (
+              {room.photos && room.photos.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {photoFiles.map((file, idx) => (
+                  {room.photos.map((url, idx) => (
                     <img
                       key={idx}
-                      src={URL.createObjectURL(file)}
-                      alt="preview"
+                      src={url}
+                      alt={`Room photo ${idx + 1}`}
                       className="w-20 h-20 object-cover rounded"
                     />
                   ))}
@@ -304,16 +346,18 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
               {isEditing ?
                 <button
                   onClick={handleEditRoom}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                  className={`px-4 py-2 rounded text-white transition 
+    ${isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700"}`}
                 >
-                  Update Room
+                  {isLoading ? "Updating..." : "Update Room"}
                 </button>
                 :
                 <button
                   onClick={handleSubmit}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                  className={`px-4 py-2 rounded text-white transition 
+    ${isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700"}`}
                 >
-                  Save Room
+                  {isLoading ? "Saving..." : "Save Room"}
                 </button>
               }
             </div>

@@ -24,6 +24,7 @@ interface Room {
   price: number;
   maxPeople: number;
   desc: string;
+  roomNumbers: { number: number }[];
   photos: string[];
 }
 

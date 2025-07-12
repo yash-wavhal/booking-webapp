@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import CreateHotel from "../../components/createhotel/CreateHotel";
 import RoomStep from "../../components/createroommodal/RoomStep";
@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { BedDouble, CircleCheckBig, Hotel } from 'lucide-react';
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8080/api";
+
 interface Room {
   title: string;
   price: number;
@@ -14,15 +15,23 @@ interface Room {
   roomNumbers: { number: number }[];
   photos?: string[] | File[];
 }
+
 const HotelCreationStepper = () => {
   const navigate = useNavigate();
 
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState<number>(() => {
+    const savedStep = localStorage.getItem("hotelCreationStep");
+    return savedStep ? parseInt(savedStep) : 1;
+  });
+
   const [submitting, setSubmitting] = useState(false);
-  const [newHotelId, setNewHotelId] = useState("");
+  const [newHotelId, setNewHotelId] = useState(() => {
+    return localStorage.getItem("newHotelId") || "";
+  });
 
   const handleSubmitAll = async () => {
     if (newHotelId) {
+      localStorage.removeItem("hotelCreationStep"); // Optional cleanup
       navigate(`/hotels/${newHotelId}`);
     }
   };
@@ -32,6 +41,11 @@ const HotelCreationStepper = () => {
     { id: 2, label: "Rooms" },
   ];
 
+  // Save current step to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem("hotelCreationStep", String(step));
+  }, [step]);
+
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg mt-8">
       {/* Stepper Header */}
@@ -40,8 +54,8 @@ const HotelCreationStepper = () => {
           {steps.map((s) => (
             <button
               key={s.id}
-              disabled={step === s.id}
-              onClick={() => setStep(s.id)}
+              // disabled={step === s.id}
+              // onClick={() => setStep(s.id)}
               className={`flex items-center justify-center w-10 h-10 rounded-full border-2 text-sm font-semibold transition 
                   ${step === s.id
                   ? "bg-indigo-600 text-white border-indigo-600"
@@ -83,14 +97,14 @@ const HotelCreationStepper = () => {
             Previous
           </button>
         )}
-        {/* {step < 2 && (
+        {step < 2 && (
           <button
             onClick={() => setStep(step + 1)}
-            className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
           >
             Next
           </button>
-        )} */}
+        )}
         {step === 2 && (
           <button
             onClick={handleSubmitAll}

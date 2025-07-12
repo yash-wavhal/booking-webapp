@@ -8,6 +8,7 @@ interface RoomCardProps {
     price: number;
     maxPeople: number;
     desc: string;
+    roomNumbers: { number: number }[];
     photos: string[];
   };
 }
@@ -49,9 +50,12 @@ const RoomCard = ({ room }: RoomCardProps) => {
         {room.title}
       </h3>
       <p className="text-gray-700 mb-3">{room.desc}</p>
+      <div className="flex justify-between items-center text-indigo-800 font-semibold mb-1">
+        <span>Total {room.roomNumbers.length} Rooms</span>
+      </div>
       <div className="flex justify-between items-center text-indigo-800 font-semibold">
-        <span>👥 Max {room.maxPeople}</span>
-        <span>${room.price}</span>
+        <span>👥 Max {room.maxPeople} / Room</span>
+        <span>${room.price} / Room</span>
       </div>
       <button className="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-full py-2 font-semibold transition">
         Book This Room
