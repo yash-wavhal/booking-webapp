@@ -1,9 +1,11 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Edit, X } from 'lucide-react';
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8080/api";
 
 interface Room {
+  _id: string;
   title: string;
   price: number;
   maxPeople: number;
@@ -24,6 +26,23 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
   const [desc, setDesc] = useState("");
   const [roomNumbersInput, setRoomNumbersInput] = useState("");
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
+  const [editIdx, setEditIdx] = useState<string>("");
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchRooms = async () => {
+      if (!newHotelId) return;
+      try {
+        const res = await axios.get(`${BASE_URL}/rooms/byhotel/${newHotelId}`);
+        console.log(res);
+        setRooms(res.data);
+      } catch (err) {
+        console.log(err);
+        alert("Error during fetching rooms");
+      }
+    }
+    fetchRooms();
+  }, [])
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -43,7 +62,7 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
     return res.data.imageUrls;
   };
 
-  const handleAddRoom = async () => {
+  const handleEditRoom = async () => {
     if (!title || price <= 0 || maxPeople <= 0 || !desc) {
       alert("Please fill all required fields.");
       return;
@@ -65,7 +84,7 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
       photoUrls = await uploadPhotosToBackend(photoFiles);
     }
 
-    const newRoom: Room = {
+    const updatedRoom = {
       title,
       price,
       maxPeople,
@@ -75,7 +94,8 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
       hotelId: newHotelId,
     };
 
-    setRooms((prev) => [...prev, newRoom]);
+    const res = await axios.put(`${BASE_URL}/rooms/${editIdx}`, updatedRoom);
+    setRooms(prev => prev.map((room) => room._id === editIdx ? res.data : room));
 
     // Reset form
     setTitle("");
@@ -87,19 +107,69 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
     setShowModal(false);
   };
 
-  const handleSubmitAll = async () => {
+  const handleSubmit = async () => {
+    const roomNumbers = roomNumbersInput
+      .split(",")
+      .map((num) => num.trim())
+      .filter((num) => num !== "")
+      .map((num) => ({ number: Number(num) }));
+
+    const roomData = {
+      title,
+      price,
+      maxPeople,
+      desc,
+      roomNumbers,
+      photos: photoFiles,
+      hotelId: newHotelId,
+    };
+
+    console.log(roomData);
+
     try {
-      for (const room of rooms) {
-        await axios.post(`${BASE_URL}/rooms/${newHotelId}`, room, {
-          withCredentials: true,
-        });
-      }
-      alert("✅ Rooms added successfully!");
+      const res = await axios.post(`${BASE_URL}/rooms/${newHotelId}`, roomData, {
+        withCredentials: true,
+      });
+
+      setRooms(prev => [...prev, res.data]);
+      alert("Room added successfully!");
+
+      // Optional: Clear form
+      setTitle("");
+      setPrice(0);
+      setMaxPeople(1);
+      setDesc("");
+      setRoomNumbersInput("");
+      setPhotoFiles([]);
+      setShowModal(false);
     } catch (err) {
       console.error(err);
-      alert("❌ Error while creating rooms");
+      alert("Error while creating room");
     }
   };
+
+
+  const handleCrossClick = async (idx: string) => {
+    try {
+      const res = await axios.delete(`${BASE_URL}/rooms/${idx}/${newHotelId}`);
+      console.log(res);
+      setRooms(res.data);
+    } catch (err) {
+      console.log(err);
+      alert("Error while deleting rooms");
+    }
+  }
+
+  const openEditModal = (room: Room, idx: string) => {
+    setIsEditing(true);
+    setEditIdx(idx);
+    setTitle(room.title);
+    setPrice(room.price);
+    setMaxPeople(room.maxPeople);
+    setDesc(room.desc);
+    setRoomNumbersInput(room.roomNumbers.map(r => r.number).join(", "));
+    setShowModal(true);
+  }
 
   return (
     <div className="max-w-3xl mx-auto mt-6 p-4 bg-white rounded shadow-md">
@@ -116,22 +186,40 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
         <div className="space-y-3 mb-6">
           <h3 className="text-lg font-semibold">Rooms Added:</h3>
           {rooms.map((room, idx) => (
-            <div key={idx} className="p-3 border rounded bg-gray-100">
-              <p className="font-semibold">{room.title}</p>
+            <div key={room._id} className="p-3 border rounded bg-gray-100">
+              <div className="flex justify-between items-start">
+                <p className="font-semibold">{room.title}</p>
+                <X
+                  onClick={() => handleCrossClick(room._id)}
+                  className="w-5 h-5 text-red-400 cursor-pointer hover:text-red-600 transition"
+                />
+                <Edit
+                  className="w-5 h-5 text-blue-500 cursor-pointer"
+                  onClick={() => openEditModal(room, room._id)}
+                />
+
+              </div>
               <p>₹{room.price} / night | Max {room.maxPeople} people</p>
               <p className="text-sm text-gray-600">{room.desc}</p>
-              <p className="text-sm">Room Numbers: {room.roomNumbers.map(r => r.number).join(", ")}</p>
+              <p className="text-sm">
+                Room Numbers: {room.roomNumbers.map(r => r.number).join(", ")}
+              </p>
+              {photoFiles.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {photoFiles.map((file, idx) => (
+                    <img
+                      key={idx}
+                      src={URL.createObjectURL(file)}
+                      alt="preview"
+                      className="w-20 h-20 object-cover rounded"
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>
       )}
-
-      <button
-        onClick={handleSubmitAll}
-        className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
-      >
-        Submit All Rooms
-      </button>
 
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
@@ -213,12 +301,21 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
               >
                 Cancel
               </button>
-              <button
-                onClick={handleAddRoom}
-                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-              >
-                Save Room
-              </button>
+              {isEditing ?
+                <button
+                  onClick={handleEditRoom}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                >
+                  Update Room
+                </button>
+                :
+                <button
+                  onClick={handleSubmit}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                >
+                  Save Room
+                </button>
+              }
             </div>
           </div>
         </div>
