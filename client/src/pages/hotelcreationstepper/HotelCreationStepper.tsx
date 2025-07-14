@@ -31,7 +31,8 @@ const HotelCreationStepper = () => {
 
   const handleSubmitAll = async () => {
     if (newHotelId) {
-      localStorage.removeItem("hotelCreationStep"); // Optional cleanup
+      localStorage.removeItem("hotelCreationStep");
+      localStorage.removeItem("newHotelId");
       navigate(`/hotels/${newHotelId}`);
     }
   };

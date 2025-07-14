@@ -17,19 +17,46 @@ interface Room {
 
 const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
   // console.log("newHotelId", newHotelId);
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(() => {
+    const saved = localStorage.getItem("showModal");
+    if (saved === "undefined" || saved === null) {
+      return false;
+    }
+    try {
+      return JSON.parse(saved);
+    } catch {
+      return false;
+    }
+  });
   const [rooms, setRooms] = useState<Room[]>([]);
 
-  // Room form states
-  const [title, setTitle] = useState("");
-  const [price, setPrice] = useState<number>(0);
-  const [maxPeople, setMaxPeople] = useState<number>(1);
-  const [desc, setDesc] = useState("");
-  const [roomNumbersInput, setRoomNumbersInput] = useState("");
+  const [title, setTitle] = useState(() => localStorage.getItem("title") || "");
+  const [price, setPrice] = useState(() => {
+    const saved = localStorage.getItem("price");
+    return saved ? parseFloat(saved) : 0;
+  });
+  const [maxPeople, setMaxPeople] = useState(() => {
+    const saved = localStorage.getItem("maxPeople");
+    return saved ? parseInt(saved) : 1;
+  });
+  const [desc, setDesc] = useState(() => localStorage.getItem("desc") || "");
+  const [roomNumbersInput, setRoomNumbersInput] = useState(() =>
+    localStorage.getItem("roomNumbersInput") || ""
+  );
+
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [editIdx, setEditIdx] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem("title", title);
+    localStorage.setItem("price", JSON.stringify(price));
+    localStorage.setItem("maxPeople", JSON.stringify(maxPeople));
+    localStorage.setItem("desc", desc);
+    localStorage.setItem("roomNumbersInput", roomNumbersInput);
+    localStorage.setItem("showModal", JSON.stringify(showModal));
+  }, [title, price, maxPeople, desc, roomNumbersInput, showModal]);
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -47,7 +74,7 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
       }
     }
     fetchRooms();
-  }, [])
+  }, []);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -70,6 +97,12 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
       alert("Error during uploading Photos To Backend")
       return [];
     }
+  };
+
+  const clearLocalRoomForm = () => {
+    ["title", "price", "maxPeople", "desc", "roomNumbersInput, showModal"].forEach(key =>
+      localStorage.removeItem(key)
+    );
   };
 
   const handleEditRoom = async () => {
@@ -133,6 +166,7 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
       setEditIdx("");
       setIsEditing(false);
       setShowModal(false);
+      clearLocalRoomForm();
     } catch (err) {
       console.error("Error updating room:", err);
       alert("Failed to update room.");
@@ -183,6 +217,7 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
       setPhotoFiles([]);
       setIsLoading(false);
       setShowModal(false);
+      clearLocalRoomForm();
     } catch (err) {
       console.error(err);
       alert("Error while creating room");
@@ -231,15 +266,16 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
             <div key={room._id} className="p-3 border rounded bg-gray-100">
               <div className="flex justify-between items-start">
                 <p className="font-semibold">{room.title}</p>
-                <X
-                  onClick={() => handleCrossClick(room._id)}
-                  className="w-5 h-5 text-red-400 cursor-pointer hover:text-red-600 transition"
-                />
-                <Edit
-                  className="w-5 h-5 text-blue-500 cursor-pointer"
-                  onClick={() => openEditModal(room, room._id)}
-                />
-
+                <div className="flex gap-4 text-xl">
+                  <Edit
+                    className="w-5 h-5 text-blue-500 cursor-pointer"
+                    onClick={() => openEditModal(room, room._id)}
+                  />
+                  <X
+                    onClick={() => handleCrossClick(room._id)}
+                    className="w-5 h-5 text-red-400 cursor-pointer hover:text-red-600 transition"
+                  />
+                </div>
               </div>
               <p>₹{room.price} / night | Max {room.maxPeople} people</p>
               <p className="text-sm text-gray-600">{room.desc}</p>
@@ -338,7 +374,10 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
 
             <div className="mt-4 flex justify-end gap-3">
               <button
-                onClick={() => setShowModal(false)}
+                onClick={() => {
+                  clearLocalRoomForm();
+                  setShowModal(false);
+                }}
                 className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
               >
                 Cancel
