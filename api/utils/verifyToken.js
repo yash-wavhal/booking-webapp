@@ -18,6 +18,7 @@ export const verifyToken = (req, res, next) => {
 
 // Verify the user matches the requested id or is admin
 export const verifyUser = (req, res, next) => {
+  // console.log("verifyUser", req.params.hotelid);
   verifyToken(req, res, () => {
     if (req.user.id === req.params.id || req.user.isAdmin) {
       next();
@@ -40,6 +41,7 @@ export const verifyAdmin = (req, res, next) => {
 
 export const verifyHotelOwner = async (req, res, next) => {
   try {
+    // console.log("verifyHotelOwner", req.params.hotelid);
     const hotel = await Hotel.findById(req.params.hotelid);
     if (!hotel) return res.status(404).json({ message: "Hotel not found" });
 

@@ -1,12 +1,14 @@
 import axios from "axios";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 
 axios.defaults.withCredentials = true;
 
 interface UserData {
-  id: string;
+  _id: string;
   isAdmin: boolean;
+  username: string;
+  email: string;
+  createdAt: string;
 }
 
 interface AuthContextType {
@@ -36,6 +38,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         const res = await axios.get(`${BASE_URL}/auth/me`, { withCredentials: true });
         setUser(res.data.user);
+        // console.log(user);
         setIsAuthenticated(true);
       } catch (err: any) {
         if (err.response?.status === 401) {

@@ -32,7 +32,7 @@ export const updateHotel = async (req, res, next) => {
 
 export const deleteHotel = async (req, res, next) => {
     try {
-        const deletedHotel = await Hotel.findByIdAndDelete(req.params.id);
+        const deletedHotel = await Hotel.findByIdAndDelete(req.params.hotelid);
         if (!deletedHotel) {
             return res.status(404).json({ message: "Hotel not found" });
         }

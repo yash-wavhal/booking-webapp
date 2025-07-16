@@ -13,7 +13,7 @@ router.post("/create", verifyUser, createHotel);
 router.put("/:id", verifyUser, verifyHotelOwner, updateHotel);
 
 // DELETE (user can only delete their own hotel)
-router.delete("/:id", verifyUser, verifyHotelOwner, deleteHotel);
+router.delete("/:hotelid", verifyUser, verifyHotelOwner, deleteHotel);
 
 // GET hotel
 router.get("/find/:id", getHotel);

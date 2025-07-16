@@ -215,7 +215,7 @@ const CreateHotel = ({ setStep, setNewHotelId }: HotelFormProps) => {
       )}
       <button
         type="submit"
-        className="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded hover:bg-indigo-700 transition"
+        className="bg-indigo-600 text-white font-bold py-2 px-4 rounded hover:bg-indigo-700 transition"
       >
         {isCreating ? "Creating.." : "Create Hotel"}
       </button>

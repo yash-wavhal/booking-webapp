@@ -48,15 +48,12 @@ const HotelCreationStepper = () => {
   }, [step]);
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg mt-8">
-      {/* Stepper Header */}
+    <div className="relative h-full max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg mt-8">
       <div className="flex justify-center mb-6 space-x-4">
         <div className="flex gap-44">
           {steps.map((s) => (
             <button
               key={s.id}
-              // disabled={step === s.id}
-              // onClick={() => setStep(s.id)}
               className={`flex items-center justify-center w-10 h-10 rounded-full border-2 text-sm font-semibold transition 
                   ${step === s.id
                   ? "bg-indigo-600 text-white border-indigo-600"
@@ -100,8 +97,14 @@ const HotelCreationStepper = () => {
         )}
         {step < 2 && (
           <button
-            onClick={() => setStep(step + 1)}
-            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+            onClick={() => {
+              if(localStorage.getItem("newHotelId") == null) {
+                alert("First create the hotel")
+              } else {
+                setStep(step + 1)
+              }
+            }}
+            className="absolute bottom-12 right-6 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
           >
             Next
           </button>

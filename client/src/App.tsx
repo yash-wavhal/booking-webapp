@@ -14,6 +14,7 @@ import HotelByCityPage from "./pages/hotelbycity/HotelByCityPage";
 import HotelByTypePage from "./pages/hotelbytype/HotelByTypePage";
 import ProtectedRoute from "./components/protectrouters/ProtectedRoute";
 import HotelCreationStepper from "./pages/hotelcreationstepper/HotelCreationStepper";
+import Profile from "./pages/profile/Profile";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/hotels/search" element={<ProtectedRoute><List /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/hotels/create" element={<ProtectedRoute><HotelCreationStepper /></ProtectedRoute>} />
           <Route path="/hotels/:hotelid" element={<ProtectedRoute><Hotel /></ProtectedRoute>} />
           <Route path="/hotels/city/:city" element={<ProtectedRoute><HotelByCityPage /></ProtectedRoute>} />
