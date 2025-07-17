@@ -13,6 +13,10 @@ interface Room {
   roomNumbers: { number: number }[];
   photos?: string[];
   hotelId: string;
+  extraGuestCharge: number;
+  maxExtraGuests: number;
+  extraBedCharge: number;
+  maxExtraBeds: number;
 }
 
 const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
@@ -44,6 +48,26 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
     localStorage.getItem("roomNumbersInput") || ""
   );
 
+  const [guestNumbers, setGuestNumbers] = useState(() => {
+    const saved = localStorage.getItem("guestNumbers");
+    return saved ? parseFloat(saved) : 0;
+  });
+
+  const [guestCharge, setGuestCharge] = useState(() => {
+    const saved = localStorage.getItem("guestCharge");
+    return saved ? parseFloat(saved) : 0;
+  });
+
+  const [bedNumbers, setBedNumbers] = useState(() => {
+    const saved = localStorage.getItem("bedNumbers");
+    return saved ? parseFloat(saved) : 0;
+  });
+
+  const [bedCharge, setBedCharge] = useState(() => {
+    const saved = localStorage.getItem("bedCharge");
+    return saved ? parseFloat(saved) : 0;
+  });
+
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [editIdx, setEditIdx] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -53,10 +77,20 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
     localStorage.setItem("title", title);
     localStorage.setItem("price", JSON.stringify(price));
     localStorage.setItem("maxPeople", JSON.stringify(maxPeople));
+    localStorage.setItem("guestNumbers", JSON.stringify(guestNumbers));
+    localStorage.setItem("guestCharge", JSON.stringify(guestCharge));
+    localStorage.setItem("bedNumbers", JSON.stringify(bedNumbers));
+    localStorage.setItem("bedCharge", JSON.stringify(bedCharge));
     localStorage.setItem("desc", desc);
     localStorage.setItem("roomNumbersInput", roomNumbersInput);
     localStorage.setItem("showModal", JSON.stringify(showModal));
-  }, [title, price, maxPeople, desc, roomNumbersInput, showModal]);
+  }, [title, price, maxPeople, desc, roomNumbersInput, showModal, guestNumbers, guestCharge, bedNumbers, bedCharge]);
+
+  const clearLocalRoomForm = () => {
+    ["title", "price", "maxPeople", "desc", "roomNumbersInput, showModal", "guestNumbers", "guestCharge", "bedNumbers", "bedCharge"].forEach(key =>
+      localStorage.removeItem(key)
+    );
+  };
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -99,12 +133,6 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
     }
   };
 
-  const clearLocalRoomForm = () => {
-    ["title", "price", "maxPeople", "desc", "roomNumbersInput, showModal"].forEach(key =>
-      localStorage.removeItem(key)
-    );
-  };
-
   const handleEditRoom = async () => {
     if (!title || price <= 0 || maxPeople <= 0 || !desc || roomNumbersInput.length == 0) {
       alert("Please fill all required fields.");
@@ -145,6 +173,10 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
       roomNumbers,
       photos: combinedPhotoUrls,
       hotelId: newHotelId,
+      maxExtraGuests: guestNumbers,
+      extraGuestCharge: guestCharge,
+      maxExtraBeds: bedNumbers,
+      extraBedCharge: bedCharge,
     };
 
     try {
@@ -164,6 +196,10 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
       setRoomNumbersInput("");
       setPhotoFiles([]);
       setEditIdx("");
+      setGuestNumbers(0);
+      setGuestCharge(0);
+      setBedNumbers(0);
+      setBedCharge(0);
       setIsEditing(false);
       setShowModal(false);
       clearLocalRoomForm();
@@ -196,6 +232,10 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
       roomNumbers,
       photos: photoUrls,
       hotelId: newHotelId,
+      maxExtraGuests: guestNumbers,
+      extraGuestCharge: guestCharge,
+      maxExtraBeds: bedNumbers,
+      extraBedCharge: bedCharge,
     };
     // console.log("submit id", newHotelId);
     // console.log(roomData);
@@ -214,6 +254,10 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
       setMaxPeople(1);
       setDesc("");
       setRoomNumbersInput("");
+      setGuestNumbers(0);
+      setGuestCharge(0);
+      setBedNumbers(0);
+      setBedCharge(0);
       setPhotoFiles([]);
       setIsLoading(false);
       setShowModal(false);
@@ -227,15 +271,16 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
 
   const handleCrossClick = async (idx: string) => {
     try {
-      // console.log("cross id", idx);
-      const res = await axios.delete(`${BASE_URL}/rooms/${idx}/${newHotelId}`);
-      // console.log(res);
-      setRooms(res.data);
+      await axios.delete(`${BASE_URL}/rooms/${idx}/${newHotelId}`, {
+        withCredentials: true,
+      });
+      setRooms(prev => prev.filter(room => room._id !== idx));
     } catch (err) {
       console.log(err);
       alert("Error while deleting rooms");
     }
-  }
+  };
+
 
   const openEditModal = (room: Room, idx: string) => {
     setIsEditing(true);
@@ -243,6 +288,10 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
     setTitle(room.title);
     setPrice(room.price);
     setMaxPeople(room.maxPeople);
+    setGuestNumbers(room.maxExtraGuests);
+    setGuestCharge(room.extraGuestCharge);
+    setBedNumbers(room.maxExtraBeds);
+    setBedCharge(room.extraBedCharge);
     setDesc(room.desc);
     setRoomNumbersInput(room.roomNumbers.map(r => r.number).join(", "));
     setShowModal(true);
@@ -282,6 +331,10 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
               <p className="text-sm">
                 Room Numbers: {room.roomNumbers.map(r => r.number).join(", ")}
               </p>
+              <p className="text-sm">Max Extra Guests: {room.maxExtraGuests} guests can be allowed on request</p>
+              <p className="text-sm">Extra Guest Charge: {room.extraGuestCharge} / Guest</p>
+              <p className="text-sm">Max Extra Beds: {room.maxExtraBeds} beds can be added on request</p>
+              <p className="text-sm">Extra Bed Charge: {room.extraBedCharge} / Bed</p>
               {room.photos && room.photos.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-2">
                   {room.photos.map((url, idx) => (
@@ -300,105 +353,139 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
       )}
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white w-96 p-6 rounded shadow-lg">
-            <h3 className="text-xl font-bold mb-4">Room Details</h3>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+          <div className="bg-white w-full max-w-3xl rounded-xl p-6 sm:p-8 shadow-xl overflow-y-auto max-h-[90vh]">
+            <h3 className="text-2xl font-bold text-gray-800 mb-6">Room Details</h3>
 
-            <label className="block text-sm font-medium">Title</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full p-2 border rounded mb-3"
-              placeholder="Deluxe Room"
-            />
+            <div className="grid sm:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Title</label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
+                  placeholder="Deluxe Room"
+                />
 
-            <label className="block text-sm font-medium">Price (₹)</label>
-            <input
-              type="number"
-              value={price}
-              onChange={(e) => setPrice(Number(e.target.value))}
-              className="w-full p-2 border rounded mb-3"
-              placeholder="1200"
-              min={0}
-            />
+                <label className="block text-sm font-medium text-gray-700">Price (₹)</label>
+                <input
+                  type="number"
+                  value={price}
+                  onChange={(e) => setPrice(Number(e.target.value))}
+                  className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
+                  placeholder="1200"
+                  min={0}
+                />
 
-            <label className="block text-sm font-medium">Max People</label>
-            <input
-              type="number"
-              value={maxPeople}
-              onChange={(e) => setMaxPeople(Number(e.target.value))}
-              className="w-full p-2 border rounded mb-3"
-              min={1}
-            />
+                <label className="block text-sm font-medium text-gray-700">Max People</label>
+                <input
+                  type="number"
+                  value={maxPeople}
+                  onChange={(e) => setMaxPeople(Number(e.target.value))}
+                  className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
+                  min={1}
+                />
 
-            <label className="block text-sm font-medium">Description</label>
-            <textarea
-              value={desc}
-              onChange={(e) => setDesc(e.target.value)}
-              className="w-full p-2 border rounded mb-3"
-              rows={3}
-              placeholder="Spacious room with balcony and sea view"
-            />
+                <label className="block text-sm font-medium text-gray-700">Description</label>
+                <textarea
+                  value={desc}
+                  onChange={(e) => setDesc(e.target.value)}
+                  className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
+                  rows={3}
+                  placeholder="Spacious room with balcony and sea view"
+                />
 
-            <label className="block text-sm font-medium">Room Numbers (comma separated)</label>
-            <input
-              type="text"
-              value={roomNumbersInput}
-              onChange={(e) => setRoomNumbersInput(e.target.value)}
-              className="w-full p-2 border rounded mb-4"
-              placeholder="101,102,103"
-            />
-
-            <label className="block text-sm font-medium">Upload Room Photos</label>
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handlePhotoChange}
-              className="w-full p-2 border rounded"
-            />
-
-            {photoFiles.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {photoFiles.map((file, idx) => (
-                  <img
-                    key={idx}
-                    src={URL.createObjectURL(file)}
-                    alt="preview"
-                    className="w-20 h-20 object-cover rounded"
-                  />
-                ))}
+                <label className="block text-sm font-medium text-gray-700">Room Numbers (comma separated)</label>
+                <input
+                  type="text"
+                  value={roomNumbersInput}
+                  onChange={(e) => setRoomNumbersInput(e.target.value)}
+                  className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
+                  placeholder="101,102,103"
+                />
               </div>
-            )}
 
-            <div className="mt-4 flex justify-end gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Max Extra Guests</label>
+                <input
+                  type="number"
+                  value={guestNumbers}
+                  onChange={(e) => setGuestNumbers(Number(e.target.value))}
+                  className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
+                />
+
+                <label className="block text-sm font-medium text-gray-700">Extra Guest Charge</label>
+                <input
+                  type="number"
+                  value={guestCharge}
+                  onChange={(e) => setGuestCharge(Number(e.target.value))}
+                  className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
+                />
+
+                <label className="block text-sm font-medium text-gray-700">Max Extra Beds</label>
+                <input
+                  type="number"
+                  value={bedNumbers}
+                  onChange={(e) => setBedNumbers(Number(e.target.value))}
+                  className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
+                />
+
+                <label className="block text-sm font-medium text-gray-700">Extra Bed Charge</label>
+                <input
+                  type="number"
+                  value={bedCharge}
+                  onChange={(e) => setBedCharge(Number(e.target.value))}
+                  className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
+                />
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <label className="block text-sm font-medium text-gray-700">Upload Room Photos</label>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handlePhotoChange}
+                className="mt-2 w-full p-2 border rounded-lg focus:outline-none"
+              />
+
+              {photoFiles.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-3">
+                  {photoFiles.map((file, idx) => (
+                    <img
+                      key={idx}
+                      src={URL.createObjectURL(file)}
+                      alt="preview"
+                      className="w-20 h-20 object-cover rounded-lg border"
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-6 flex justify-end gap-3">
               <button
                 onClick={() => {
                   clearLocalRoomForm();
                   setShowModal(false);
                 }}
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                className="px-5 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium rounded-lg transition"
               >
                 Cancel
               </button>
-              {isEditing ?
-                <button
-                  onClick={handleEditRoom}
-                  className={`px-4 py-2 rounded text-white transition 
-    ${isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700"}`}
-                >
-                  {isLoading ? "Updating..." : "Update Room"}
-                </button>
-                :
-                <button
-                  onClick={handleSubmit}
-                  className={`px-4 py-2 rounded text-white transition 
-    ${isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700"}`}
-                >
-                  {isLoading ? "Saving..." : "Save Room"}
-                </button>
-              }
+
+              <button
+                onClick={isEditing ? handleEditRoom : handleSubmit}
+                className={`px-5 py-2 font-medium text-white rounded-lg transition 
+            ${isLoading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-indigo-600 hover:bg-indigo-700"}`}
+                disabled={isLoading}
+              >
+                {isLoading ? (isEditing ? "Updating..." : "Saving...") : (isEditing ? "Update Room" : "Save Room")}
+              </button>
             </div>
           </div>
         </div>

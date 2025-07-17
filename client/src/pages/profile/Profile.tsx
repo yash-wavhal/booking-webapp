@@ -72,9 +72,9 @@ const Profile = () => {
     );
 
     return (
-        <div>
+        <div className="bg-gradient-to-b from-indigo-50 to-white">
             <Navbar />
-            <div className="max-w-5xl mx-auto px-4 py-8 space-y-12">
+            <div className=" max-w-5xl mx-auto px-4 py-8 space-y-12">
                 <div className="bg-white shadow rounded-2xl p-6 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center text-2xl text-indigo-600 font-bold">
@@ -104,7 +104,7 @@ const Profile = () => {
                     </h3>
                     <div className="w-full overflow-x-auto">
                         {/* <UpcomingBookings /> */}
-                        <div className="h-[200px] bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
+                        <div className="h-[200px] bg-gray-50 rounded-lg flex items-center justify-center text-gray-400">
                             Upcoming bookings will appear here.
                         </div>
                     </div>
@@ -116,7 +116,7 @@ const Profile = () => {
                     </h3>
                     <div className="w-full overflow-x-auto">
                         {/* <BookingHistory /> */}
-                        <div className="h-[200px] bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
+                        <div className="h-[200px] bg-gray-50 rounded-lg flex items-center justify-center text-gray-400">
                             Your booking history will appear here.
                         </div>
                     </div>
@@ -128,7 +128,7 @@ const Profile = () => {
                     </h3>
                     <div className="w-full overflow-x-auto">
                         {/* <SavedHotels /> */}
-                        <div className="h-[200px] bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
+                        <div className="h-[200px] bg-gray-50 rounded-lg flex items-center justify-center text-gray-400">
                             Your saved hotels will appear here.
                         </div>
                     </div>
@@ -145,7 +145,7 @@ const Profile = () => {
                                 placeholder="Search your hotels by name or city..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-gray-100 px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
                         </div>
                     </div>

@@ -1,5 +1,9 @@
 import { useState } from "react";
 import RoomPhotosLightbox from "./RoomPhotosLightbox";
+import { Pencil } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import RoomModal from "../roommodal/RoomModal";
+import { useNavigate } from "react-router-dom";
 
 interface RoomCardProps {
   room: {
@@ -10,12 +14,21 @@ interface RoomCardProps {
     desc: string;
     roomNumbers: { number: number }[];
     photos: string[];
+    hotelId: string;
   };
+  hoteluserid: string;
 }
 
-const RoomCard = ({ room }: RoomCardProps) => {
+const RoomCard = ({ room, hoteluserid }: RoomCardProps) => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [roomModal, setRoomModal] = useState(false);
+  const [editRoomModal, setEditRoomModal] = useState(false);
+  const { user } = useAuth();
+  const userid = user?._id;
+  const navigate = useNavigate();
+  // console.log("hoteluseid", hoteluserid);
+  // console.log("userid", userid);
 
   const openLightboxAt = (index: number) => {
     setLightboxIndex(index);
@@ -57,9 +70,22 @@ const RoomCard = ({ room }: RoomCardProps) => {
         <span>👥 Max {room.maxPeople} / Room</span>
         <span>${room.price} / Room</span>
       </div>
-      <button className="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-full py-2 font-semibold transition">
-        Book This Room
-      </button>
+      {hoteluserid === userid ? (
+        <div className="mt-6 flex justify-between flex-col sm:flex-row gap-3 sm:gap-4">
+          <button onClick={() => navigate(`/hotels/create?editHotelId=${room.hotelId}&editRoomStep=2`)} className="w-full sm:w-auto px-6 py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md transition-all duration-200 flex items-center justify-center gap-2">
+            <Pencil className="w-4 h-4" />
+            Edit Room
+          </button>
+          <button onClick={() => setRoomModal(true)} className="w-full sm:w-auto px-6 py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md transition-all duration-200">
+            View Room
+          </button>
+        </div>
+      ) : (
+        <button className="mt-6 w-full px-6 py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md transition-all duration-200">
+          Book This Room
+        </button>
+      )}
+      {roomModal && <RoomModal />}
     </div>
   );
 };

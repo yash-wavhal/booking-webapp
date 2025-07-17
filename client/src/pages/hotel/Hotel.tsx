@@ -7,6 +7,7 @@ import HotelDetails from "../../components/hotelDetails/HotelDetails";
 import RoomCard from "../../components/roomDetails/RoomCard";
 
 interface Hotel {
+  _id: string;
   name: string;
   city: string;
   address: string;
@@ -16,6 +17,7 @@ interface Hotel {
   desc: string;
   rating: number;
   cheapestPrice: number;
+  ownerId: string;
 }
 
 interface Room {
@@ -26,6 +28,7 @@ interface Room {
   desc: string;
   roomNumbers: { number: number }[];
   photos: string[];
+  hotelId: string;
 }
 
 const Hotel = () => {
@@ -94,7 +97,7 @@ const Hotel = () => {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {rooms?.map((room) => (
-              <RoomCard key={room._id} room={room} />
+              <RoomCard key={room._id} room={room} hoteluserid={hotel.ownerId} />
             ))}
           </div>
         </section>
