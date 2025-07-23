@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RoomPhotosLightbox from "./RoomPhotosLightbox";
 import { Pencil } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
@@ -35,6 +35,11 @@ const RoomCard = ({ room, hoteluserid }: RoomCardProps) => {
     setLightboxOpen(true);
   };
 
+  useEffect(() => {
+    localStorage.setItem("hotelCreationStep", "1");
+    localStorage.removeItem("newHotelId");
+  }, []);
+
   return (
     <div className="bg-white rounded-lg p-5 shadow-md hover:shadow-xl transition cursor-pointer">
       {lightboxOpen && (
@@ -64,7 +69,7 @@ const RoomCard = ({ room, hoteluserid }: RoomCardProps) => {
       </h3>
       <p className="text-gray-700 mb-3">{room.desc}</p>
       <div className="flex justify-between items-center text-indigo-800 font-semibold mb-1">
-        <span>Total {room.roomNumbers.length} Rooms</span>
+        <span>Total {room.roomNumbers.length} Rooms Available</span>
       </div>
       <div className="flex justify-between items-center text-indigo-800 font-semibold">
         <span>👥 Max {room.maxPeople} / Room</span>
@@ -72,7 +77,7 @@ const RoomCard = ({ room, hoteluserid }: RoomCardProps) => {
       </div>
       {hoteluserid === userid ? (
         <div className="mt-6 flex justify-between flex-col sm:flex-row gap-3 sm:gap-4">
-          <button onClick={() => navigate(`/hotels/create?editHotelId=${room.hotelId}&editRoomStep=2`)} className="w-full sm:w-auto px-6 py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md transition-all duration-200 flex items-center justify-center gap-2">
+          <button onClick={() => navigate(`/hotels/create?editHotelId=${room.hotelId}&editRoomStep=2&skipToRooms=true`)} className="w-full sm:w-auto px-6 py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md transition-all duration-200 flex items-center justify-center gap-2">
             <Pencil className="w-4 h-4" />
             Edit Room
           </button>

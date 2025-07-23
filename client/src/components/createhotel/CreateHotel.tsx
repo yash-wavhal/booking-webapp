@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 interface Hotel {
   name: string;
@@ -20,6 +21,7 @@ interface HotelFormProps {
 const BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8080/api";
 
 const CreateHotel = ({ setStep, setNewHotelId }: HotelFormProps) => {
+  const {user} = useAuth();
   const [hotel, setHotel] = useState<Hotel>({
     name: "",
     type: "",
@@ -99,7 +101,7 @@ const CreateHotel = ({ setStep, setNewHotelId }: HotelFormProps) => {
 
       // Create hotel with photos URLs
       const hotelData = { ...hotel, photos: photoUrls };
-      const hotelRes = await axios.post(`${BASE_URL}/hotels/create`, hotelData, { withCredentials: true });
+      const hotelRes = await axios.post(`${BASE_URL}/hotels/create/${user?._id}`, hotelData, { withCredentials: true });
 
       const newHotelId = hotelRes.data._id || hotelRes.data.id;
 

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Edit, X } from 'lucide-react';
+import { useAuth } from "../../context/AuthContext";
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8080/api";
 
@@ -20,6 +21,8 @@ interface Room {
 }
 
 const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
+  const { user } = useAuth();
+  // console.log(user?._id);
   // console.log("newHotelId", newHotelId);
   const [showModal, setShowModal] = useState(() => {
     const saved = localStorage.getItem("showModal");
@@ -70,7 +73,12 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
 
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [editIdx, setEditIdx] = useState<string>("");
-  const [isEditing, setIsEditing] = useState<boolean>(false);
+    // console.log("outsideidx", editIdx);
+  const [isEditing, setIsEditing] = useState<boolean>(() => {
+    const saved = localStorage.getItem("isEditing");
+    return saved ? JSON.parse(saved) : false;
+  });
+
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -84,10 +92,11 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
     localStorage.setItem("desc", desc);
     localStorage.setItem("roomNumbersInput", roomNumbersInput);
     localStorage.setItem("showModal", JSON.stringify(showModal));
-  }, [title, price, maxPeople, desc, roomNumbersInput, showModal, guestNumbers, guestCharge, bedNumbers, bedCharge]);
+    localStorage.setItem("isEditing", JSON.stringify(isEditing));
+  }, [title, price, maxPeople, desc, roomNumbersInput, showModal, guestNumbers, guestCharge, bedNumbers, bedCharge, isEditing]);
 
   const clearLocalRoomForm = () => {
-    ["title", "price", "maxPeople", "desc", "roomNumbersInput, showModal", "guestNumbers", "guestCharge", "bedNumbers", "bedCharge"].forEach(key =>
+    ["title", "price", "maxPeople", "desc", "roomNumbersInput, showModal", "isEditing", "guestNumbers", "guestCharge", "bedNumbers", "bedCharge"].forEach(key =>
       localStorage.removeItem(key)
     );
   };
@@ -159,6 +168,7 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
     }
 
     // Get the current room being edited to access its old photos
+    // console.log("edit", editIdx);
     const currentRoom = rooms.find((room) => room._id === editIdx);
     const existingPhotoUrls = currentRoom?.photos || [];
 
@@ -180,7 +190,10 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
     };
 
     try {
-      const res = await axios.put(`${BASE_URL}/rooms/${newHotelId}/${editIdx}`, updatedRoom, {
+      // console.log("user", user?._id);
+      // console.log("hotelid", newHotelId);
+      // console.log("editid", editIdx);
+      const res = await axios.put(`${BASE_URL}/rooms/${user?._id}/${newHotelId}/${editIdx}`, updatedRoom, {
         withCredentials: true,
       });
 
@@ -241,7 +254,7 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
     // console.log(roomData);
 
     try {
-      const res = await axios.post(`${BASE_URL}/rooms/${newHotelId}`, roomData, {
+      const res = await axios.post(`${BASE_URL}/rooms/${newHotelId}/${user?._id}`, roomData, {
         withCredentials: true,
       });
       // console.log(res);
@@ -271,7 +284,7 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
 
   const handleCrossClick = async (idx: string) => {
     try {
-      await axios.delete(`${BASE_URL}/rooms/${idx}/${newHotelId}`, {
+      await axios.delete(`${BASE_URL}/rooms/${user?._id}/${idx}/${newHotelId}`, {
         withCredentials: true,
       });
       setRooms(prev => prev.filter(room => room._id !== idx));
@@ -284,6 +297,7 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
 
   const openEditModal = (room: Room, idx: string) => {
     setIsEditing(true);
+    // console.log("idx", idx);
     setEditIdx(idx);
     setTitle(room.title);
     setPrice(room.price);

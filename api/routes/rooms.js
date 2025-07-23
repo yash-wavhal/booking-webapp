@@ -15,13 +15,13 @@ import {
 const router = express.Router();
 
 // CREATE
-router.post("/:hotelid", verifyUser, verifyHotelOwner, createRoom);
+router.post("/:hotelid/:id", verifyUser, verifyHotelOwner, createRoom);
 
 // UPDATE
-router.put("/:hotelid/:id", verifyUser, verifyHotelOwner, updateRoom);
+router.put("/:id/:hotelid/:roomid", verifyUser, verifyHotelOwner, updateRoom);
 
 // DELETE
-router.delete("/:id/:hotelid", verifyUser, verifyHotelOwner, deleteRoom);
+router.delete("/:id/:roomid/:hotelid", verifyUser, verifyHotelOwner, deleteRoom);
 
 // GET
 router.get("/:id", getRoom);

@@ -33,23 +33,25 @@ const HotelCreationStepper = () => {
     if (!isNaN(urlStep)) {
       setStep(urlStep);
       localStorage.setItem("hotelCreationStep", String(urlStep));
-    } else if (localStep) {
+    } 
+    else if (localStep) {
       setStep(parseInt(localStep));
-    } else {
+    } 
+    else {
       setStep(1);
     }
 
     setInitialized(true);
   }, [searchParams, initialized]);
 
-  const editHotelId = searchParams.get("editHotelId");
-  useEffect(() => {
-    if (!editHotelId) {
-      localStorage.removeItem("newHotelId");
-      localStorage.removeItem("hotelCreationStep");
-      setStep(1);
-    }
-  }, [editHotelId]);
+  // const editHotelId = searchParams.get("editHotelId");
+  // useEffect(() => {
+  //   if (!editHotelId && !localStorage.getItem("newHotelId")) {
+  //     localStorage.removeItem("newHotelId");
+  //     localStorage.removeItem("hotelCreationStep");
+  //     setStep(1);
+  //   }
+  // }, [editHotelId]);
 
   // Save to localStorage on every step change
   useEffect(() => {
