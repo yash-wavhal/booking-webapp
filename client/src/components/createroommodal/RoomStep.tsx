@@ -20,7 +20,7 @@ interface Room {
   maxExtraBeds: number;
 }
 
-const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
+const RoomStep = ({ newHotelId }: { newHotelId: string}) => {
   const { user } = useAuth();
   // console.log(user?._id);
   // console.log("newHotelId", newHotelId);
@@ -73,7 +73,7 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
 
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [editIdx, setEditIdx] = useState<string>("");
-    // console.log("outsideidx", editIdx);
+  // console.log("outsideidx", editIdx);
   const [isEditing, setIsEditing] = useState<boolean>(() => {
     const saved = localStorage.getItem("isEditing");
     return saved ? JSON.parse(saved) : false;
@@ -96,9 +96,27 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
   }, [title, price, maxPeople, desc, roomNumbersInput, showModal, guestNumbers, guestCharge, bedNumbers, bedCharge, isEditing]);
 
   const clearLocalRoomForm = () => {
-    ["title", "price", "maxPeople", "desc", "roomNumbersInput, showModal", "isEditing", "guestNumbers", "guestCharge", "bedNumbers", "bedCharge"].forEach(key =>
-      localStorage.removeItem(key)
-    );
+    const keys = [
+      "title",
+      "price",
+      "maxPeople",
+      "desc",
+      "roomNumbersInput",
+      "showModal",
+      "isEditing",
+      "guestNumbers",
+      "guestCharge",
+      "bedNumbers",
+      "bedCharge"
+    ];
+    keys.forEach(key => {
+      try {
+        localStorage.removeItem(key);
+        // console.log("Removing key:", key);
+      } catch (e) {
+        console.warn(`Could not remove ${key} from localStorage`, e);
+      }
+    });
   };
 
   useEffect(() => {
@@ -484,6 +502,17 @@ const RoomStep = ({ newHotelId }: { newHotelId: string }) => {
                 onClick={() => {
                   clearLocalRoomForm();
                   setShowModal(false);
+                  setTitle("");
+                  setPrice(0);
+                  setMaxPeople(0);
+                  setDesc("");
+                  setRoomNumbersInput("");
+                  setShowModal(false);
+                  setIsEditing(false);
+                  setGuestNumbers(0);
+                  setGuestCharge(0);
+                  setBedNumbers(0);
+                  setBedCharge(0);
                 }}
                 className="px-5 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium rounded-lg transition"
               >

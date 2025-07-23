@@ -51,7 +51,7 @@ const RoomCard = ({ room, hoteluserid }: RoomCardProps) => {
       )}
 
       {room.photos && room.photos.length > 0 && (
-        <div className="mb-4 grid grid-cols-2 gap-2">
+        <div className="mb-6 grid grid-cols-2 gap-2 h-48">
           {room.photos?.slice(0, 4)?.map((photoUrl, idx) => (
             <img
               key={idx}

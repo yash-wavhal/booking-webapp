@@ -1,10 +1,11 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/navbar/Navbar";
 import MailList from "../../components/mailList/MailList";
 import Footer from "../../components/footer/Footer";
 import useFetch from "../../hooks/useFetch";
 import HotelDetails from "../../components/hotelDetails/HotelDetails";
 import RoomCard from "../../components/roomDetails/RoomCard";
+import { useAuth } from "../../context/AuthContext";
 
 interface Hotel {
   _id: string;
@@ -33,6 +34,10 @@ interface Room {
 
 const Hotel = () => {
   const { hotelid } = useParams();
+  const { user } = useAuth();
+  const currentUserId = user?._id;
+
+  const navigate = useNavigate();
 
   const {
     data: hotel,
@@ -90,10 +95,22 @@ const Hotel = () => {
           )}
 
           {!roomsLoading && rooms?.length === 0 && (
-            <p className="text-gray-600 font-medium">
-              No rooms available for this hotel.
-            </p>
+            <div className="text-gray-600 font-medium">
+              <p>No rooms available for this hotel.</p>
+
+              {hotel.ownerId === currentUserId && (
+                <button
+                  onClick={() =>
+                    navigate(`/hotels/create?editHotelId=${hotel._id}&editRoomStep=2`)
+                  }
+                  className="mt-4 px-6 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md transition-all duration-200"
+                >
+                  + Add Room
+                </button>
+              )}
+            </div>
           )}
+
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {rooms?.map((room) => (

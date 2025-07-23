@@ -1,64 +1,32 @@
 import { useEffect, useState } from "react";
 import CreateHotel from "../../components/createhotel/CreateHotel";
 import RoomStep from "../../components/createroommodal/RoomStep";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { BedDouble, CircleCheckBig, Hotel } from "lucide-react";
 
 const HotelCreationStepper = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
 
-  const [step, setStep] = useState<number>(1);
-  const [newHotelId, setNewHotelId] = useState<string>("");
+  const [step, setStep] = useState<number>(() => {
+    const saved = localStorage.getItem("hotelCreationStep");
+    return saved ? parseInt(saved) : 1;
+  });
+
+  const [newHotelId, setNewHotelId] = useState<string>(() => {
+    return localStorage.getItem("newHotelId") || "";
+  });
+
   const [submitting, setSubmitting] = useState(false);
-  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    if (initialized) return;
+    localStorage.setItem("hotelCreationStep", String(step));
+  }, [step]);
 
-    const urlStep = parseInt(searchParams.get("editRoomStep") || "", 10);
-    const urlHotelId = searchParams.get("editHotelId");
-    const localStep = localStorage.getItem("hotelCreationStep");
-    const localHotelId = localStorage.getItem("newHotelId");
-
-    // Hotel ID priority: URL param > localStorage
-    if (urlHotelId) {
-      setNewHotelId(urlHotelId);
-      localStorage.setItem("newHotelId", urlHotelId);
-    } else if (localHotelId) {
-      setNewHotelId(localHotelId);
-    }
-
-    // Step priority: URL param > localStorage > default 1
-    if (!isNaN(urlStep)) {
-      setStep(urlStep);
-      localStorage.setItem("hotelCreationStep", String(urlStep));
-    } 
-    else if (localStep) {
-      setStep(parseInt(localStep));
-    } 
-    else {
-      setStep(1);
-    }
-
-    setInitialized(true);
-  }, [searchParams, initialized]);
-
-  // const editHotelId = searchParams.get("editHotelId");
-  // useEffect(() => {
-  //   if (!editHotelId && !localStorage.getItem("newHotelId")) {
-  //     localStorage.removeItem("newHotelId");
-  //     localStorage.removeItem("hotelCreationStep");
-  //     setStep(1);
-  //   }
-  // }, [editHotelId]);
-
-  // Save to localStorage on every step change
   useEffect(() => {
-    if (initialized) {
-      localStorage.setItem("hotelCreationStep", String(step));
+    if (newHotelId) {
+      localStorage.setItem("newHotelId", newHotelId);
     }
-  }, [step, initialized]);
+  }, [newHotelId]);
 
   const handleSubmitAll = async () => {
     setSubmitting(true);
@@ -109,7 +77,9 @@ const HotelCreationStepper = () => {
         <CreateHotel setStep={setStep} setNewHotelId={setNewHotelId} />
       )}
 
-      {step === 2 && <RoomStep newHotelId={newHotelId} />}
+      {step === 2 && (
+        <RoomStep newHotelId={newHotelId} />
+      )}
 
       <div className="flex justify-between mt-6">
         {step > 1 && (
