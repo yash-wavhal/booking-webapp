@@ -52,7 +52,11 @@ export const login = async (req, res, next) => {
 
 export const logout = async (req, res, next) => {
     try {
-        res.clearCookie("access_token");
+        res.clearCookie("access_token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+        });
         res.status(200).json({ message: "Logged out successfully" });
     } catch (err) {
         next(err);
