@@ -15,6 +15,7 @@ import HotelByTypePage from "./pages/hotelbytype/HotelByTypePage";
 import ProtectedRoute from "./components/protectrouters/ProtectedRoute";
 import HotelCreationStepper from "./pages/hotelcreationstepper/HotelCreationStepper";
 import Profile from "./pages/profile/Profile";
+import RoomStep from "./components/roomStep/RoomStep";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/hotels/create" element={<ProtectedRoute><HotelCreationStepper /></ProtectedRoute>} />
           <Route path="/hotels/:hotelid" element={<ProtectedRoute><Hotel /></ProtectedRoute>} />
+          <Route path="/hotels/edit-rooms" element={<RoomStep />} />
           <Route path="/hotels/city/:city" element={<ProtectedRoute><HotelByCityPage /></ProtectedRoute>} />
           <Route path="/hotels/type/:type" element={<ProtectedRoute><HotelByTypePage /></ProtectedRoute>} />
           <Route path="/login" element={<Login />} />

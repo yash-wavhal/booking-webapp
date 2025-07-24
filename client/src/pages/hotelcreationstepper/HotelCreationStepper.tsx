@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import CreateHotel from "../../components/createhotel/CreateHotel";
-import RoomStep from "../../components/createroommodal/RoomStep";
+import RoomStep from "../../components/roomStep/RoomStep";
 import { useNavigate } from "react-router-dom";
 import { BedDouble, CircleCheckBig, Hotel } from "lucide-react";
 

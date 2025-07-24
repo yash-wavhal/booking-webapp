@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Edit, X } from 'lucide-react';
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8080/api";
 
@@ -20,8 +21,14 @@ interface Room {
   maxExtraBeds: number;
 }
 
-const RoomStep = ({ newHotelId }: { newHotelId: string}) => {
+const RoomStep = ({ newHotelId }: { newHotelId?: string }) => {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const hotelIdFromParam = searchParams.get("hotelId");
+  const effectiveHotelId = hotelIdFromParam || newHotelId;
+  const isRoomEdit = !!hotelIdFromParam;
+
+
   // console.log(user?._id);
   // console.log("newHotelId", newHotelId);
   const [showModal, setShowModal] = useState(() => {
@@ -36,6 +43,7 @@ const RoomStep = ({ newHotelId }: { newHotelId: string}) => {
     }
   });
   const [rooms, setRooms] = useState<Room[]>([]);
+  const [submitting, setSubmitting] = useState(false);
 
   const [title, setTitle] = useState(() => localStorage.getItem("title") || "");
   const [price, setPrice] = useState(() => {
@@ -121,12 +129,12 @@ const RoomStep = ({ newHotelId }: { newHotelId: string}) => {
 
   useEffect(() => {
     const fetchRooms = async () => {
-      if (!newHotelId) {
+      if (!effectiveHotelId) {
         alert("No hotelid")
         return;
       }
       try {
-        const res = await axios.get(`${BASE_URL}/rooms/byhotel/${newHotelId}`);
+        const res = await axios.get(`${BASE_URL}/rooms/byhotel/${effectiveHotelId}`);
         // console.log(res);
         setRooms(res.data);
       } catch (err) {
@@ -200,7 +208,7 @@ const RoomStep = ({ newHotelId }: { newHotelId: string}) => {
       desc,
       roomNumbers,
       photos: combinedPhotoUrls,
-      hotelId: newHotelId,
+      hotelId: effectiveHotelId,
       maxExtraGuests: guestNumbers,
       extraGuestCharge: guestCharge,
       maxExtraBeds: bedNumbers,
@@ -211,7 +219,7 @@ const RoomStep = ({ newHotelId }: { newHotelId: string}) => {
       // console.log("user", user?._id);
       // console.log("hotelid", newHotelId);
       // console.log("editid", editIdx);
-      const res = await axios.put(`${BASE_URL}/rooms/${user?._id}/${newHotelId}/${editIdx}`, updatedRoom, {
+      const res = await axios.put(`${BASE_URL}/rooms/${user?._id}/${effectiveHotelId}/${editIdx}`, updatedRoom, {
         withCredentials: true,
       });
 
@@ -262,7 +270,7 @@ const RoomStep = ({ newHotelId }: { newHotelId: string}) => {
       desc,
       roomNumbers,
       photos: photoUrls,
-      hotelId: newHotelId,
+      hotelId: effectiveHotelId,
       maxExtraGuests: guestNumbers,
       extraGuestCharge: guestCharge,
       maxExtraBeds: bedNumbers,
@@ -272,7 +280,7 @@ const RoomStep = ({ newHotelId }: { newHotelId: string}) => {
     // console.log(roomData);
 
     try {
-      const res = await axios.post(`${BASE_URL}/rooms/${newHotelId}/${user?._id}`, roomData, {
+      const res = await axios.post(`${BASE_URL}/rooms/${effectiveHotelId}/${user?._id}`, roomData, {
         withCredentials: true,
       });
       // console.log(res);
@@ -302,7 +310,7 @@ const RoomStep = ({ newHotelId }: { newHotelId: string}) => {
 
   const handleCrossClick = async (idx: string) => {
     try {
-      await axios.delete(`${BASE_URL}/rooms/${user?._id}/${idx}/${newHotelId}`, {
+      await axios.delete(`${BASE_URL}/rooms/${user?._id}/${idx}/${effectiveHotelId}`, {
         withCredentials: true,
       });
       setRooms(prev => prev.filter(room => room._id !== idx));
@@ -328,6 +336,14 @@ const RoomStep = ({ newHotelId }: { newHotelId: string}) => {
     setRoomNumbersInput(room.roomNumbers.map(r => r.number).join(", "));
     setShowModal(true);
   }
+
+  const navigate = useNavigate();
+
+  const handleSubmitRooms = async () => {
+    setSubmitting(true);
+    navigate(`/hotels/${hotelIdFromParam}`);
+    setSubmitting(false);
+  };
 
   return (
     <div className="max-w-3xl mx-auto mt-6 p-4 bg-white rounded shadow-md">
@@ -531,6 +547,17 @@ const RoomStep = ({ newHotelId }: { newHotelId: string}) => {
               </button>
             </div>
           </div>
+        </div>
+      )}
+      {isRoomEdit && (
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={handleSubmitRooms}
+            disabled={submitting}
+            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          >
+            {submitting ? "Submitting..." : "Submit All"}
+          </button>
         </div>
       )}
     </div>

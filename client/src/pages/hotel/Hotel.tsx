@@ -101,7 +101,7 @@ const Hotel = () => {
               {hotel.ownerId === currentUserId && (
                 <button
                   onClick={() =>
-                    navigate(`/hotels/create?editHotelId=${hotel._id}&editRoomStep=2`)
+                    navigate(`/hotels/edit-rooms?hotelId=${hotel._id}`)
                   }
                   className="mt-4 px-6 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md transition-all duration-200"
                 >
