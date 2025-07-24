@@ -9,7 +9,7 @@ interface LoginData {
 }
 
 export default function Login() {
-  const {setIsAuthenticated} = useAuth();
+  const { setIsAuthenticated } = useAuth();
   const [data, setData] = useState<LoginData>({ email: "", password: "" });
   const navigate = useNavigate();
 
@@ -22,7 +22,10 @@ export default function Login() {
     e.preventDefault();
     try {
       console.log("before request");
-      await axios.post(`${BASE_URL}/auth/login`, data);
+      await axios.post(`${BASE_URL}/auth/login`, data, {
+        withCredentials: true,
+      });
+
       console.log("after request");
       setIsAuthenticated(true);
       navigate("/"); // Redirect to the home page
@@ -30,13 +33,13 @@ export default function Login() {
       alert(err.response?.data?.message || "Login failed");
     }
   };
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 p-6">
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full">
         <h2 className="text-3xl font-semibold text-center text-indigo-700 mb-8">Login</h2>
         <form onSubmit={handleSubmit}>
-          
+
           <label className="block font-medium text-gray-700" htmlFor="email">
             Email
           </label>
@@ -50,7 +53,7 @@ export default function Login() {
             placeholder="Your email"
             className="w-full p-3 mt-1 mb-4 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
-          
+
           <label className="block font-medium text-gray-700" htmlFor="password">
             Password
           </label>
@@ -64,7 +67,7 @@ export default function Login() {
             placeholder="Your password"
             className="w-full p-3 mt-1 mb-4 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
-          
+
           <button
             type="submit"
             className="w-full bg-indigo-600 text-white font-semibold py-3 rounded hover:bg-indigo-700 transition"
@@ -74,7 +77,7 @@ export default function Login() {
         </form>
 
         <div className="text-center mt-4">
-          <p className="text-gray-600">Don't have an account? 
+          <p className="text-gray-600">Don't have an account?
             <Link to="/signup" className="text-indigo-600 font-semibold hover:underline"> Sign Up</Link>
           </p>
         </div>

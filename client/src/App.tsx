@@ -16,6 +16,8 @@ import ProtectedRoute from "./components/protectrouters/ProtectedRoute";
 import HotelCreationStepper from "./pages/hotelcreationstepper/HotelCreationStepper";
 import Profile from "./pages/profile/Profile";
 import RoomStep from "./components/roomStep/RoomStep";
+import axios from "axios";
+axios.defaults.withCredentials = true;
 
 function App() {
   return (

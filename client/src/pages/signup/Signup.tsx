@@ -10,7 +10,7 @@ interface SignupData {
 }
 
 export default function Signup() {
-  const {setIsAuthenticated} = useAuth();
+  const { setIsAuthenticated } = useAuth();
   const [data, setData] = useState<SignupData>({ username: "", email: "", password: "" });
   const navigate = useNavigate();
 
@@ -21,29 +21,34 @@ export default function Signup() {
 
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   // console.log(BASE_URL);
-  
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await axios.post(`${BASE_URL}/auth/register`, data);
+      await axios.post(`${BASE_URL}/auth/register`, data, {
+        withCredentials: true,
+      });
 
       await axios.post(`${BASE_URL}/auth/login`, {
         email: data.email,
         password: data.password,
+      }, {
+        withCredentials: true,
       });
+
       setIsAuthenticated(true);
       navigate("/");
     } catch (err: any) {
       alert(err.response?.data?.message || "Signup failed");
     }
   };
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 p-6">
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full">
         <h2 className="text-3xl font-semibold text-center text-indigo-700 mb-8">Create an Account</h2>
         <form onSubmit={handleSubmit}>
-          
+
           <label className="block font-medium text-gray-700" htmlFor="username">Username</label>
           <input
             id="username"
@@ -54,7 +59,7 @@ export default function Signup() {
             placeholder="Your username"
             className="w-full p-3 mt-1 mb-4 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
-          
+
           <label className="block font-medium text-gray-700" htmlFor="email">Email</label>
           <input
             id="email"
@@ -66,7 +71,7 @@ export default function Signup() {
             className="w-full p-3 mt-1 mb-4 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
             type="email"
           />
-          
+
           <label className="block font-medium text-gray-700" htmlFor="password">Password</label>
           <input
             id="password"
@@ -78,7 +83,7 @@ export default function Signup() {
             className="w-full p-3 mt-1 mb-4 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
             type="password"
           />
-          
+
           <button
             type="submit"
             className="w-full bg-indigo-600 text-white font-semibold py-3 rounded hover:bg-indigo-700 transition"

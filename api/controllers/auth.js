@@ -21,7 +21,6 @@ export const register = async (req, res, next) => {
         next(err);
     }
 };
-// console.log("process.env.JWT", process.env.JWT_SECRET);   //undefined
 
 export const login = async (req, res, next) => {
     try {
@@ -42,7 +41,7 @@ export const login = async (req, res, next) => {
             httpOnly: true,
             maxAge: 1000 * 60 * 60 * 24 * 3,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
         })
             .status(200)
             .json({ ...otherDetails });
