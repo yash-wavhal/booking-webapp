@@ -8,6 +8,7 @@ import roomsRoute from "./routes/rooms.js";
 import usersRoute from "./routes/users.js";
 import uploadRoute from "./routes/upload.js";
 import cookieParser from "cookie-parser";
+import bookingRoute from "./routes/bookings.js"
 
 const app = express();
 dotenv.config();
@@ -44,6 +45,7 @@ app.use("/api/hotels", hotelsRoute);
 app.use("/api/rooms", roomsRoute);
 app.use("/api/users", usersRoute);
 app.use("/api/upload", uploadRoute);
+app.use("/api/bookings", bookingRoute);
 
 app.use((err, req, res, next) => {        // This middleware is used to send error. See next in hotels.js how it is used
     const errorStatus = err.status || 500;

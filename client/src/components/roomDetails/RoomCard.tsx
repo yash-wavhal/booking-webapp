@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import RoomPhotosLightbox from "./RoomPhotosLightbox";
 import { Pencil } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
-import RoomModal from "../roommodal/RoomModal";
+import BookRoomModal from "../bookroommodal/BookRoomModal";
 import { useNavigate } from "react-router-dom";
 
 interface RoomCardProps {
@@ -15,6 +15,10 @@ interface RoomCardProps {
     roomNumbers: { number: number }[];
     photos: string[];
     hotelId: string;
+    extraGuestCharge: number;
+    maxExtraGuests: number;
+    extraBedCharge: number;
+    maxExtraBeds: number;
   };
   hoteluserid: string;
 }
@@ -35,10 +39,10 @@ const RoomCard = ({ room, hoteluserid }: RoomCardProps) => {
     setLightboxOpen(true);
   };
 
-  useEffect(() => {
-    localStorage.setItem("hotelCreationStep", "1");
-    localStorage.removeItem("newHotelId");
-  }, []);
+  // useEffect(() => {
+  //   localStorage.setItem("hotelCreationStep", "1");
+  //   localStorage.removeItem("newHotelId");
+  // }, []);
 
   return (
     <div className="bg-white rounded-lg p-5 shadow-md hover:shadow-xl transition cursor-pointer">
@@ -74,7 +78,7 @@ const RoomCard = ({ room, hoteluserid }: RoomCardProps) => {
         </div>
         <div className="flex justify-between items-center text-indigo-800 font-semibold">
           <span>👥 Max {room.maxPeople} / Room</span>
-          <span>${room.price} / Room</span>
+          <span>₹{room.price} / Room</span>
         </div>
       </div>
       {hoteluserid === userid ? (
@@ -88,11 +92,16 @@ const RoomCard = ({ room, hoteluserid }: RoomCardProps) => {
           </button>
         </div>
       ) : (
-        <button className="mt-6 w-full px-6 py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md transition-all duration-200">
+        <button onClick={() => setRoomModal(true)} className="mt-6 w-full px-6 py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md transition-all duration-200">
           Book This Room
         </button>
       )}
-      {roomModal && <RoomModal />}
+      {roomModal && (
+        <BookRoomModal
+          room={room}
+          onClose={() => setRoomModal(false)}
+        />
+      )}
     </div>
   );
 };

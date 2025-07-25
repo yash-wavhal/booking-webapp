@@ -30,6 +30,10 @@ interface Room {
   roomNumbers: { number: number }[];
   photos: string[];
   hotelId: string;
+  extraGuestCharge: number;
+  maxExtraGuests: number;
+  extraBedCharge: number;
+  maxExtraBeds: number;
 }
 
 const Hotel = () => {
