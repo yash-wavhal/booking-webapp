@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import RoomPhotosLightbox from "../../components/roomDetails/RoomPhotosLightbox";
 import { useState, useEffect } from "react";
@@ -20,6 +20,11 @@ interface Room {
 
 const BookingPage = () => {
     const { roomId } = useParams();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const searchParams = new URLSearchParams(location.search);
+
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
 
@@ -29,6 +34,15 @@ const BookingPage = () => {
     const [roomsData, setRoomsData] = useState<
         { roomNumber: number; extraGuests: number; extraBeds: number }[]
     >([]);
+
+    useEffect(() => {
+        const savedData = localStorage.getItem(`booking-${roomId}`);
+        if (savedData) {
+            const parsed = JSON.parse(savedData);
+            setSelectedRooms(parsed.selectedRooms || []);
+            setRoomsData(parsed.roomsData || []);
+        }
+    }, [roomId]);
 
     const toggleRoomSelection = (roomNumber: number) => {
         setSelectedRooms((prev) =>
@@ -40,18 +54,33 @@ const BookingPage = () => {
 
     useEffect(() => {
         setRoomsData((prev) => {
-            return selectedRooms.map((roomNum) => {
-                const existing = prev.find((r) => r.roomNumber === roomNum);
-                return existing || { roomNumber: roomNum, extraGuests: 0, extraBeds: 0 };
+            const prevMap = new Map(prev.map(r => [r.roomNumber, r]));
+            return selectedRooms.map(roomNum => {
+                if (prevMap.has(roomNum)) {
+                    return prevMap.get(roomNum)!;
+                }
+                return {
+                    roomNumber: roomNum,
+                    extraGuests: 0,
+                    extraBeds: 0,
+                };
             });
         });
     }, [selectedRooms]);
+
+
+
+    useEffect(() => {
+        localStorage.setItem(
+            `booking-${roomId}`,
+            JSON.stringify({ selectedRooms, roomsData })
+        );
+    }, [selectedRooms, roomsData, roomId]);
 
     if (loading) return <p className="text-center mt-10">Loading room details...</p>;
     if (error) return <p className="text-center text-red-600 mt-10">Error fetching room data!</p>;
     if (!room) return <p className="text-center mt-10">Room not found</p>;
 
-    // Calculate totals
     const totalExtraGuestCharge = roomsData.reduce(
         (acc, r) => acc + r.extraGuests * room.extraGuestCharge,
         0
@@ -64,6 +93,16 @@ const BookingPage = () => {
         room.price * selectedRooms.length +
         totalExtraGuestCharge +
         totalExtraBedCharge;
+
+    const handleProceedToPayment = () => {
+        const bookingData = {
+            hotelId: room.hotelId,
+            totalPrice,
+        };
+        localStorage.setItem("bookingData", JSON.stringify(bookingData));
+
+        navigate(`/payment/${room._id}?${searchParams.toString()}`);
+    };
 
     return (
         <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -101,11 +140,22 @@ const BookingPage = () => {
                         <div className="grid grid-cols-2 gap-4 text-gray-700 mb-6">
                             <p>👥 Max People: {room.maxPeople}</p>
                             <p>🛏️ Price: ₹{room.price} / night</p>
-                            <p>➕ Extra Bed Charge: ₹{room.extraBedCharge}</p>
-                            <p>👤 Extra Guest Charge: ₹{room.extraGuestCharge}</p>
+
+                            {room.maxExtraBeds > 0 && (
+                                <p>➕ Extra Bed Charge: ₹{room.extraBedCharge}</p>
+                            )}
+
+                            {room.maxExtraGuests > 0 && (
+                                <p>👤 Extra Guest Charge: ₹{room.extraGuestCharge}</p>
+                            )}
+
+                            {room.maxExtraBeds === 0 && room.maxExtraGuests === 0 && (
+                                <p className="col-span-2 text-gray-500 italic">
+                                    Extra beds and guests are not available for this room.
+                                </p>
+                            )}
                         </div>
 
-                        {/* ROOM TOGGLE */}
                         <div className="mt-3 mb-5">
                             <p className="text-gray-700 font-semibold mb-2">Available Rooms (Select rooms to book)</p>
                             <div className="flex flex-wrap gap-2">
@@ -125,7 +175,7 @@ const BookingPage = () => {
                             </div>
                         </div>
 
-                        {roomsData.length > 0 && (
+                        {roomsData.length > 0 && (room.maxExtraGuests > 0 || room.maxExtraBeds > 0) && (
                             <div className="bg-gray-100 p-4 rounded-xl mb-6">
                                 <h3 className="text-lg font-semibold mb-3">Customize Your Stay</h3>
 
@@ -139,58 +189,61 @@ const BookingPage = () => {
                                         </h4>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                            {/* Extra Guests */}
-                                            <div>
-                                                <label className="block font-medium mb-2 text-gray-700">
-                                                    Extra Guests
-                                                </label>
-                                                <select
-                                                    value={data.extraGuests}
-                                                    onChange={(e) => {
-                                                        const value = Number(e.target.value);
-                                                        setRoomsData((prev) =>
-                                                            prev.map((r) =>
-                                                                r.roomNumber === data.roomNumber
-                                                                    ? { ...r, extraGuests: value }
-                                                                    : r
-                                                            )
-                                                        );
-                                                    }}
-                                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                                                >
-                                                    {[...Array(room.maxExtraGuests + 1).keys()].map((n) => (
-                                                        <option key={n} value={n}>
-                                                            {n} Guest{n !== 1 ? "s" : ""}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            </div>
+                                            {room.maxExtraGuests > 0 && (
+                                                <div>
+                                                    <label className="block font-medium mb-2 text-gray-700">
+                                                        Extra Guests
+                                                    </label>
+                                                    <select
+                                                        value={data.extraGuests}
+                                                        onChange={(e) => {
+                                                            const value = Number(e.target.value);
+                                                            setRoomsData((prev) =>
+                                                                prev.map((r) =>
+                                                                    r.roomNumber === data.roomNumber
+                                                                        ? { ...r, extraGuests: value }
+                                                                        : r
+                                                                )
+                                                            );
+                                                        }}
+                                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                                    >
+                                                        {[...Array(room.maxExtraGuests + 1).keys()].map((n) => (
+                                                            <option key={n} value={n}>
+                                                                {n} Guest{n !== 1 ? "s" : ""}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            )}
 
-                                            <div>
-                                                <label className="block font-medium mb-2 text-gray-700">
-                                                    Extra Beds
-                                                </label>
-                                                <select
-                                                    value={data.extraBeds}
-                                                    onChange={(e) => {
-                                                        const value = Number(e.target.value);
-                                                        setRoomsData((prev) =>
-                                                            prev.map((r) =>
-                                                                r.roomNumber === data.roomNumber
-                                                                    ? { ...r, extraBeds: value }
-                                                                    : r
-                                                            )
-                                                        );
-                                                    }}
-                                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                                                >
-                                                    {[...Array(room.maxExtraBeds + 1).keys()].map((n) => (
-                                                        <option key={n} value={n}>
-                                                            {n} Bed{n !== 1 ? "s" : ""}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            </div>
+                                            {room.maxExtraBeds > 0 && (
+                                                <div>
+                                                    <label className="block font-medium mb-2 text-gray-700">
+                                                        Extra Beds
+                                                    </label>
+                                                    <select
+                                                        value={data.extraBeds}
+                                                        onChange={(e) => {
+                                                            const value = Number(e.target.value);
+                                                            setRoomsData((prev) =>
+                                                                prev.map((r) =>
+                                                                    r.roomNumber === data.roomNumber
+                                                                        ? { ...r, extraBeds: value }
+                                                                        : r
+                                                                )
+                                                            );
+                                                        }}
+                                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                                    >
+                                                        {[...Array(room.maxExtraBeds + 1).keys()].map((n) => (
+                                                            <option key={n} value={n}>
+                                                                {n} Bed{n !== 1 ? "s" : ""}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 ))}
@@ -198,7 +251,6 @@ const BookingPage = () => {
                         )}
                     </div>
 
-                    {/* BOOKING SUMMARY */}
                     <div className="bg-indigo-50 p-7 rounded-xl shadow-md h-fit">
                         <h3 className="text-xl font-semibold mb-4 text-indigo-900">
                             Booking Summary
@@ -212,22 +264,29 @@ const BookingPage = () => {
                             <span>₹{room.price * selectedRooms.length}</span>
                         </div>
 
-                        <div className="flex justify-between mb-2">
-                            <span>Extra Guests</span>
-                            <span>₹{totalExtraGuestCharge}</span>
-                        </div>
+                        {room.maxExtraGuests > 0 && (
+                            <div className="flex justify-between mb-2">
+                                <span>Extra Guests</span>
+                                <span>₹{totalExtraGuestCharge}</span>
+                            </div>
+                        )}
 
-                        <div className="flex justify-between mb-4 border-b pb-2">
-                            <span>Extra Beds</span>
-                            <span>₹{totalExtraBedCharge}</span>
-                        </div>
+                        {room.maxExtraBeds > 0 && (
+                            <div className="flex justify-between mb-4 border-b pb-2">
+                                <span>Extra Beds</span>
+                                <span>₹{totalExtraBedCharge}</span>
+                            </div>
+                        )}
 
                         <div className="flex justify-between text-lg font-semibold mb-6">
                             <span>Total</span>
                             <span>₹{totalPrice}</span>
                         </div>
 
-                        <button className="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition">
+                        <button
+                            onClick={handleProceedToPayment}
+                            className="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition"
+                        >
                             Proceed to Payment
                         </button>
                     </div>

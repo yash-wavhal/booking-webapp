@@ -1,6 +1,6 @@
 import { useState } from "react";
 import RoomPhotosLightbox from "../roomDetails/RoomPhotosLightbox";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface Room {
     _id: string
@@ -21,6 +21,9 @@ const BookRoomModal = ({ room, onClose }: { room: Room; onClose: () => void}) =>
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const searchParams = new URLSearchParams(location.search);
 
     const openLightboxAt = (idx: number) => {
         setLightboxOpen(true);
@@ -82,7 +85,7 @@ const BookRoomModal = ({ room, onClose }: { room: Room; onClose: () => void}) =>
                     </button>
                     <button
                         className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                        onClick={() => navigate(`/book/${room._id}`)}
+                        onClick={() => navigate(`/book/${room._id}?${searchParams.toString()}`)}
                     >
                         Continue to Booking
                     </button>

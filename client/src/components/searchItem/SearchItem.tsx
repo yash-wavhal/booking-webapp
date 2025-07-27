@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface SearchItemProps {
   hotel: {
@@ -19,6 +19,10 @@ interface SearchItemProps {
 
 const SearchItem: React.FC<SearchItemProps> = ({ hotel }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Extract existing query params
+  const searchParams = new URLSearchParams(location.search);
   return (
     <div className="border bg-white border-gray-300 p-4 rounded-md flex justify-between gap-5 mb-5 shadow-sm">
       {/* Image */}
@@ -58,8 +62,8 @@ const SearchItem: React.FC<SearchItemProps> = ({ hotel }) => {
           {/* <span className="text-2xl font-semibold">₹{hotel.cheapestPrice}</span> */}
           <span className="text-xs text-gray-500">Includes taxes and fees</span>
           <button onClick={() => {
-                  navigate(`/hotels/${hotel._id}`);
-                }} className="bg-blue-700 text-white font-bold px-3 py-2 rounded hover:bg-blue-800 transition">
+            navigate(`/hotels/${hotel._id}?${searchParams.toString()}`);
+          }} className="bg-blue-700 text-white font-bold px-3 py-2 rounded hover:bg-blue-800 transition">
             See availability
           </button>
         </div>
