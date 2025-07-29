@@ -36,7 +36,9 @@ const PaymentPage = () => {
 
   const [date, setDate] = useState<DateRangeItem[]>([
     {
-      startDate: initialStartDate ? new Date(initialStartDate) : new Date(),
+      startDate: initialStartDate 
+        ? new Date(initialStartDate) 
+        : new Date(),
       endDate: initialEndDate
         ? new Date(initialEndDate)
         : new Date(new Date().getTime() + 86400000),
@@ -107,6 +109,7 @@ const PaymentPage = () => {
       hotelId,
       hotelOwnerId: room?.data?.hotelId?.ownerId,
       userId: user._id,
+      roomId: roomId,
       roomDetails,
       checkInDate: date[0].startDate,
       checkOutDate: date[0].endDate,

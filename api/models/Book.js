@@ -17,13 +17,13 @@ const BookSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    roomId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Room",
+      required: true,
+    },
     roomDetails: [
       {
-        roomId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Room",
-          required: true,
-        },
         roomNumbers: [
           {
             number: { type: Number, required: true },
