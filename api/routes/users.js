@@ -1,12 +1,8 @@
 import express from "express";
-import { deleteUser, getUser, getUsers, updateUser } from "../controllers/user.js";
+import { deleteUser, getSavedHotels, getUser, getUsers, saveHotel, unsaveHotel, updateUser } from "../controllers/user.js";
 import { verifyAdmin, verifyToken, verifyUser } from "../utils/verifyToken.js";
 
 const router = express.Router();
-
-// router.get("/checkauthentication", verifyToken, (req, res, next) => {
-//     res.send("Hello user, you are logged in");
-// });
 
 // UPDATE
 router.put("/:id", verifyUser, updateUser);
@@ -19,5 +15,11 @@ router.get("/:id", verifyAdmin, getUser);
 
 // GETALL
 router.get("/", verifyAdmin, getUsers);
+
+router.post("/save-hotel/:id/:hotelId", verifyUser, saveHotel);
+
+router.post("/unsave-hotel/:id/:hotelId", verifyUser, unsaveHotel);
+
+router.get("/saved-hotels/:id", verifyUser, getSavedHotels);
 
 export default router;

@@ -21,16 +21,24 @@ export async function getBookingsByUser(req, res, next) {
     }
 }
 
-// export async function getBookedHotel(req, res, next) {
-//     try {
-//         const bookings = await Book.find({ hotelId: req.params.hotelId })
-//             .populate("hotelId hotelOwnerId userId")
-//             .populate("roomDetails.roomId");
-//         res.status(200).json(bookings);
-//     } catch (err) {
-//         next(err);
-//     }
-// }
+export async function upcomingBookings(req, res, next) {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const bookings = await Book.find({
+      userId: req.params.id,
+      checkInDate: { $gte: today },
+    })
+      .populate("hotelId hotelOwnerId userId")
+      .populate("roomId")
+      .sort({ checkInDate: 1 });
+
+    res.status(200).json(bookings);
+  } catch (err) {
+    next(err);
+  }
+}
 
 export async function cancelBooking(req, res, next) {
     try {

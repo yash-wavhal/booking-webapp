@@ -56,16 +56,16 @@ export const getHotel = async (req, res, next) => {
 
 export const searchHotels = async (req, res, next) => {
     try {
-        const {destination, startDate, endDate, adult, children, room} = req.query;
-        const hotels = await Hotel.find({city: new RegExp(`^${destination}$`, "i")});
+        const { destination, startDate, endDate, adult, children, room } = req.query;
+        const hotels = await Hotel.find({ city: new RegExp(`^${destination}$`, "i") });
         const start = new Date(startDate);
         const end = new Date(endDate);
         const totalPeoples = Number(adult) + Number(children);
         const availableHotels = [];
-        for(const hotel of hotels) {
+        for (const hotel of hotels) {
             const rooms = await Room.find({
                 hotelId: hotel._id,
-                maxPeople: {$gte: totalPeoples},
+                maxPeople: { $gte: totalPeoples },
                 roomNumbers: {
                     $not: {
                         $elemMatch: {
@@ -79,12 +79,12 @@ export const searchHotels = async (req, res, next) => {
                     },
                 },
             });
-            if(rooms.length > 0) {
+            if (rooms.length > 0) {
                 availableHotels.push(hotel);
             }
         }
         res.status(200).json(availableHotels);
-    } catch(err) {
+    } catch (err) {
         next(err);
     }
 }
@@ -101,7 +101,7 @@ export const getHotels = async (req, res, next) => {
 export const getMostBookedHotels = async (req, res, next) => {
     try {
         const hotels = await Hotel.find()
-            .sort({bookingsCount: -1})
+            .sort({ bookingsCount: -1 })
             .limit(10)
             .select("name city address distance photos title desc rating bookingsCount cheapestPrice")
 
@@ -114,9 +114,9 @@ export const getMostBookedHotels = async (req, res, next) => {
 export const getHotelsByCityName = async (req, res, next) => {
     const cityName = req.params.city;
     try {
-        const hotels = await Hotel.find({city: cityName});
+        const hotels = await Hotel.find({ city: cityName });
         res.status(200).json(hotels);
-    } catch(err) {
+    } catch (err) {
         next(err);
     }
 }
@@ -124,21 +124,21 @@ export const getHotelsByCityName = async (req, res, next) => {
 export const getHotelsByHotelType = async (req, res, next) => {
     const type = req.params.hotelType;
     try {
-        const hotels = await Hotel.find({type: type});
+        const hotels = await Hotel.find({ type: type });
         res.status(200).json(hotels);
-    } catch(err) {
+    } catch (err) {
         next(err);
     }
 }
 
 export const getHotelsOfUser = async (req, res, next) => {
-  const userId = req.params.id;
-  try {
-    const hotels = await Hotel.find({ ownerId: userId });
-    res.status(200).json(hotels);
-  } catch (err) {
-    next(err);
-  }
+    const userId = req.params.id;
+    try {
+        const hotels = await Hotel.find({ ownerId: userId });
+        res.status(200).json(hotels);
+    } catch (err) {
+        next(err);
+    }
 };
 
 export const countByCity = async (req, res, next) => {
@@ -148,7 +148,7 @@ export const countByCity = async (req, res, next) => {
     }
     try {
         const list = await Promise.all(cities.map(city => {
-            return Hotel.countDocuments({ city }); 
+            return Hotel.countDocuments({ city });
         }));
 
         res.status(200).json(list);
@@ -158,32 +158,32 @@ export const countByCity = async (req, res, next) => {
 };
 
 export const countAllCities = async (req, res, next) => {
-  try {
-    const results = await Hotel.aggregate([
-        {
-            $group: {
-                _id: "$city",
-                count: { $sum: 1 },
-                desc: { $first: "$desc" }
+    try {
+        const results = await Hotel.aggregate([
+            {
+                $group: {
+                    _id: "$city",
+                    count: { $sum: 1 },
+                    desc: { $first: "$desc" }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    city: "$_id",
+                    count: 1,
+                    desc: 1
+                }
+            },
+            {
+                $sort: { count: -1 }
             }
-        },
-        {
-            $project: {
-                _id: 0,
-                city: "$_id",
-                count: 1,
-                desc: 1
-            }
-        },
-        {
-            $sort: { count: -1 }
-        }
-    ]);
+        ]);
 
-    res.status(200).json(results);
-  } catch (err) {
-    next(err);
-  }
+        res.status(200).json(results);
+    } catch (err) {
+        next(err);
+    }
 };
 
 export const countByType = async (req, res, next) => {

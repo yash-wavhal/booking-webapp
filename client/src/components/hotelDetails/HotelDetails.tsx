@@ -5,10 +5,14 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  Heart,
 } from "lucide-react";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 interface HotelDetailsProps {
   hotel: {
+    _id: string;
     name: string;
     city: string;
     address: string;
@@ -27,6 +31,27 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
   const [slideNumber, setSlideNumber] = useState(0);
   const [open, setOpen] = useState(false);
   const [showAllPhotos, setShowAllPhotos] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+
+  const { user } = useAuth();
+
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+  const handleSaveHotel = async () => {
+    if (!user?._id) {
+      alert("Please log in to save hotels!");
+      return;
+    }
+
+    try {
+      await axios.post(`${BASE_URL}/users/save-hotel/${user._id}/${hotel._id}`);
+      setIsSaved(true);
+      // alert("Hotel saved successfully!");
+    } catch (err) {
+      console.error("Error saving hotel", err);
+      alert("Failed to save hotel");
+    }
+  };
 
   const photos = hotel.photos ?? [];
   const photosToShow = showAllPhotos
@@ -53,7 +78,7 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
 
   const renderStars = (rating: number) => {
     const stars = [];
-    const fullStars = Math.round(rating); // rounded for simplicity
+    const fullStars = Math.round(rating);
 
     for (let i = 0; i < fullStars; i++) {
       stars.push(
@@ -104,6 +129,14 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-end p-6">
+            <button
+              onClick={handleSaveHotel}
+              className={`absolute top-4 right-4 flex items-center gap-2 px-4 py-2 rounded-full shadow-lg transition ${isSaved ? "bg-green-600 text-white" : "bg-white text-indigo-700"
+                }`}
+            >
+              <Heart className={isSaved ? "fill-white" : "text-indigo-700"} />
+              {isSaved ? "Saved" : "Save Hotel"}
+            </button>
             <h1 className="text-white text-4xl font-extrabold drop-shadow-lg">
               {hotel.name}
             </h1>
