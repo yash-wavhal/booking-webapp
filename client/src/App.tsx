@@ -19,6 +19,7 @@ import RoomStep from "./components/roomStep/RoomStep";
 import axios from "axios";
 import BookingPage from "./pages/booking/BookingPage";
 import PaymentPage from "./pages/payment/PaymentPage";
+import EditProfile from "./pages/edit-profile/EditProfile";
 axios.defaults.withCredentials = true;
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/hotels/search" element={<ProtectedRoute><List /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
           <Route path="/hotels/create" element={<ProtectedRoute><HotelCreationStepper /></ProtectedRoute>} />
           <Route path="/hotels/:hotelid" element={<ProtectedRoute><Hotel /></ProtectedRoute>} />
           <Route path="/hotels/edit-rooms" element={<RoomStep />} />

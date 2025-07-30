@@ -18,3 +18,19 @@ export const uploadMultipleImages = async (req, res, next) => {
     next(err);
   }
 };
+
+export const uploadSingleImage = async (req, res, next) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "profile_pictures",
+    });
+
+    fs.unlinkSync(req.file.path);
+
+    res.status(200).json({ imageUrl: result.secure_url });
+  } catch (err) {
+    next(err);
+  }
+};

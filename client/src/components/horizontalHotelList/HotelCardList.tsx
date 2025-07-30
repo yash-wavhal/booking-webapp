@@ -91,7 +91,7 @@ const HotelCardList: React.FC<Props> = ({ data, loading, setSelectedHotel }) => 
                   Available at affordable rates
                 </Typography>
                 <Typography className="bg-blue-900 text-white w-16 px-3 py-1 rounded-sm font-bold shadow-md flex items-center">
-                  <span>{hotel.rating}</span>
+                  <span>{hotel.rating ? hotel.rating : "N/A"}</span>
                   <span className="ml-1">★</span>
                 </Typography>
               </CardContent>

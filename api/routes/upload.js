@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import { uploadMultipleImages } from "../controllers/uploadController.js";
+import { uploadMultipleImages, uploadSingleImage } from "../controllers/uploadController.js";
 
 const router = express.Router();
 const upload = multer({
@@ -19,5 +19,6 @@ const upload = multer({
 });
 
 router.post("/images", upload.array("images", 10), uploadMultipleImages);
+router.post("/image", upload.single("image"), uploadSingleImage);
 
 export default router;

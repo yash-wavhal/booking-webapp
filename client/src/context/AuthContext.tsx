@@ -9,6 +9,7 @@ interface UserData {
   username: string;
   email: string;
   createdAt: string;
+  pfp: string;
 }
 
 interface AuthContextType {

@@ -3,11 +3,12 @@ import HotelList from "../../components/hotelList/HotelList";
 import { Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/navbar/Navbar";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import HotelCardList from "../../components/horizontalHotelList/HotelCardList";
 import BookingDetailsModal from "../../components/bookingDetailModal/BookingDetailsModal";
 import HotelDetailModal from "../../components/hotelDetailModal/HotelDetailModal";
+import { CircleUserRound } from 'lucide-react';
 
 interface RoomNumberDetails {
     number: number;
@@ -67,6 +68,7 @@ const Profile = () => {
     const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
     const [savedHotels, setSavedHotels] = useState<Hotel[]>([]);
     const [selectedHotel, setSelectedHotel] = useState<Hotel | null>(null);
+    const [photoFile, setPhotoFile] = useState<string>("");
 
     const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -145,14 +147,72 @@ const Profile = () => {
         hotel.city.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    const uploadPhotosToBackend = async (file: File): Promise<string> => {
+        const formData = new FormData();
+        formData.append("image", file);
+
+        try {
+            const res = await axios.post(`${BASE_URL}/upload/image`, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+                withCredentials: true,
+            });
+            return res.data.imageUrl;
+        } catch (err) {
+            console.log(err);
+            alert("Error during uploading Photo To Backend");
+            return "";
+        }
+    };
+
+    const [preview, setPreview] = useState<string | null>(null);
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setPreview(URL.createObjectURL(file));
+
+            const uploadedImageUrl = await uploadPhotosToBackend(file);
+
+            if (!uploadedImageUrl) return;
+
+            try {
+                await axios.put(`${BASE_URL}/users/${user?._id}`, { pfp: uploadedImageUrl });
+            } catch (err) {
+                console.error(err);
+                alert("Error updating profile picture");
+            }
+        }
+    };
+
     return (
         <div className="bg-gradient-to-b from-indigo-50 to-white">
             <Navbar />
             <div className=" max-w-5xl mx-auto px-4 py-8 space-y-16">
                 <div className="bg-white shadow rounded-2xl p-6 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center text-2xl text-indigo-600 font-bold">
-                            {user?.username?.charAt(0).toUpperCase()}
+                        <div className="relative w-24 h-24 group">
+                            {preview || user?.pfp ? (
+                                <img
+                                    src={preview || user?.pfp!}
+                                    alt="Profile"
+                                    className="w-24 h-24 rounded-full object-cover"
+                                />
+                            ) : (
+                                <CircleUserRound className="w-24 h-24 text-gray-800" />
+                            )}
+                            <input
+                                type="file"
+                                accept="image/*"
+                                id="pfpUpload"
+                                className="hidden"
+                                onChange={handleImageUpload}
+                            />
+                            <button
+                                className="absolute inset-0 bg-white/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                                onClick={() => document.getElementById("pfpUpload")?.click()}
+                            >
+                                <span className="text-blue-700 text-sm font-semibold">Edit PFP</span>
+                            </button>
                         </div>
                         <div>
                             <h2 className="text-2xl font-bold text-gray-800">{user?.username}</h2>
@@ -168,7 +228,7 @@ const Profile = () => {
                         className="flex items-center gap-2 text-indigo-600 hover:underline"
                     >
                         <Pencil className="w-4 h-4" />
-                        Edit Profile
+                        Update / Edit Profile
                     </button>
                 </div>
 
