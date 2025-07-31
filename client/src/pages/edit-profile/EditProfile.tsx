@@ -124,7 +124,8 @@ const EditProfile = () => {
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="w-full p-2 border rounded-lg"
+                                className="w-full p-2 border bg-gray-200 rounded-lg"
+                                readOnly
                             />
                         </div>
 

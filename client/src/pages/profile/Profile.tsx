@@ -1,6 +1,6 @@
 import { useAuth } from "../../context/AuthContext";
 import HotelList from "../../components/hotelList/HotelList";
-import { Pencil } from "lucide-react";
+import { Pencil, PencilIcon, CircleUserRound, ChevronDown, ChevronUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/navbar/Navbar";
 import React, { useEffect, useState } from "react";
@@ -8,7 +8,6 @@ import axios from "axios";
 import HotelCardList from "../../components/horizontalHotelList/HotelCardList";
 import BookingDetailsModal from "../../components/bookingDetailModal/BookingDetailsModal";
 import HotelDetailModal from "../../components/hotelDetailModal/HotelDetailModal";
-import { CircleUserRound } from 'lucide-react';
 
 interface RoomNumberDetails {
     number: number;
@@ -69,6 +68,7 @@ const Profile = () => {
     const [savedHotels, setSavedHotels] = useState<Hotel[]>([]);
     const [selectedHotel, setSelectedHotel] = useState<Hotel | null>(null);
     const [photoFile, setPhotoFile] = useState<string>("");
+    const [viewmore, setViewMore] = useState(false);
 
     const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -188,48 +188,99 @@ const Profile = () => {
         <div className="bg-gradient-to-b from-indigo-50 to-white">
             <Navbar />
             <div className=" max-w-5xl mx-auto px-4 py-8 space-y-16">
-                <div className="bg-white shadow rounded-2xl p-6 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="relative w-24 h-24 group">
-                            {preview || user?.pfp ? (
-                                <img
-                                    src={preview || user?.pfp!}
-                                    alt="Profile"
-                                    className="w-24 h-24 rounded-full object-cover"
+                <div className="bg-white shadow rounded-2xl p-6 ">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="relative w-24 h-24 group">
+                                {preview || user?.pfp ? (
+                                    <img
+                                        src={preview || user?.pfp!}
+                                        alt="Profile"
+                                        className="w-24 h-24 rounded-full object-cover"
+                                    />
+                                ) : (
+                                    <CircleUserRound className="w-24 h-24 text-gray-800" />
+                                )}
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    id="pfpUpload"
+                                    className="hidden"
+                                    onChange={handleImageUpload}
                                 />
-                            ) : (
-                                <CircleUserRound className="w-24 h-24 text-gray-800" />
-                            )}
-                            <input
-                                type="file"
-                                accept="image/*"
-                                id="pfpUpload"
-                                className="hidden"
-                                onChange={handleImageUpload}
-                            />
-                            <button
-                                className="absolute inset-0 bg-white/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
-                                onClick={() => document.getElementById("pfpUpload")?.click()}
-                            >
-                                <span className="text-blue-700 text-sm font-semibold">Edit PFP</span>
-                            </button>
+                                <button
+                                    className="absolute inset-0 bg-white/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                                    onClick={() => document.getElementById("pfpUpload")?.click()}
+                                >
+                                    <span className="flex items-center gap-1 text-blue-700 text-sm font-semibold cursor-pointer transition hover:text-blue-900">
+                                        <PencilIcon className="w-4 h-4" />
+                                        <span>Edit PFP</span>
+                                    </span>
+                                </button>
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-800">{user?.username}</h2>
+                                <p className="text-gray-600">{user?.email}</p>
+                                <p className="text-sm text-gray-400 mt-1">
+                                    Joined on {getFormatedDate(user?.createdAt)}
+                                </p>
+                            </div>
                         </div>
-                        <div>
-                            <h2 className="text-2xl font-bold text-gray-800">{user?.username}</h2>
-                            <p className="text-gray-600">{user?.email}</p>
-                            <p className="text-sm text-gray-400 mt-1">
-                                Joined on {getFormatedDate(user?.createdAt)}
-                            </p>
-                        </div>
-                    </div>
 
-                    <button
-                        onClick={() => navigate("/edit-profile")}
-                        className="flex items-center gap-2 text-indigo-600 hover:underline"
-                    >
-                        <Pencil className="w-4 h-4" />
-                        Update / Edit Profile
-                    </button>
+                        <button
+                            onClick={() => navigate("/edit-profile")}
+                            className="flex items-center gap-2 text-indigo-600 hover:underline"
+                        >
+                            <Pencil className="w-4 h-4" />
+                            Update / Edit Profile
+                        </button>
+                    </div>
+                    <div className="mt-5">
+                        {viewmore ? (
+                            <div className="space-y-2 p-4 rounded-lg bg-gray-100 shadow-sm scale-95">
+                                <p className="text-gray-700 font-medium">
+                                    {user?.address.street}, {user?.address.city}, {user?.address.state},
+                                    {user?.address.country} - {user?.address.pinCode}
+                                </p>
+                                <p>
+                                    <span className="font-semibold">DOB:</span>{" "}
+                                    <span className="text-gray-600">
+                                        {user?.personalDetails.dob
+                                            ? new Date(user.personalDetails.dob).toLocaleDateString("en-IN", {
+                                                day: "2-digit",
+                                                month: "long",
+                                                year: "numeric",
+                                            })
+                                            : "N/A"}
+                                    </span>
+                                </p>
+                                <p>
+                                    <span className="font-semibold">Gender:</span>{" "}
+                                    <span className="text-gray-600">{user?.personalDetails.gender}</span>
+                                </p>
+                                <p>
+                                    <span className="font-semibold">Nationality:</span>{" "}
+                                    <span className="text-gray-600">{user?.personalDetails.nationality}</span>
+                                </p>
+                                <button
+                                    onClick={() => setViewMore(false)}
+                                    className="flex items-center gap-1 text-blue-600 font-medium hover:underline"
+                                >
+                                    <ChevronUp size={18} />
+                                    View Less
+                                </button>
+                            </div>
+                        ) : (
+                            <button
+                                onClick={() => setViewMore(true)}
+                                className="flex items-center gap-1 text-blue-600 font-medium hover:underline"
+                            >
+                                <ChevronDown size={18} />
+                                View More Details
+                            </button>
+                        )}
+
+                    </div>
                 </div>
 
                 <section>

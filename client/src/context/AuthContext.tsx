@@ -10,6 +10,19 @@ interface UserData {
   email: string;
   createdAt: string;
   pfp: string;
+  phoneNumber: string,
+  personalDetails: {
+    dob: string;
+    gender: "male" | "female" | "other";
+    nationality: string;
+  };
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    country: string;
+    pinCode: string;
+  };
 }
 
 interface AuthContextType {
