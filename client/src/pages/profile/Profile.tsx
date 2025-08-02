@@ -115,9 +115,10 @@ const Profile = () => {
         try {
             await axios.delete(`${BASE_URL}/hotels/${id}`);
             setHotels((prev) => prev.filter((hotel) => hotel._id !== id));
+            toast.success("Hotel Deleted successfully");
         } catch (err) {
             console.error(err);
-            alert("Error deleting hotel");
+            toast.error("Error deleting hotel, please try again!");
         }
     };
 
@@ -127,20 +128,21 @@ const Profile = () => {
             setBookingHistory(prev => prev.filter(booking => booking._id !== id));
             setUpcomingBookings(prev => prev.filter(booking => booking._id !== id));
             setSelectedBooking(null);
-            alert("Booking cancelled successfully");
+            toast.success("Booking cancelled successfully");
         } catch (err) {
-            alert("Error canceling booking");
+            toast.error("Error canceling booking, please try again!");
         }
     };
 
     const handleUnsaveHotel = async (hotelId: string) => {
         try {
             const res = await axios.post(`${BASE_URL}/users/unsave-hotel/${user?._id}/${hotelId}`);
+            toast.success("Hotel unsaved successfully!");
             setSavedHotels(res.data.savedHotels);
             setSelectedHotel(null);
         } catch (err) {
             console.log(err);
-            alert("Error unsaving hotel");
+            toast.error("Error unsaving hotel, please try again!");
         }
     };
 

@@ -6,6 +6,7 @@ import useFetch from "../../hooks/useFetch";
 import HotelDetails from "../../components/hotelDetails/HotelDetails";
 import RoomCard from "../../components/roomDetails/RoomCard";
 import { useAuth } from "../../context/AuthContext";
+import { useEffect } from "react";
 
 interface Hotel {
   _id: string;
@@ -57,6 +58,8 @@ const Hotel = () => {
 
   // console.log("room", rooms);
   // console.log("hotel", hotel);
+
+  
 
   if (hotelLoading || roomsLoading) {
     return (
