@@ -27,6 +27,27 @@ interface Hotel {
   ownerId: string;
 }
 
+interface RoomNumber {
+  number: number;
+  unavailableDates: Date[];
+  _id: string;
+}
+
+interface Room {
+  _id: string;
+  title: string;
+  price: number;
+  maxPeople: number;
+  desc: string;
+  roomNumbers: RoomNumber[];
+  hotelId: Hotel;
+  photos: string[];
+  extraGuestCharge: number;
+  maxExtraGuests: number;
+  extraBedCharge: number;
+  maxExtraBeds: number;
+}
+
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const PaymentPage = () => {
@@ -49,7 +70,7 @@ const PaymentPage = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [hotelId, setHotelId] = useState<Hotel | null>(null);
 
-  const room = useFetch(`/rooms/${roomId}`);
+  const { data: room, loading, error } = useFetch<Room>(`/rooms/${roomId}`);
 
   useEffect(() => {
     const savedBooking = localStorage.getItem(`booking-${roomId}`);
@@ -87,7 +108,7 @@ const PaymentPage = () => {
 
     const payload = {
       hotelId,
-      hotelOwnerId: room?.data?.hotelId?.ownerId,
+      hotelOwnerId: room?.hotelId?.ownerId,
       userId: user._id,
       roomId,
       roomDetails,
@@ -97,14 +118,38 @@ const PaymentPage = () => {
 
     try {
       await axios.post(`${BASE_URL}/bookings/${user._id}`, payload);
+
+      const getDatesInRange = (start: Date, end: Date) => {
+        const dates: Date[] = [];
+        let current = new Date(start);
+        while (current <= end) {
+          dates.push(new Date(current));
+          current.setDate(current.getDate() + 1);
+        }
+        return dates;
+      };
+
+      const allDates = getDatesInRange(startDate, endDate);
+
+      const datePayload = {
+        dates: allDates,
+      };
+
+      roomsData.map(async (r) => {
+        await axios.put(
+          `${BASE_URL}/rooms/available/${roomId}/${r.roomNumber}`, datePayload
+        );
+      });
+
       toast.success(
         "Thank you! Your stay is confirmed. You can view your booking details in your profile"
       );
+
       navigate(`/hotels/${hotelId._id}`);
       localStorage.removeItem("bookingData");
       localStorage.removeItem(`booking-${roomId}`);
     } catch (error) {
-      toast.error("Booking failed. Please try again.");
+      toast.error("Booking failed. Please try again!");
       console.error(error);
     }
   };
