@@ -67,20 +67,25 @@ const Navbar = () => {
     >
       <div>
         <div className="max-w-[185vh] mx-auto flex justify-between items-center p-3">
-          {/* Logo + Brand together */}
           <div
-            className="flex items-center gap-3 cursor-pointer"
+            className="flex items-center gap-3 cursor-pointer group"
             onClick={() => navigate("/")}
           >
-            <img
-              width={50}
-              height={50}
-              className="rounded"
-              src="/Lodgr_logo.png"
-              alt="logo"
-            />
-            <span className="text-3xl font-heading font-extrabold select-none tracking-wide drop-shadow-md">
-              Lodgr
+            <div className="relative">
+              <img
+                width={55}
+                height={50}
+                className="rounded-xl shadow-2xl transition-transform duration-300 group-hover:scale-105"
+                src="/Lodgr_logo_1.png"
+                alt="logo"
+              />
+            </div>
+
+            <span
+              className="text-3xl font-heading font-extrabold select-none tracking-wide 
+               drop-shadow-lg text-gray-900 transition-all duration-300"
+            >
+              Lodgr<span className="text-orange-500">One</span>
             </span>
           </div>
 
