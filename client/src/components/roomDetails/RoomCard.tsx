@@ -100,6 +100,7 @@ const RoomCard = ({ room, hoteluserid }: RoomCardProps) => {
         <BookRoomModal
           room={room}
           onClose={() => setRoomModal(false)}
+          hotelownerid={hoteluserid}
         />
       )}
     </div>

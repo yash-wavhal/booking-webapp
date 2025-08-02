@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -25,10 +26,11 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await axios.post(`${BASE_URL}/auth/logout`);
+      toast.success("You have logged out!");
       setIsAuthenticated(false);
       navigate("/");
     } catch (err: any) {
-      alert(err.response?.data?.message || "Logout failed");
+      toast.error(err.response?.data?.message || "Logout failed");
     }
   };
 
@@ -63,12 +65,12 @@ const Navbar = () => {
       className={`${isScrolled ? "bg-white/40 backdrop-blur-xl" : "bg-indigo-100"
         } text-gray-900 shadow-md sticky top-0 z-50 transition-all duration-300`}
     >
-      <div className="max-w-7xl mx-auto flex justify-between items-center p-3">
+      <div className="max-w-[185vh] mx-auto flex justify-between items-center p-3">
         <span
           onClick={() => navigate("/")}
-          className="text-3xl font-extrabold cursor-pointer select-none tracking-wide drop-shadow-md"
+          className="text-3xl font-heading font-extrabold cursor-pointer select-none tracking-wide drop-shadow-md"
         >
-          Hotel Booking
+          Lodgr
         </span>
 
         {!isAuthenticated ? (

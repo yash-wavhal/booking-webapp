@@ -2,6 +2,7 @@ import { useState, FormEvent, ChangeEvent } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import toast from "react-hot-toast";
 
 interface LoginData {
   email: string;
@@ -21,16 +22,14 @@ export default function Login() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      console.log("before request");
       await axios.post(`${BASE_URL}/auth/login`, data, {
         withCredentials: true,
       });
-
-      console.log("after request");
+      toast.success("You have logged in!");
       setIsAuthenticated(true);
-      navigate("/"); // Redirect to the home page
+      navigate("/");
     } catch (err: any) {
-      alert(err.response?.data?.message || "Login failed");
+      toast.error(err.response?.data?.message || "Login failed");
     }
   };
 

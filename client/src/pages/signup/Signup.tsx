@@ -2,6 +2,7 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import toast from "react-hot-toast";
 
 interface SignupData {
   username: string;
@@ -35,11 +36,11 @@ export default function Signup() {
       }, {
         withCredentials: true,
       });
-
+      toast.success("You have logged in!");
       setIsAuthenticated(true);
       navigate("/");
     } catch (err: any) {
-      alert(err.response?.data?.message || "Signup failed");
+      toast.error(err.response?.data?.message || "Signup failed");
     }
   };
 

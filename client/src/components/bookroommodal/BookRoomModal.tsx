@@ -1,6 +1,8 @@
 import { useState } from "react";
 import RoomPhotosLightbox from "../roomDetails/RoomPhotosLightbox";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { Pencil } from "lucide-react";
 
 interface Room {
     _id: string
@@ -17,11 +19,13 @@ interface Room {
     maxExtraBeds: number;
 }
 
-const BookRoomModal = ({ room, onClose }: { room: Room; onClose: () => void}) => {
+const BookRoomModal = ({ room, onClose, hotelownerid }: { room: Room; onClose: () => void, hotelownerid: string }) => {
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
     const navigate = useNavigate();
     const location = useLocation();
+    const { user } = useAuth();
+    const userid = user?._id;
 
     const searchParams = new URLSearchParams(location.search);
 
@@ -83,12 +87,19 @@ const BookRoomModal = ({ room, onClose }: { room: Room; onClose: () => void}) =>
                     >
                         Cancel
                     </button>
-                    <button
-                        className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                        onClick={() => navigate(`/book/${room._id}?${searchParams.toString()}`)}
-                    >
-                        Continue to Booking
-                    </button>
+                    {hotelownerid === userid ? (
+                        <button onClick={() => navigate(`/hotels/edit-rooms?hotelId=${room.hotelId}`)} className="w-full sm:w-auto px-6 py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md transition-all duration-200 flex items-center justify-center gap-2">
+                            <Pencil className="w-4 h-4" />
+                            Edit Room
+                        </button>
+                    ) : (
+                        <button
+                            className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                            onClick={() => navigate(`/book/${room._id}?${searchParams.toString()}`)}
+                        >
+                            Continue to Booking
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

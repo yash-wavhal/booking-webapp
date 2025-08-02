@@ -3,6 +3,9 @@ import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 import useFetch from "../../hooks/useFetch";
 import Navbar from "../../components/navbar/Navbar";
+import Footer from "../../components/footer/Footer";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -37,7 +40,6 @@ const EditProfile = () => {
         address: { street: "", city: "", state: "", country: "", pinCode: "" },
     });
     const [saving, setSaving] = useState(false);
-    const [successMsg, setSuccessMsg] = useState("");
 
     useEffect(() => {
         if (userDetails) setFormData(userDetails);
@@ -75,6 +77,8 @@ const EditProfile = () => {
         }
     };
 
+    const navigate = useNavigate();
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -83,9 +87,11 @@ const EditProfile = () => {
         try {
             setSaving(true);
             await axios.put(`${BASE_URL}/users/${user?._id}`, formData);
-            setSuccessMsg("Profile updated successfully ✅");
+            toast.success("Profile updated successfully!");
+            navigate("/profile");
         } catch (err) {
             console.error(err);
+            toast.error("Error while updating profile, please try again!");
         } finally {
             setSaving(false);
         }
@@ -97,12 +103,8 @@ const EditProfile = () => {
     return (
         <div className="bg-indigo-50">
             <Navbar />
-            <div className="m-10 mb-0 max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-xl">
+            <div className="m-10 mb-10 max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-xl">
                 <h2 className="text-2xl font-bold mb-4 text-indigo-600">Edit Profile</h2>
-
-                {successMsg && (
-                    <p className="bg-green-100 text-green-700 p-2 mb-3 rounded">{successMsg}</p>
-                )}
 
                 {formData && (
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -203,6 +205,7 @@ const EditProfile = () => {
                     </form>
                 )}
             </div>
+            <Footer />
         </div>
     );
 };

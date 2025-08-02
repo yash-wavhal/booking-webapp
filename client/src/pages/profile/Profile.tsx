@@ -8,6 +8,8 @@ import axios from "axios";
 import HotelCardList from "../../components/horizontalHotelList/HotelCardList";
 import BookingDetailsModal from "../../components/bookingDetailModal/BookingDetailsModal";
 import HotelDetailModal from "../../components/hotelDetailModal/HotelDetailModal";
+import Footer from "../../components/footer/Footer";
+import toast from "react-hot-toast";
 
 interface RoomNumberDetails {
     number: number;
@@ -177,9 +179,10 @@ const Profile = () => {
 
             try {
                 await axios.put(`${BASE_URL}/users/${user?._id}`, { pfp: uploadedImageUrl });
+                toast.success("Profile picture updated successfully!");
             } catch (err) {
                 console.error(err);
-                alert("Error updating profile picture");
+                toast.error("Error updating profile picture, please try again!");
             }
         }
     };
@@ -241,6 +244,10 @@ const Profile = () => {
                                 <p className="text-gray-700 font-medium">
                                     {user?.address.street}, {user?.address.city}, {user?.address.state},
                                     {user?.address.country} - {user?.address.pinCode}
+                                </p>
+                                <p>
+                                    <span className="font-semibold">Contact No.:</span>{" "}
+                                    <span className="text-gray-600">{user?.phoneNumber}</span>
                                 </p>
                                 <p>
                                     <span className="font-semibold">DOB:</span>{" "}
@@ -394,6 +401,7 @@ const Profile = () => {
                     )}
                 </section>
             </div>
+            <Footer />
         </div>
     );
 };

@@ -20,11 +20,13 @@ import axios from "axios";
 import BookingPage from "./pages/booking/BookingPage";
 import PaymentPage from "./pages/payment/PaymentPage";
 import EditProfile from "./pages/edit-profile/EditProfile";
+import { Toaster } from "react-hot-toast";
 axios.defaults.withCredentials = true;
 
 function App() {
   return (
     <BrowserRouter>
+      <Toaster position="top-right" />
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Home />} />

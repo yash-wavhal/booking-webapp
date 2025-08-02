@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import toast from "react-hot-toast";
 
 interface Hotel {
   name: string;
@@ -96,16 +97,15 @@ const CreateHotel = ({ setStep, setNewHotelId }: HotelFormProps) => {
     try {
       setSubmitting(true);
       setIsCreating(true);
-      // Upload photos and get URLs
       const photoUrls = await uploadPhotosToBackend();
 
-      // Create hotel with photos URLs
       const hotelData = { ...hotel, photos: photoUrls };
       const hotelRes = await axios.post(`${BASE_URL}/hotels/create/${user?._id}`, hotelData, { withCredentials: true });
 
       const newHotelId = hotelRes.data._id || hotelRes.data.id;
-
       if (!newHotelId) throw new Error("Hotel ID not returned");
+
+      toast.success("Hotel created successfully!");
 
       setNewHotelId(newHotelId);
       localStorage.setItem("newHotelId", newHotelId);
@@ -113,7 +113,7 @@ const CreateHotel = ({ setStep, setNewHotelId }: HotelFormProps) => {
       setStep(2);
     } catch (err) {
       console.error(err);
-      alert("Error creating hotel");
+      toast.error("Error creating hotel, please try again!");
     } finally {
       setSubmitting(false);
       setIsCreating(true);

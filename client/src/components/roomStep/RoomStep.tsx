@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Edit, X } from 'lucide-react';
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8080/api";
 
@@ -163,14 +164,14 @@ const RoomStep = ({ newHotelId }: { newHotelId?: string }) => {
       return res.data.imageUrls;
     } catch (err) {
       console.log(err);
-      alert("Error during uploading Photos To Backend")
+      toast.error("Error during uploading photos to backend, please try again!")
       return [];
     }
   };
 
   const handleEditRoom = async () => {
     if (!title || price <= 0 || maxPeople <= 0 || !desc || roomNumbersInput.length == 0) {
-      alert("Please fill all required fields.");
+      toast.error("Please fill all required fields.");
       return;
     }
 
@@ -183,7 +184,7 @@ const RoomStep = ({ newHotelId }: { newHotelId?: string }) => {
       .map((num) => ({ number: Number(num) }));
 
     if (roomNumbers.some((r) => isNaN(r.number))) {
-      alert("Please enter valid room numbers (comma separated numbers).");
+      toast.error("Please enter valid room numbers (comma separated numbers).");
       setIsLoading(false);
       return;
     }
@@ -223,6 +224,9 @@ const RoomStep = ({ newHotelId }: { newHotelId?: string }) => {
         withCredentials: true,
       });
 
+      toast.success('Room updated successfully!');
+
+
       setRooms((prev) =>
         prev.map((room) => (room._id === editIdx ? res.data : room))
       );
@@ -244,7 +248,7 @@ const RoomStep = ({ newHotelId }: { newHotelId?: string }) => {
       clearLocalRoomForm();
     } catch (err) {
       console.error("Error updating room:", err);
-      alert("Failed to update room.");
+      toast.error("Failed to update room, please try again!");
     } finally {
       setIsLoading(false);
     }
@@ -286,7 +290,7 @@ const RoomStep = ({ newHotelId }: { newHotelId?: string }) => {
       // console.log(res);
 
       setRooms(prev => [...prev, res.data]);
-      alert("Room added successfully!");
+      toast.success('Room added successfully!');
 
       setTitle("");
       setPrice(0);
@@ -303,7 +307,7 @@ const RoomStep = ({ newHotelId }: { newHotelId?: string }) => {
       clearLocalRoomForm();
     } catch (err) {
       console.error(err);
-      alert("Error while creating room");
+      toast.error("Error while creating room, please try again!");
     }
   };
 
@@ -313,10 +317,11 @@ const RoomStep = ({ newHotelId }: { newHotelId?: string }) => {
       await axios.delete(`${BASE_URL}/rooms/${user?._id}/${idx}/${effectiveHotelId}`, {
         withCredentials: true,
       });
+      toast.success("Room deleted successfully!");
       setRooms(prev => prev.filter(room => room._id !== idx));
     } catch (err) {
       console.log(err);
-      alert("Error while deleting rooms");
+      toast.error("Error while deleting rooms, please try again!");
     }
   };
 
@@ -341,7 +346,9 @@ const RoomStep = ({ newHotelId }: { newHotelId?: string }) => {
 
   const handleSubmitRooms = async () => {
     setSubmitting(true);
+    toast.success('Rooms added successfully!');
     navigate(`/hotels/${hotelIdFromParam}`);
+    toast.success('Congratulations! Your hotel has been created successfully!');
     setSubmitting(false);
   };
 
