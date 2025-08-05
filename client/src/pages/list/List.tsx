@@ -89,9 +89,8 @@ const List: React.FC = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-indigo-50 to-white">
-      <Navbar />
-      <div className="bg-white rounded-xl p-4 w-full max-w-5xl mx-auto shadow-md mt-6">
+    <div className="bg-gradient-to-b from-indigo-50 to-white p-6">
+      <div className="bg-white rounded-xl p-4 w-full max-w-5xl mx-auto shadow-md">
         <div className="flex flex-wrap gap-4 items-center justify-between">
           {/* Destination */}
           <div className="relative flex-1 min-w-[200px]">
@@ -214,7 +213,6 @@ const List: React.FC = () => {
           )}
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

@@ -156,7 +156,6 @@ const PaymentPage = () => {
 
   return (
     <div>
-      <Navbar />
       <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8">
         <h1 className="text-4xl font-extrabold text-indigo-900 mb-12 drop-shadow-lg">
           Confirm Your Booking & Payment
@@ -262,7 +261,6 @@ const PaymentPage = () => {
           </button>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

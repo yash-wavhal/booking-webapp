@@ -8,14 +8,14 @@ import Navbar from "../../components/navbar/Navbar";
 import PropertyList from "../../components/propertyList/PropertyList";
 import UserReviews from "../../components/userReviews/UserReviews";
 import WhyToBookHere from "../../components/whytobook/WhyToBookHere"
+import { useAuth } from "../../context/AuthContext";
 import "./home.css";
 
 const Home: React.FC = () => {
+  const {isAuthenticated} = useAuth();
   return (
     <div className="bg-gradient-to-b from-indigo-50 to-white">
-      
-      <Navbar />
-
+      {!isAuthenticated && <Navbar />}
       <Header />
 
       <div className="homeContainer">
@@ -32,8 +32,7 @@ const Home: React.FC = () => {
         <WhyToBookHere />
 
         <UserReviews />
-
-        <Footer />
+        {!isAuthenticated && <Footer />}
       </div>
     </div>
   );

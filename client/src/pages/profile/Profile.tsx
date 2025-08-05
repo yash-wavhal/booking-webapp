@@ -191,7 +191,6 @@ const Profile = () => {
 
     return (
         <div className="bg-gradient-to-b from-indigo-50 to-white">
-            <Navbar />
             <div className=" max-w-5xl mx-auto px-4 py-8 space-y-16">
                 <div className="bg-white shadow rounded-2xl p-6 ">
                     <div className="flex items-center justify-between">
@@ -403,7 +402,6 @@ const Profile = () => {
                     )}
                 </section>
             </div>
-            <Footer />
         </div>
     );
 };

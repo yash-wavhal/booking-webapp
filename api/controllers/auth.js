@@ -36,7 +36,7 @@ export const login = async (req, res, next) => {
             { id: user._id, isAdmin: user.isAdmin },
             process.env.JWT_SECRET
         );
-        const { password, isAdmin, ...otherDetails } = user._doc;    // purpose is we dont wnat to send the password ans isAdmin in response so we sent ...otherDetails(that is details other than password and isAdmin)
+        const { password, ...otherDetails } = user._doc;    // purpose is we dont wnat to send the password ans isAdmin in response so we sent ...otherDetails(that is details other than password and isAdmin)
         res.cookie("access_token", token, {
             httpOnly: true,
             maxAge: 1000 * 60 * 60 * 24 * 3,

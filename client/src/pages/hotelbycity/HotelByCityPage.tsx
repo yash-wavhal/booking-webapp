@@ -42,7 +42,6 @@ const HotelByCityPage = () => {
 
   return (
     <div className="bg-gradient-to-b from-indigo-50 to-white">
-      <Navbar />
       <div className="max-w-5xl mx-auto p-6 space-y-6">
         <h1 className="text-3xl font-bold text-indigo-900 mb-6">
           Hotels in {capitalize(city)}
@@ -51,7 +50,6 @@ const HotelByCityPage = () => {
           <HotelList hotel={hotel} citytype={hotel.city} />
         ))}
       </div>
-      <Footer />
     </div>
   );
 }

@@ -179,7 +179,6 @@ const BookingPage = () => {
 
     return (
         <div>
-            <Navbar />
             {showModal && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white rounded-2xl p-6 w-full max-w-5xl shadow-2xl relative animate-fadeIn">
@@ -283,12 +282,12 @@ const BookingPage = () => {
 
                         {/* Action Buttons */}
                         <div className="mt-6 flex justify-end gap-3">
-                            <button
+                            {/* <button
                                 onClick={() => setShowModal(false)}
                                 className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
                             >
                                 Cancel
-                            </button>
+                            </button> */}
                             <button
                                 onClick={handleConfirmModal}
                                 className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition"
@@ -497,7 +496,6 @@ const BookingPage = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
         </div>
     );
 };

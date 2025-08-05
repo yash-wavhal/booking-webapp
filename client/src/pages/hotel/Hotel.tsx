@@ -59,7 +59,7 @@ const Hotel = () => {
   // console.log("room", rooms);
   // console.log("hotel", hotel);
 
-  
+
 
   if (hotelLoading || roomsLoading) {
     return (
@@ -84,52 +84,45 @@ const Hotel = () => {
   }
 
   return (
-    <div className="bg-gradient-to-b from-indigo-50 to-white min-h-screen">
-      <Navbar />
+    <main className="bg-gradient-to-b from-indigo-50 to-white mx-auto p-10">
+      <HotelDetails hotel={hotel} />
 
-      <main className="max-w-7xl mx-auto p-10 pt-0">
-        <HotelDetails hotel={hotel} />
+      <section className="w-full max-w-7xl mx-auto mt-14">
+        <h2 className="text-3xl font-extrabold text-indigo-900 mb-6">
+          Available Rooms
+        </h2>
 
-        <section className="mt-14">
-          <h2 className="text-3xl font-extrabold text-indigo-900 mb-6">
-            Available Rooms
-          </h2>
+        {roomsError && (
+          <p className="text-red-600 font-semibold mb-4">
+            Failed to load rooms data
+          </p>
+        )}
 
-          {roomsError && (
-            <p className="text-red-600 font-semibold mb-4">
-              Failed to load rooms data
-            </p>
-          )}
+        {!roomsLoading && rooms?.length === 0 && (
+          <div className="text-gray-600 font-medium">
+            <p>No rooms available for this hotel.</p>
 
-          {!roomsLoading && rooms?.length === 0 && (
-            <div className="text-gray-600 font-medium">
-              <p>No rooms available for this hotel.</p>
-
-              {hotel.ownerId === currentUserId && (
-                <button
-                  onClick={() =>
-                    navigate(`/hotels/edit-rooms?hotelId=${hotel._id}`)
-                  }
-                  className="mt-4 px-6 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md transition-all duration-200"
-                >
-                  + Add Room
-                </button>
-              )}
-            </div>
-          )}
-
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {rooms?.map((room) => (
-              <RoomCard key={room._id} room={room} hoteluserid={hotel.ownerId} />
-            ))}
+            {hotel.ownerId === currentUserId && (
+              <button
+                onClick={() =>
+                  navigate(`/hotels/edit-rooms?hotelId=${hotel._id}`)
+                }
+                className="mt-4 px-6 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md transition-all duration-200"
+              >
+                + Add Room
+              </button>
+            )}
           </div>
-        </section>
-      </main>
+        )}
 
-      {/* <MailList /> */}
-      <Footer />
-    </div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {rooms?.map((room) => (
+            <RoomCard key={room._id} room={room} hoteluserid={hotel.ownerId} />
+          ))}
+        </div>
+      </section>
+    </main>
   );
 };
 
