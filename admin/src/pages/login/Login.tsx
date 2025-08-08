@@ -28,7 +28,7 @@ export default function Login() {
       toast.success("You have logged in!");
       setUser(res.data)
       setIsAuthenticated(true);
-      navigate("/dashboard");
+      navigate("/");
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Login failed");
     }
