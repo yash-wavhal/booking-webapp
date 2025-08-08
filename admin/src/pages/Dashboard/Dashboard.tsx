@@ -38,31 +38,27 @@ const statsData = [
 
 export default function DashboardPage() {
     return (
-        <div className="flex">
-            <Sidebar />
+        <div className="flex-1 p-6 space-y-6 bg-gray-50 min-h-screen">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {statsData.map((data, idx) => (
+                    <Link to={data.href}>
+                        <StatsCard
+                            title={data.title}
+                            value={data.value}
+                            percentageChange={data.percentageChange}
+                            buttonLabel={data.buttonLabel}
+                        />
+                    </Link>
+                ))}
+            </div>
 
-            <div className="flex-1 p-6 space-y-6 bg-gray-50 min-h-screen">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {statsData.map((data, idx) => (
-                        <Link to={data.href}>
-                            <StatsCard
-                                title={data.title}
-                                value={data.value}
-                                percentageChange={data.percentageChange}
-                                buttonLabel={data.buttonLabel}
-                            />
-                        </Link>
-                    ))}
-                </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <RevenueProgress />
+                <RevenueChart />
+            </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <RevenueProgress />
-                    <RevenueChart />
-                </div>
-
-                <div>
-                    <TransactionsTable />
-                </div>
+            <div>
+                <TransactionsTable />
             </div>
         </div>
     );

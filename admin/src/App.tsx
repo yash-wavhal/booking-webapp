@@ -2,16 +2,18 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
 import Login from './pages/login/Login';
-// import Dashboard from './pages/dashboard/Dashboard'; // Example protected page
 import { AuthProvider } from './context/AuthContext';
 import { Toaster } from 'react-hot-toast';
 import ProtectedRoute from './components/protectrouters/ProtectedRoute';
+
+import Layout from './components/Layout/Layout';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Analytics from './pages/Analytics/Analytics';
 import Bookings from './pages/Bookings/Bookings';
 import Complaints from './pages/Complaints/Complaints';
 import Hotels from './pages/Hotels/Hotels';
 import Users from './pages/Users/Users';
+import Profile from './pages/profile/Profile';
 
 function App() {
   return (
@@ -24,50 +26,18 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <Layout />
               </ProtectedRoute>
             }
-          />
-          <Route
-            path="/users"
-            element={
-              <ProtectedRoute>
-                <Users />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/hotels"
-            element={
-              <ProtectedRoute>
-                <Hotels />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/bookings"
-            element={
-              <ProtectedRoute>
-                <Bookings />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/analytics"
-            element={
-              <ProtectedRoute>
-                <Analytics />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/complaints"
-            element={
-              <ProtectedRoute>
-                <Complaints />
-              </ProtectedRoute>
-            }
-          />
+          >
+            <Route index element={<Dashboard />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/users/:userId" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="hotels" element={<Hotels />} />
+            <Route path="bookings" element={<Bookings />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="complaints" element={<Complaints />} />
+          </Route>
         </Routes>
       </AuthProvider>
     </Router>
