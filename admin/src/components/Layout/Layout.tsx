@@ -5,8 +5,10 @@ import Sidebar from "../sideBar/SideBar";
 
 export default function Layout() {
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
+    <div className="flex h-screen overflow-hidden">
+      <div className="sticky top-0 h-screen">
+        <Sidebar />
+      </div>
       <div className="flex-1 p-6 overflow-y-auto">
         <Outlet />
       </div>

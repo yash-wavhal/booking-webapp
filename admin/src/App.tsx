@@ -14,6 +14,7 @@ import Complaints from './pages/Complaints/Complaints';
 import Hotels from './pages/Hotels/Hotels';
 import Users from './pages/Users/Users';
 import Profile from './pages/profile/Profile';
+import Hotel from './components/hotel/Hotel';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
             <Route path="/users" element={<Users />} />
             <Route path="/users/:userId" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="hotels" element={<Hotels />} />
+            <Route path="/hotels/:hotelid" element={<ProtectedRoute><Hotel /></ProtectedRoute>} />
             <Route path="bookings" element={<Bookings />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="complaints" element={<Complaints />} />

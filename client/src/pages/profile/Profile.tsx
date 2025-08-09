@@ -243,8 +243,8 @@ const Profile = () => {
                         {viewmore ? (
                             <div className="space-y-2 p-4 rounded-lg bg-gray-100 shadow-sm scale-95">
                                 <p className="text-gray-700 font-medium">
-                                    {user?.address.street}, {user?.address.city}, {user?.address.state},
-                                    {user?.address.country} - {user?.address.pinCode}
+                                    {user?.address?.street}, {user?.address?.city}, {user?.address?.state},
+                                    {user?.address?.country} - {user?.address?.pinCode}
                                 </p>
                                 <p>
                                     <span className="font-semibold">Contact No.:</span>{" "}
@@ -253,8 +253,8 @@ const Profile = () => {
                                 <p>
                                     <span className="font-semibold">DOB:</span>{" "}
                                     <span className="text-gray-600">
-                                        {user?.personalDetails.dob
-                                            ? new Date(user.personalDetails.dob).toLocaleDateString("en-IN", {
+                                        {user?.personalDetails?.dob
+                                            ? new Date(user?.personalDetails?.dob).toLocaleDateString("en-IN", {
                                                 day: "2-digit",
                                                 month: "long",
                                                 year: "numeric",
@@ -264,11 +264,11 @@ const Profile = () => {
                                 </p>
                                 <p>
                                     <span className="font-semibold">Gender:</span>{" "}
-                                    <span className="text-gray-600">{user?.personalDetails.gender}</span>
+                                    <span className="text-gray-600">{user?.personalDetails?.gender}</span>
                                 </p>
                                 <p>
                                     <span className="font-semibold">Nationality:</span>{" "}
-                                    <span className="text-gray-600">{user?.personalDetails.nationality}</span>
+                                    <span className="text-gray-600">{user?.personalDetails?.nationality}</span>
                                 </p>
                                 <button
                                     onClick={() => setViewMore(false)}

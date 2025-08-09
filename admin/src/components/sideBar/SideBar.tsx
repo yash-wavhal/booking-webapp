@@ -29,7 +29,7 @@ const Sidebar = () => {
     };
 
     return (
-        <div className="w-64 min-h-screen bg-white shadow-md p-4 justify-between">
+        <div className=" w-64 min-h-screen bg-white shadow-md p-4 justify-between">
             <div className="h-[50px] flex items-center justify-center">
                 <Link to="/" className="text-xl font-bold text-purple-600">
                     AdminPanel

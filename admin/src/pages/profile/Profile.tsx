@@ -312,7 +312,7 @@ const Profile = () => {
             </div>
 
             <section>
-                <h3 className="text-xl font-semibold text-gray-800 mb-3">Upcoming Bookings</h3>
+                <h3 className="text-xl font-semibold text-gray-800 mb-3">User Upcoming Bookings</h3>
                 <div className="w-full overflow-x-auto">
                     {upcomingBookings?.length > 0 ? (
                         <HotelCardList
@@ -325,14 +325,14 @@ const Profile = () => {
                         />
                     ) : (
                         <div className="h-[200px] bg-gray-50 rounded-lg flex items-center justify-center text-gray-400">
-                            Upcoming bookings will appear here.
+                            No Upcoming bookings.
                         </div>
                     )}
                 </div>
             </section>
 
             <section>
-                <h3 className="text-xl font-semibold text-gray-800 mb-3">Booking History</h3>
+                <h3 className="text-xl font-semibold text-gray-800 mb-3">User Booking History</h3>
                 <div className="w-full overflow-x-auto">
                     {bookingHistory?.length > 0 ? (
                         <HotelCardList
@@ -345,7 +345,7 @@ const Profile = () => {
                         />
                     ) : (
                         <div className="h-[200px] bg-gray-50 rounded-lg flex items-center justify-center text-gray-400">
-                            Your booking history will appear here.
+                            No booking history.
                         </div>
                     )}
                 </div>
@@ -361,7 +361,7 @@ const Profile = () => {
 
             <section>
                 <h3 className="text-xl font-semibold text-gray-800 mb-3">
-                    Saved Hotels
+                    User Saved Hotels
                 </h3>
                 <div className="w-full overflow-x-auto">
                     {savedHotels && savedHotels.length > 0 ?
@@ -374,7 +374,7 @@ const Profile = () => {
                         />
                         :
                         <div className="h-[200px] bg-gray-50 rounded-lg flex items-center justify-center text-gray-400">
-                            Your saved hotels will appear here.
+                            No saved hotels.
                         </div>
                     }
                 </div>
@@ -396,7 +396,7 @@ const Profile = () => {
             <section>
                 <div className="flex justify-between items-center mb-3 flex-wrap gap-3">
                     <h3 className="text-xl font-semibold text-gray-800 flex-shrink-0">
-                        Your Listed Hotels
+                        Listed Hotels of User
                     </h3>
                     <div className="flex-grow ml-96 min-w-[200px] sm:min-w-[100px]">
                         <input
@@ -410,7 +410,7 @@ const Profile = () => {
                 </div>
 
                 {loading ? (
-                    <p>Loading your hotels...</p>
+                    <p>Loading User hotels...</p>
                 ) : filteredHotels.length === 0 ? (
                     <p className="text-gray-500">No hotels found.</p>
                 ) : (

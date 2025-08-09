@@ -18,7 +18,7 @@ const data = [
 
 export const RevenueChart = () => {
   return (
-    <div className="bg-white shadow-md rounded-2xl p-6 h-[360px]">
+    <div className="bg-white shadow-md rounded-2xl p-10 h-[378px]">
       <h3 className="text-lg font-semibold mb-4">Last 6 Months (Revenue)</h3>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data}>
