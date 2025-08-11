@@ -1,6 +1,6 @@
 import { useAuth } from "../../context/AuthContext";
 import HotelList from "../../components/hotelList/HotelList";
-import { Pencil, PencilIcon, CircleUserRound, ChevronDown, ChevronUp } from "lucide-react";
+import { Pencil, PencilIcon, CircleUserRound, ChevronDown, ChevronUp, Trash } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -155,6 +155,17 @@ const Profile = () => {
         }
     };
 
+    const handleDeleteUser = async () => {
+        try {
+            await axios.delete(`${BASE_URL}/users/${userId}`);
+            toast.success("User deleted successfully!");
+            navigate("/users");
+        } catch (err) {
+            console.log(err);
+            toast.error("Error deleting user, please try again!");
+        }
+    }
+
     const handleUnsaveHotel = async (hotelId: string) => {
         try {
             const res = await axios.post(`${BASE_URL}/users/unsave-hotel/${userId}/${hotelId}`);
@@ -251,63 +262,88 @@ const Profile = () => {
                         </div>
                     </div>
 
-                    <button
-                        onClick={() => navigate("/edit-profile")}
+                    {/* <button
+                        onClick={() => navigate(`/edit-profile/${userId}`)}
                         className="flex items-center gap-2 text-indigo-600 hover:underline"
                     >
                         <Pencil className="w-4 h-4" />
                         Update / Edit Profile
-                    </button>
+                    </button> */}
                 </div>
-                <div className="mt-5">
-                    {viewmore ? (
-                        <div className="space-y-2 p-4 rounded-lg bg-gray-100 shadow-sm scale-95">
-                            <p className="text-gray-700 font-medium">
-                                {user?.address?.street}, {user?.address?.city}, {user?.address?.state},
-                                {user?.address?.country} - {user?.address?.pinCode}
-                            </p>
-                            <p>
-                                <span className="font-semibold">Contact No.:</span>{" "}
-                                <span className="text-gray-600">{user?.phoneNumber}</span>
-                            </p>
-                            <p>
-                                <span className="font-semibold">DOB:</span>{" "}
-                                <span className="text-gray-600">
-                                    {user?.personalDetails?.dob
-                                        ? new Date(user.personalDetails.dob).toLocaleDateString("en-IN", {
-                                            day: "2-digit",
-                                            month: "long",
-                                            year: "numeric",
-                                        })
-                                        : "N/A"}
-                                </span>
-                            </p>
-                            <p>
-                                <span className="font-semibold">Gender:</span>{" "}
-                                <span className="text-gray-600">{user?.personalDetails?.gender}</span>
-                            </p>
-                            <p>
-                                <span className="font-semibold">Nationality:</span>{" "}
-                                <span className="text-gray-600">{user?.personalDetails?.nationality}</span>
-                            </p>
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mt-6">
+                    {/* Left side: User Details or Toggle */}
+                    <div className="flex-1">
+                        {viewmore ? (
+                            <div className="space-y-3 p-5 rounded-lg bg-gray-50 shadow-md border border-gray-200 transition-transform scale-100">
+                                <p className="text-gray-800 font-semibold">
+                                    {user?.address?.street}, {user?.address?.city}, {user?.address?.state}, {user?.address?.country} - {user?.address?.pinCode}
+                                </p>
+                                <p>
+                                    <span className="font-semibold text-gray-700">Contact No.:</span>{" "}
+                                    <span className="text-gray-600">{user?.phoneNumber}</span>
+                                </p>
+                                <p>
+                                    <span className="font-semibold text-gray-700">DOB:</span>{" "}
+                                    <span className="text-gray-600">
+                                        {user?.personalDetails?.dob
+                                            ? new Date(user.personalDetails.dob).toLocaleDateString("en-IN", {
+                                                day: "2-digit",
+                                                month: "long",
+                                                year: "numeric",
+                                            })
+                                            : "N/A"}
+                                    </span>
+                                </p>
+                                <p>
+                                    <span className="font-semibold text-gray-700">Gender:</span>{" "}
+                                    <span className="text-gray-600">{user?.personalDetails?.gender || "N/A"}</span>
+                                </p>
+                                <p>
+                                    <span className="font-semibold text-gray-700">Nationality:</span>{" "}
+                                    <span className="text-gray-600">{user?.personalDetails?.nationality || "N/A"}</span>
+                                </p>
+                                <button
+                                    onClick={() => setViewMore(false)}
+                                    className="mt-3 inline-flex items-center gap-1 text-blue-600 font-semibold hover:underline focus:outline-none"
+                                    aria-label="View Less Details"
+                                >
+                                    <ChevronUp size={18} />
+                                    View Less
+                                </button>
+                            </div>
+                        ) : (
                             <button
-                                onClick={() => setViewMore(false)}
-                                className="flex items-center gap-1 text-blue-600 font-medium hover:underline"
+                                onClick={() => setViewMore(true)}
+                                className="inline-flex items-center gap-1 text-blue-600 font-semibold hover:underline focus:outline-none"
+                                aria-label="View More Details"
                             >
-                                <ChevronUp size={18} />
-                                View Less
+                                <ChevronDown size={18} />
+                                View More Details
                             </button>
-                        </div>
-                    ) : (
-                        <button
-                            onClick={() => setViewMore(true)}
-                            className="flex items-center gap-1 text-blue-600 font-medium hover:underline"
-                        >
-                            <ChevronDown size={18} />
-                            View More Details
-                        </button>
-                    )}
+                        )}
+                    </div>
 
+                    {/* Right side: Action Buttons */}
+                    <div className="flex gap-4">
+                        <button
+                            onClick={() => navigate(`/edit-profile/${userId}`)}
+                            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow focus:outline-none transition"
+                            aria-label="Update or Edit Profile"
+                        >
+                            <Pencil className="w-5 h-5" />
+                            Update / Edit Profile
+                        </button>
+
+                        <button
+                            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded shadow focus:outline-none transition"
+                            aria-label="Delete User"
+                            onClick={() => handleDeleteUser()}
+
+                        >
+                            <Trash className="w-5 h-5" />
+                            Delete User
+                        </button>
+                    </div>
                 </div>
             </div>
 

@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 interface HotelDetailsProps {
   hotel: {
@@ -16,6 +18,7 @@ interface HotelDetailsProps {
     name: string;
     city: string;
     address: string;
+    createdAt: string;
     distance: string;
     photos: string[];
     title: string;
@@ -36,6 +39,8 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
   const { user } = useAuth();
 
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+  const navigate = useNavigate();
 
   const photos = hotel.photos ?? [];
   const photosToShow = showAllPhotos
@@ -60,148 +65,99 @@ const HotelDetails = ({ hotel }: HotelDetailsProps) => {
     );
   };
 
-  const renderStars = (rating: number) => {
-    const stars = [];
-    const fullStars = Math.round(rating);
-
-    for (let i = 0; i < fullStars; i++) {
-      stars.push(
-        <Star key={"full" + i} className="text-yellow-500 fill-yellow-500" />
-      );
+  const handleDeleteHotel = async (hotelId: string) => {
+    try {
+      const res = await axios.delete(`${BASE_URL}/hotels/admin/${hotelId}`);
+      toast.success("Hotel deleted successfully!");
+      navigate("/hotels");
+    } catch (err) {
+      console.log(err);
+      toast.error("Error deleting hotel, please try again!");
     }
-    while (stars.length < 5) {
-      stars.push(
-        <Star key={"empty" + stars.length} className="text-gray-300" />
-      );
-    }
-    return stars;
-  };
-
+  }
 
   return (
     <>
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
           <X
-            className="absolute top-6 right-6 text-white text-4xl cursor-pointer hover:text-red-400 transition"
+            className="absolute top-4 right-4 text-white text-3xl cursor-pointer hover:text-red-400"
             onClick={() => setOpen(false)}
           />
-
           <ChevronLeft
-            className="absolute left-6 text-white text-4xl cursor-pointer hover:text-gray-300 transition"
+            className="absolute left-6 text-white text-3xl cursor-pointer hover:text-gray-300"
             onClick={() => handleMove("l")}
           />
-
           <img
-            src={hotel.photos[slideNumber]}
+            src={hotel.photos[slideNumber] || "/demo_hotel_image.avif"}
             alt={`hotel image ${slideNumber + 1}`}
-            className="max-h-[80vh] max-w-full rounded-lg shadow-lg object-cover mx-auto"
+            className="max-h-[80vh] max-w-full object-contain rounded-md shadow-lg"
           />
           <ChevronRight
-            className="absolute right-6 text-white text-4xl cursor-pointer hover:text-gray-300 transition"
+            className="absolute right-6 text-white text-3xl cursor-pointer hover:text-gray-300"
             onClick={() => handleMove("r")}
           />
-
         </div>
       )}
 
-      <div className="bg-white rounded-3xl shadow-xl overflow-hidden max-w-7xl mx-auto my-10">
-        <div className="relative w-full h-[400px]">
+      <div className="bg-white border border-gray-200 rounded-xl shadow-md overflow-hidden flex flex-col lg:flex-row max-w-7xl mx-auto my-8 hover:shadow-lg transition-shadow duration-200">
+        <div className="relative lg:w-1/3 h-[250px] lg:h-[350px] group">
           <img
             src={hotel.photos[0] || "/demo_hotel_image.avif"}
-            alt="Main hotel"
-            className="w-full h-full object-cover"
+            alt="hotel"
+            className="h-full w-full object-cover cursor-pointer group-hover:scale-105 transition-transform duration-200"
+            onClick={() => handleOpen(0)}
           />
-          <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-end p-6">
-            <h1 className="text-white text-4xl font-extrabold drop-shadow-lg">
-              {hotel.name}
-            </h1>
-            <div className="text-white mt-1 font-medium flex items-center space-x-2">
-              <MapPin />
-              <span>
-                {hotel.address} • {hotel.city}
-              </span>
-            </div>
-          </div>
+          {/* <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 to-transparent text-white p-3">
+            <h2 className="text-xl font-semibold">{hotel.name}</h2>
+          </div> */}
         </div>
 
-        <div className="p-8 space-y-8">
-          {/* Summary Row */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-            <div>
-              <div className="inline-block bg-green-100 text-green-800 rounded-full px-4 py-1 font-semibold">
-                Excellent location – {hotel.distance} from center
-              </div>
-              <p className="mt-3 text-indigo-700 text-lg font-medium">
-                Book over <strong>${hotel.cheapestPrice}</strong> & get a free
-                airport taxi!
-              </p>
-            </div>
-            <div className="bg-indigo-100 rounded-lg p-5 text-center w-48 shadow">
-              <p className="text-indigo-800 font-bold text-lg">Rating</p>
-              <div className="flex justify-center mt-1 space-x-1">
-                {renderStars(hotel.rating)}
-              </div>
-              <p className="text-indigo-900 text-2xl font-extrabold mt-2">
-                {/* <p className="text-indigo-900 text-2xl font-extrabold mt-2"> */}
+        <div className="relative flex-1 p-6 space-y-4">
+          <div className="flex flex-wrap justify-between items-start gap-4 border-b pb-2">
+            <h1 className="text-3xl font-semibold text-blue-800">{hotel.name}</h1>
+            <span className="text-sm text-gray-500">
+              Added: {new Date(hotel.createdAt).toLocaleDateString()}
+            </span>
+          </div>
+
+          <h1 className="text-2xl font-semibold text-gray-800">{hotel.title}</h1>
+
+          <div className="text-md text-gray-700 flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-gray-500" />
+            {hotel.address} • {hotel.city}
+          </div>
+
+          <div className="flex flex-wrap gap-6 text-md">
+            <span>
+              <span className="text-gray-500">Distance:</span>{" "}
+              <span className="font-medium">{hotel.distance}</span>
+            </span>
+            <span>
+              <span className="text-gray-500">Rating:</span>{" "}
+              <span className="font-medium">
                 {typeof hotel.rating === "number" ? hotel.rating.toFixed(1) : "N/A"}
-                {/* </p> */}
-
-              </p>
-            </div>
+              </span>
+            </span>
           </div>
 
-          {/* Photo Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {photosToShow && photosToShow.length > 0 ? (
-              photosToShow.map((url, i) => (
-                <img
-                  key={i}
-                  src={url}
-                  alt={`hotel photo ${i + 1}`}
-                  className="rounded-xl h-40 w-full object-cover shadow-md hover:scale-105 transition-transform cursor-pointer"
-                  onClick={() => handleOpen(i)}
-                />
-              ))
-            ) : (
-              <img
-                src="/demo_hotel_image.avif"
-                alt="default hotel"
-                className="rounded-xl h-40 w-full object-cover shadow-md"
-              />
-            )}
-          </div>
+          <p className="text-sm text-gray-600 leading-6 border-t pt-3">
+            {hotel.desc}
+          </p>
 
-          {/* Show More / Less */}
-          {hotel.photos.length > PHOTOS_PREVIEW_LIMIT && (
-            <div className="text-center">
-              <button
-                onClick={() => setShowAllPhotos(!showAllPhotos)}
-                className="mt-4 px-6 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition"
-              >
-                {showAllPhotos
-                  ? "Show Less"
-                  : `Show More (${hotel.photos.length - PHOTOS_PREVIEW_LIMIT} more)`}
-              </button>
-            </div>
-          )}
-
-          {/* Description Section */}
-          <div className="flex flex-col md:flex-row gap-10">
-            <div className="md:flex-1 space-y-4">
-              <h2 className="text-3xl font-bold text-indigo-900">{hotel.title}</h2>
-              <p className="text-gray-700 text-lg leading-relaxed">{hotel.desc}</p>
-            </div>
-
-            <div className="md:w-80 bg-indigo-50 rounded-2xl p-6 flex flex-col justify-between shadow-inner">
-              <h3 className="text-xl font-bold mb-2 text-indigo-900">
-                Perfect for a long stay!
-              </h3>
-              <p className="text-indigo-700">
-                Located in <strong>{hotel.city}</strong>, this hotel has a top
-                location score!
-              </p>
-            </div>
+          <div className="absolute right-9 bottom-5 pt-2 flex gap-3 justify-end">
+            <button
+              className="px-4 py-1.5 bg-blue-600 text-white text-sm rounded-lg shadow hover:bg-blue-700 focus:outline-none"
+              onClick={() => navigate(`/hotels/create?hotelId=${hotel._id}`)}
+            >
+              Edit
+            </button>
+            <button
+              className="px-4 py-1.5 bg-red-600 text-white text-sm rounded-lg shadow hover:bg-red-700 focus:outline-none"
+              onClick={() => handleDeleteHotel(hotel._id)}
+            >
+              Delete
+            </button>
           </div>
         </div>
       </div>

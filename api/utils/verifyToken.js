@@ -44,11 +44,11 @@ export const verifyHotelOwner = async (req, res, next) => {
     // console.log("verifyHotelOwner", req.params.hotelid);
     const hotel = await Hotel.findById(req.params.hotelid);
     if (!hotel) return res.status(404).json({ message: "Hotel not found" });
-
-    if (hotel.ownerId.toString() !== req.user.id) {
+    if(hotel.ownerId.toString() === req.user.id || req.user.isAdmin) {
+      next();
+    } else {
       return res.status(403).json({ message: "Not authorized to modify this hotel" });
     }
-    next();
   } catch (err) {
     next(err);
   }

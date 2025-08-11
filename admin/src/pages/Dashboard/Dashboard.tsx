@@ -21,11 +21,11 @@ const statsData = [
         buttonLabel: "View bookings"
     },
     {
-        href: "/analytics",
-        title: "Earnings",
-        value: "$24,300",
+        href: "/hotels",
+        title: "Hotels",
+        value: "300",
         percentageChange: "+15%",
-        buttonLabel: "Net earnings"
+        buttonLabel: "View hotels"
     },
     {
         href: "/analytics",

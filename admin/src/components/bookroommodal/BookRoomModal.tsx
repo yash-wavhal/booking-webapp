@@ -3,6 +3,8 @@ import RoomPhotosLightbox from "../roomDetails/RoomPhotosLightbox";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Pencil } from "lucide-react";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 interface Room {
     _id: string
@@ -19,7 +21,9 @@ interface Room {
     maxExtraBeds: number;
 }
 
-const BookRoomModal = ({ room, onClose, hotelownerid }: { room: Room; onClose: () => void, hotelownerid: string }) => {
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+const BookRoomModal = ({ room, onClose, hotelownerid, onDelete }: { room: Room; onClose: () => void, hotelownerid: string, onDelete: (roomId: string, hotelId: string) => void}) => {
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
     const navigate = useNavigate();
@@ -34,8 +38,10 @@ const BookRoomModal = ({ room, onClose, hotelownerid }: { room: Room; onClose: (
         setLightboxIndex(idx);
     };
 
+    
+
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
             {lightboxOpen && (
                 <RoomPhotosLightbox
                     photos={room.photos}
@@ -44,65 +50,75 @@ const BookRoomModal = ({ room, onClose, hotelownerid }: { room: Room; onClose: (
                 />
             )}
 
-            <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl p-6 relative">
+            <div className="bg-white rounded-xl shadow-lg w-full max-w-3xl p-6 relative">
+                {/* Photos Row */}
                 {room.photos?.length > 0 && (
-                    <div className="flex gap-2 mb-4 overflow-x-auto">
+                    <div className="flex gap-3 mb-5 overflow-x-auto pb-2 border-b">
                         {room.photos.map((photoUrl, idx) => (
                             <img
                                 key={idx}
                                 src={photoUrl}
                                 alt={`${room.title} ${idx + 1}`}
-                                className="w-52 h-44 object-cover rounded-md cursor-pointer hover:opacity-80 transition"
+                                className="w-48 h-40 object-cover rounded-lg cursor-pointer hover:opacity-80 transition"
                                 onClick={() => openLightboxAt(idx)}
                             />
                         ))}
                     </div>
                 )}
 
-                <h2 className="text-2xl font-semibold text-gray-800 mb-2">{room.title}</h2>
-                <p className="text-gray-600 mb-3">{room.desc}</p>
+                {/* Title + Description */}
+                <h2 className="text-xl font-bold text-gray-900">{room.title}</h2>
+                <p className="text-gray-600 mt-1 mb-5">{room.desc}</p>
 
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                    <p><span className="font-semibold">Price:</span> ₹{room.price} / night</p>
-                    <p><span className="font-semibold">Max People:</span> {room.maxPeople}</p>
-                    <p><span className="font-semibold">Extra Guests:</span> Up to {room.maxExtraGuests} (₹{room.extraGuestCharge} each)</p>
-                    <p><span className="font-semibold">Extra Beds:</span> Up to {room.maxExtraBeds} (₹{room.extraBedCharge} each)</p>
+                {/* Room Details */}
+                <div className="grid sm:grid-cols-2 gap-4 text-sm border-t pt-4">
+                    <p>
+                        <span className="font-semibold">Price:</span> ₹{room.price} / night
+                    </p>
+                    <p>
+                        <span className="font-semibold">Max People:</span> {room.maxPeople}
+                    </p>
+                    <p>
+                        <span className="font-semibold">Extra Guests:</span> Up to {room.maxExtraGuests} (₹{room.extraGuestCharge} each)
+                    </p>
+                    <p>
+                        <span className="font-semibold">Extra Beds:</span> Up to {room.maxExtraBeds} (₹{room.extraBedCharge} each)
+                    </p>
                 </div>
 
-                <div className="mt-3">
-                    <p className="text-gray-700 font-semibold">Available Rooms:</p>
-                    <div className="flex flex-wrap gap-2 mt-1">
+                {/* Available Rooms */}
+                <div className="mt-4">
+                    <p className="text-gray-800 font-semibold mb-2">Available Rooms:</p>
+                    <div className="flex flex-wrap gap-2">
                         {room.roomNumbers.map((r, idx) => (
-                            <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md text-sm">
+                            <span
+                                key={idx}
+                                className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md border text-sm"
+                            >
                                 #{r.number}
                             </span>
                         ))}
                     </div>
                 </div>
 
-                <div className="mt-6 flex justify-end gap-3">
+                {/* Actions */}
+                <div className="mt-6 flex justify-end gap-3 border-t pt-4">
                     <button
-                        className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 text-sm font-medium"
                         onClick={onClose}
                     >
-                        Cancel
+                        Close
                     </button>
-                    {/* {hotelownerid === userid ? (
-                        <button onClick={() => navigate(`/hotels/edit-rooms?hotelId=${room.hotelId}`)} className="w-full sm:w-auto px-6 py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md transition-all duration-200 flex items-center justify-center gap-2">
-                            <Pencil className="w-4 h-4" />
-                            Edit Room
-                        </button>
-                    ) : (
-                        <button
-                            className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                            onClick={() => navigate(`/book/${room._id}?${searchParams.toString()}`)}
-                        >
-                            Continue to Booking
-                        </button>
-                    )} */}
+                    <button
+                        onClick={() => onDelete(room._id, room.hotelId)}
+                        className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg shadow-sm transition"
+                    >
+                        Delete Room
+                    </button>
                 </div>
             </div>
         </div>
+
     );
 };
 

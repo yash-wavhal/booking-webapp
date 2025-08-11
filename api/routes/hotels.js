@@ -8,7 +8,7 @@ const router = express.Router();
 router.post("/create/:id", verifyUser, createHotel);
 
 // UPDATE (user can only update their own hotel)
-router.put("/:id", verifyUser || verifyAdmin, verifyHotelOwner, updateHotel);
+router.put("/:id/:hotelid", verifyUser, verifyHotelOwner, updateHotel);
 
 router.delete("/admin/:hotelid", verifyAdmin, deleteHotel);
 

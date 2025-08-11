@@ -21,9 +21,10 @@ interface RoomCardProps {
     maxExtraBeds: number;
   };
   hoteluserid: string;
+  onDelete: (roomId: string, hotelId: string) => void;
 }
 
-const RoomCard = ({ room, hoteluserid }: RoomCardProps) => {
+const RoomCard = ({ room, hoteluserid, onDelete }: RoomCardProps) => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [roomModal, setRoomModal] = useState(false);
@@ -40,7 +41,8 @@ const RoomCard = ({ room, hoteluserid }: RoomCardProps) => {
   };
 
   return (
-    <div className="bg-white rounded-lg p-5 shadow-md hover:shadow-xl transition cursor-pointer">
+    <div className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden flex flex-col max-w-4xl mx-auto">
+      {/* Photos */}
       {lightboxOpen && (
         <RoomPhotosLightbox
           photos={room.photos}
@@ -49,53 +51,63 @@ const RoomCard = ({ room, hoteluserid }: RoomCardProps) => {
         />
       )}
 
-      {room.photos && room.photos.length > 0 && (
-        <div className="mb-6 grid grid-cols-2 gap-2 h-48">
-          {room.photos?.slice(0, 4)?.map((photoUrl, idx) => (
+      {room.photos?.length > 0 && (
+        <div className="min-h-64 grid grid-cols-2 gap-2 p-3 bg-gray-50">
+          {room.photos.slice(0, 4).map((photoUrl, idx) => (
             <img
               key={idx}
               src={photoUrl}
               alt={`${room.title} photo ${idx + 1}`}
-              className="w-full h-24 object-cover rounded-md cursor-pointer hover:opacity-80 transition"
+              className="w-full h-28 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform"
               onClick={() => openLightboxAt(idx)}
             />
           ))}
         </div>
       )}
 
-      <div className="h-40">
-        <h3 className="text-xl font-semibold text-indigo-900 mb-2">
-          {room.title}
-        </h3>
-        <p className="h-16 text-gray-700 mb-3">{room.desc}</p>
-        <div className="flex justify-between items-center text-indigo-800 font-semibold mb-1">
-          <span>Total {room.roomNumbers.length} Rooms Available</span>
+      <div className="p-6 flex flex-col gap-3">
+        <div className="flex justify-between items-start border-b pb-2">
+          <h3 className="text-xl font-semibold text-gray-800">{room.title}</h3>
+          <span className="text-sm text-gray-500">
+            ₹{room.price} / Room
+          </span>
         </div>
-        <div className="flex justify-between items-center text-indigo-800 font-semibold">
-          <span>👥 Max {room.maxPeople} / Room</span>
-          <span>₹{room.price} / Room</span>
+
+        <p className="text-sm min-h-14 text-gray-600 leading-5 line-clamp-3">
+          {room.desc}
+        </p>
+
+        <div className="flex flex-wrap gap-4 text-sm text-gray-700">
+          <span>
+            🏠 {room.roomNumbers.length} Rooms Available
+          </span>
+          <span>
+            👥 Max {room.maxPeople} / Room
+          </span>
         </div>
-      </div>
-      {/* {hoteluserid === userid ? (
-        <div className="mt-6 flex justify-between flex-col sm:flex-row gap-3 sm:gap-4">
-          <button onClick={() => navigate(`/hotels/edit-rooms?hotelId=${room.hotelId}`)} className="w-full sm:w-auto px-6 py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md transition-all duration-200 flex items-center justify-center gap-2">
-            <Pencil className="w-4 h-4" />
+
+        <div className="pt-3 flex gap-3">
+          <button
+            onClick={() => navigate(`/hotels/edit-rooms?hotelId=${room.hotelId}`)}
+            className="px-4 py-1.5 bg-blue-600 text-white text-sm rounded-lg shadow hover:bg-blue-700"
+          >
             Edit Room
-          </button> */}
-          <button onClick={() => setRoomModal(true)} className="mt-6 w-full px-6 py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md transition-all duration-200">
+          </button>
+          <button
+            onClick={() => setRoomModal(true)}
+            className="px-4 py-1.5 bg-gray-700 text-white text-sm rounded-lg shadow hover:bg-gray-800"
+          >
             View Room
           </button>
-        {/* </div>
-      ) : (
-        <button onClick={() => setRoomModal(true)} className="mt-6 w-full px-6 py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md transition-all duration-200">
-          Book This Room
-        </button>
-      )} */}
+        </div>
+      </div>
+
       {roomModal && (
         <BookRoomModal
           room={room}
           onClose={() => setRoomModal(false)}
           hotelownerid={hoteluserid}
+          onDelete={onDelete}
         />
       )}
     </div>
