@@ -57,7 +57,7 @@ const HotelCardList: React.FC<Props> = ({ data, loading, setSelectedHotel }) => 
             <CityCardSkeleton key={i} />
           ) : (
             <Card
-              key={hotel._id}
+              key={hotel?._id}
               sx={{
                 minWidth: 300,
                 minHeight: 400,
@@ -71,10 +71,10 @@ const HotelCardList: React.FC<Props> = ({ data, loading, setSelectedHotel }) => 
               <CardMedia
                 component="img"
                 image={
-                  hotel.photos?.[0] ||
+                  hotel?.photos?.[0] ||
                   "https://img.freepik.com/free-photo/type-entertainment-complex-popular-resort-with-pools-water-parks-turkey-with-more-than-5-million-visitors-year-amara-dolce-vita-luxury-hotel-resort-tekirova-kemer_146671-18728.jpg"
                 }
-                alt={hotel.name}
+                alt={hotel?.name}
                 sx={{
                   height: 250,
                   objectFit: "cover",
@@ -83,15 +83,15 @@ const HotelCardList: React.FC<Props> = ({ data, loading, setSelectedHotel }) => 
                 }}
               />
               <CardContent>
-                <Typography variant="h6">{hotel.name}</Typography>
+                <Typography variant="h6">{hotel?.name}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {hotel.city}
+                  {hotel?.city}
                 </Typography>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Available at affordable rates
                 </Typography>
                 <Typography className="bg-blue-900 text-white w-16 px-3 py-1 rounded-sm font-bold shadow-md flex items-center">
-                  <span>{hotel.rating ? hotel.rating : "N/A"}</span>
+                  <span>{hotel?.rating ? hotel?.rating : "N/A"}</span>
                   <span className="ml-1">★</span>
                 </Typography>
               </CardContent>

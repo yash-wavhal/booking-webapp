@@ -18,6 +18,7 @@ import Hotel from './components/hotel/Hotel';
 import EditProfile from './pages/edit-profile/EditProfile';
 import HotelCreationStepper from './pages/hotelcreationstepper/HotelCreationStepper';
 import RoomStep from './components/roomStep/RoomStep';
+import BookingDetailPage from './components/BookingDetailPage/BookingDetailPage';
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
             <Route path="hotels" element={<Hotels />} />
             <Route path="/hotels/:hotelid" element={<ProtectedRoute><Hotel /></ProtectedRoute>} />
             <Route path="bookings" element={<Bookings />} />
+            <Route path="/bookings/:bookingId" element={<BookingDetailPage />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="complaints" element={<Complaints />} />
             <Route path="/hotels/create" element={<ProtectedRoute><HotelCreationStepper /></ProtectedRoute>} />

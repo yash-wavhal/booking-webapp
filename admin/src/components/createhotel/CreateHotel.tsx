@@ -39,6 +39,7 @@ const CreateHotel = ({ setStep, setNewHotelId }: HotelFormProps) => {
 
   const [searchParams] = useSearchParams();
   const hotelId = searchParams.get("hotelId");
+  const ownerId = searchParams.get("ownerId");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -135,7 +136,11 @@ const CreateHotel = ({ setStep, setNewHotelId }: HotelFormProps) => {
 
       const photoUrls = photoFiles.length ? await uploadPhotosToBackend() : hotel.photos || [];
 
-      const hotelData = { ...hotel, photos: photoUrls };
+      const hotelData = {
+        ...hotel,
+        photos: photoUrls,
+        ...(ownerId ? { ownerId: ownerId } : {})
+      };
 
       if (hotelId) {
         await axios.put(`${BASE_URL}/hotels/${user?._id}/${hotelId}`, hotelData, { withCredentials: true });

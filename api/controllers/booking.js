@@ -21,6 +21,41 @@ export async function getBookingsByUser(req, res, next) {
     }
 }
 
+export const getBooking = async (req, res, next) => {
+  try {
+    const booking = await Book.findById(req.params.id)
+      .populate("hotelId")
+      .populate("hotelOwnerId")
+      .populate("userId")
+      .populate("roomId")
+      .exec();
+
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    res.status(200).json(booking);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export const getAllBookings = async (req, res) => {
+  try {
+    const bookings = await Book.find()
+      .populate("hotelId")
+      .populate("hotelOwnerId")
+      .populate("userId")
+      .populate("roomId")
+      .exec();
+
+    res.status(200).json(bookings);
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    res.status(500).json({ message: "Server error fetching bookings" });
+  }
+}
+
 export async function upcomingBookings(req, res, next) {
   try {
     const today = new Date();

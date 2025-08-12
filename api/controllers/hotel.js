@@ -2,11 +2,18 @@ import Hotel from "../models/Hotel.js";
 import Room from "../models/Room.js";
 
 export const createHotel = async (req, res, next) => {
-    const newHotel = new Hotel({
-        ...req.body,
-        ownerId: req.user.id,
-    });
     try {
+        let ownerId = req.user.id;
+
+        if (req.user.isAdmin && req.body.ownerId) {
+            ownerId = req.body.ownerId;
+        }
+
+        const newHotel = new Hotel({
+            ...req.body,
+            ownerId,
+        });
+
         const savedHotel = await newHotel.save();
         res.status(201).json(savedHotel);
     } catch (err) {

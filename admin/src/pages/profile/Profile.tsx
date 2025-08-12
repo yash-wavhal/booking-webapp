@@ -430,17 +430,25 @@ const Profile = () => {
             )}
 
             <section>
-                <div className="flex justify-between items-center mb-3 flex-wrap gap-3">
+                <div className="flex flex-wrap justify-between items-center mb-3 gap-3">
                     <h3 className="text-xl font-semibold text-gray-800 flex-shrink-0">
                         Listed Hotels of User
                     </h3>
-                    <div className="flex-grow ml-96 min-w-[200px] sm:min-w-[100px]">
+
+                    <div className="flex flex-grow max-w-md gap-4 min-w-[200px] sm:min-w-[300px]">
+                        <button
+                            onClick={() => navigate(`/hotels/create?ownerId=${userId}`)}
+                            className="px-4 py-2 bg-indigo-600 text-white rounded-md shadow hover:bg-indigo-700 transition whitespace-nowrap"
+                        >
+                            Add Hotel
+                        </button>
+
                         <input
                             type="text"
                             placeholder="Search your hotels by name or city..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="flex-grow px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
                     </div>
                 </div>
@@ -452,7 +460,12 @@ const Profile = () => {
                 ) : (
                     <div className="space-y-4">
                         {filteredHotels.map((hotel) => (
-                            <HotelList key={hotel._id} hotel={hotel} isUser={true} onDelete={handleDeleteHotel} />
+                            <HotelList
+                                key={hotel._id}
+                                hotel={hotel}
+                                isUser={true}
+                                onDelete={handleDeleteHotel}
+                            />
                         ))}
                     </div>
                 )}
