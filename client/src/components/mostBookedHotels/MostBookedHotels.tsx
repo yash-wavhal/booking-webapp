@@ -20,6 +20,7 @@ interface Hotel {
 
 const MostBookedHotels: React.FC = () => {
   const { data, loading, error } = useFetch<Hotel[]>("/hotels/mostbooked");
+  console.log("data", data);
   const [selectedHotel, setSelectedHotel] = useState<Hotel | null>(null);
   const navigate = useNavigate();
 

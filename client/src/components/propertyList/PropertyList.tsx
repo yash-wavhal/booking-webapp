@@ -35,6 +35,23 @@ const PropertyList: React.FC = () => {
       <div className="text-center p-4 text-red-500">Error loading data</div>
     );
 
+  const getDescription = (type: string) => {
+    switch (type.toLowerCase()) {
+      case "hotel":
+        return "Comfortable rooms with great amenities for all travelers.";
+      case "villa":
+        return "Spacious private villas for families or groups seeking privacy.";
+      case "cabin":
+        return "Cozy cabins nestled in nature for a rustic getaway.";
+      case "apartment":
+        return "Fully equipped apartments, ideal for longer stays.";
+      case "resort":
+        return "Luxury resorts with pools, spas & fun activities for relaxation.";
+      default:
+        return "Explore our diverse accommodations.";
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto relative mb-10">
       {/* <h2 className="text-3xl text-gray-900 font-bold ml-4 mb-3">
@@ -83,8 +100,11 @@ const PropertyList: React.FC = () => {
               />
               <CardContent>
                 <Typography variant="h6">{item.type}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {item.count} {item.type}
+                <Typography variant="body2" color="text.secondary" className="mb-1 font-semibold">
+                  Explore our top {item.type}{"s"}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: "italic" }}>
+                  {getDescription(item.type)}
                 </Typography>
               </CardContent>
             </Card>

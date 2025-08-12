@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { UserCircle } from "lucide-react";
 import Sidebar from "../../components/sideBar/SideBar";
 import { useNavigate } from "react-router-dom";
+import ConfirmationDialog from "../../components/ConfirmationDialog/ConfirmationDialog";
 
 interface User {
   _id: string;
@@ -31,6 +32,8 @@ export default function UserManagement() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -49,10 +52,12 @@ export default function UserManagement() {
     fetchUsers();
   }, []);
 
-  const handleDeleteUser = async (userId: string) => {
+  const handleDeleteUser = async () => {
     try {
-      const res = await axios.delete(`${BASE_URL}/users/${userId}`);
-      setUsers(prevUsers => prevUsers.filter(user => user._id !== userId));
+      const res = await axios.delete(`${BASE_URL}/users/${selectedUserId}`);
+      setUsers(prevUsers => prevUsers.filter(user => user._id !== selectedUserId));
+      toast.success("User deleted successfully!");
+      setShowConfirm(false);
     } catch (err) {
       console.log(err);
       toast.error("Error deleting user, please try again!");
@@ -135,7 +140,10 @@ export default function UserManagement() {
                   <button
                     className="rounded border border-red-400 bg-white px-3 py-1 text-red-500 text-sm hover:bg-red-50"
                     type="button"
-                    onClick={() => handleDeleteUser(user._id)}
+                    onClick={() => {
+                      setShowConfirm(true);
+                      setSelectedUserId(user._id);
+                    }}
                   >
                     Delete
                   </button>
@@ -143,6 +151,13 @@ export default function UserManagement() {
               </tr>
             ))}
           </tbody>
+          <ConfirmationDialog
+            isOpen={showConfirm}
+            title="Confirm Delete"
+            message="Are you sure you want to delete this user?"
+            onConfirm={handleDeleteUser}
+            onCancel={() => setShowConfirm(false)}
+          />
         </table>
       </div>
     </div>

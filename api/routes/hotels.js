@@ -15,6 +15,12 @@ router.delete("/admin/:hotelid", verifyAdmin, deleteHotel);
 // DELETE (user can only delete their own hotel)
 router.delete("/:hotelid", verifyUser, verifyHotelOwner, deleteHotel);
 
+router.get("/mostbooked", getMostBookedHotels);
+
+router.get("/countByType", countByType);
+
+router.get("/type/:hotelType", getHotelsByHotelType);
+
 // GET hotel
 router.get("/find/:id", getHotel);
 router.get("/search", searchHotels);
@@ -23,15 +29,10 @@ router.get("/search", searchHotels);
 router.get("/:id", getHotels);
 router.get("/user/:id", getHotelsOfUser);
 
-router.get("/mostbooked", getMostBookedHotels);
 router.get("/hotelsbycityname/:city", getHotelsByCityName);
-
-router.get("/type/:hotelType", getHotelsByHotelType);
 
 // GET counts
 router.get("/getallcitiescount", countAllCities);
 router.get("/countByCity", countByCity);
-router.get("/countByType", countByType);
-
 
 export default router;
