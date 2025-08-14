@@ -32,18 +32,12 @@ interface DateRangeItem {
     key: string;
 }
 
-interface Options {
-    adult: number;
-    children: number;
-}
-
 const BookingPage = () => {
     const { roomId } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
 
     const searchParams = new URLSearchParams(location.search);
-    const [isOpen, setIsOpen] = useState(false);
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
 
@@ -51,13 +45,15 @@ const BookingPage = () => {
 
     const [selectedRooms, setSelectedRooms] = useState<number[]>([]);
     const [roomsData, setRoomsData] = useState<
-        { roomNumber: number; extraGuests: number; extraBeds: number }[]
+        {
+            roomNumber: number;
+            adult: number;
+            children: number;
+            extraGuests: number;
+            extraBeds: number;
+        }[]
     >([]);
 
-    const { user } = useAuth();
-
-    const initialAdult = Number(searchParams.get("adult")) || 1;
-    const initialChildren = Number(searchParams.get("children")) || 0;
     const initialStartDate = searchParams.get("startDate");
     const initialEndDate = searchParams.get("endDate");
 
@@ -73,18 +69,12 @@ const BookingPage = () => {
         },
     ]);
 
-    const [options, setOptions] = useState<Options>({
-        adult: initialAdult,
-        children: initialChildren,
-    });
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const hasRequiredParams =
             searchParams.get("startDate") &&
-            searchParams.get("endDate") &&
-            searchParams.get("adult") &&
-            searchParams.get("children");
+            searchParams.get("endDate");
         if (!hasRequiredParams) setShowModal(true);
     }, [location.search]);
 
@@ -107,13 +97,13 @@ const BookingPage = () => {
 
     useEffect(() => {
         setRoomsData((prev) => {
-            const prevMap = new Map(prev.map(r => [r.roomNumber, r]));
-            return selectedRooms.map(roomNum => {
-                if (prevMap.has(roomNum)) {
-                    return prevMap.get(roomNum)!;
-                }
+            const prevMap = new Map(prev.map((r) => [r.roomNumber, r]));
+            return selectedRooms.map((roomNum) => {
+                if (prevMap.has(roomNum)) return prevMap.get(roomNum)!;
                 return {
                     roomNumber: roomNum,
+                    adult: 1,
+                    children: 0,
                     extraGuests: 0,
                     extraBeds: 0,
                 };
@@ -160,8 +150,6 @@ const BookingPage = () => {
         const params = new URLSearchParams(location.search);
         params.set("startDate", date[0].startDate.toISOString());
         params.set("endDate", date[0].endDate.toISOString());
-        params.set("adult", options.adult.toString());
-        params.set("children", options.children.toString());
 
         navigate(`${location.pathname}?${params.toString()}`, { replace: true });
         setShowModal(false);
@@ -181,120 +169,41 @@ const BookingPage = () => {
         <div>
             {showModal && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white rounded-2xl p-6 w-full max-w-5xl shadow-2xl relative animate-fadeIn">
-                        {/* Close Button */}
-                        <button
-                            onClick={() => setShowModal(false)}
-                            className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 transition"
-                        >
-                            ✕
-                        </button>
+                    <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl relative animate-fadeIn flex flex-col items-center">
 
-                        <h1 className="text-2xl font-bold text-indigo-700 mb-6 text-center">
-                            Before Proceeding Fill Following Information
+                        <h1 className="text-2xl md:text-3xl font-bold text-indigo-700 mb-6 text-center">
+                            Select Your Stay Dates
                         </h1>
 
-                        <div className="grid grid-cols-2 gap-24">
-                            {/* Stay Dates */}
-                            <div className="border border-indigo-200 p-4 rounded-xl shadow-sm">
-                                <h2 className="text-lg font-semibold mb-3 text-indigo-700">
-                                    Your Stay Dates
-                                </h2>
-                                <DateRange
-                                    editableDateInputs={true}
-                                    onChange={(item: { selection: DateRangeItem }) =>
-                                        setDate([item.selection])
-                                    }
-                                    moveRangeOnFirstSelection={false}
-                                    ranges={date}
-                                    minDate={new Date()}
-                                    rangeColors={["#6366F1"]}
-                                    className="rounded-lg border border-indigo-300"
-                                />
-                                {date[0].endDate <= date[0].startDate && (
-                                    <p className="mt-2 text-red-600 font-semibold text-sm">
-                                        Check-out date must be after check-in date.
-                                    </p>
-                                )}
-                            </div>
-
-                            {/* Members Section */}
-                            <div className="border border-indigo-200 p-4 rounded-xl shadow-sm">
-                                <h2 className="text-lg font-semibold text-indigo-700 mb-2">Guests</h2>
-                                <p className="text-gray-500 mb-4">
-                                    (Max {room.maxPeople} members allowed)
-                                </p>
-
-                                <div className="grid grid-cols-2 gap-6">
-                                    {/* Adults */}
-                                    <div className="flex flex-col">
-                                        <label
-                                            htmlFor="adults"
-                                            className="text-sm font-medium text-gray-700 mb-1"
-                                        >
-                                            Adults
-                                        </label>
-                                        <input
-                                            id="adults"
-                                            type="number"
-                                            min={1}
-                                            value={options.adult}
-                                            onChange={(e) => {
-                                                const newAdult = Math.max(1, Number(e.target.value));
-                                                const maxAdults = room.maxPeople - options.children;
-                                                setOptions((prev) => ({
-                                                    ...prev,
-                                                    adult: newAdult > maxAdults ? maxAdults : newAdult,
-                                                }));
-                                            }}
-                                            className="border border-indigo-300 rounded-lg px-3 py-2 text-center font-semibold text-lg focus:ring-2 focus:ring-indigo-400"
-                                        />
-                                    </div>
-
-                                    {/* Children */}
-                                    <div className="flex flex-col">
-                                        <label
-                                            htmlFor="children"
-                                            className="text-sm font-medium text-gray-700 mb-1"
-                                        >
-                                            Children
-                                        </label>
-                                        <input
-                                            id="children"
-                                            type="number"
-                                            min={0}
-                                            value={options.children}
-                                            onChange={(e) => {
-                                                const newChildren = Math.max(0, Number(e.target.value));
-                                                const maxChildren = room.maxPeople - options.adult;
-                                                setOptions((prev) => ({
-                                                    ...prev,
-                                                    children:
-                                                        newChildren > maxChildren ? maxChildren : newChildren,
-                                                }));
-                                            }}
-                                            className="border border-indigo-300 rounded-lg px-3 py-2 text-center font-semibold text-lg focus:ring-2 focus:ring-indigo-400"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+                        <div className="w-full flex justify-center border border-indigo-200 p-4 rounded-xl shadow-sm">
+                            <DateRange
+                                editableDateInputs={true}
+                                onChange={(item: { selection: DateRangeItem }) =>
+                                    setDate([item.selection])
+                                }
+                                moveRangeOnFirstSelection={false}
+                                ranges={date}
+                                minDate={new Date()}
+                                rangeColors={["#6366F1"]}
+                                className="rounded-lg border border-indigo-300"
+                            />
                         </div>
 
-                        {/* Action Buttons */}
-                        <div className="mt-6 flex justify-end gap-3">
-                            {/* <button
-                                onClick={() => setShowModal(false)}
-                                className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
-                            >
-                                Cancel
-                            </button> */}
+                        {date[0].endDate <= date[0].startDate && (
+                            <p className="mt-2 text-red-600 font-semibold text-sm text-center">
+                                Check-out date must be after check-in date.
+                            </p>
+                        )}
+
+                        <div className="mt-6 flex justify-center">
                             <button
                                 onClick={handleConfirmModal}
-                                className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition"
+                                className="px-5 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition"
                             >
                                 Confirm
                             </button>
                         </div>
+
                     </div>
                 </div>
             )}
@@ -378,7 +287,7 @@ const BookingPage = () => {
                                 </div>
                             </div>
 
-                            {roomsData.length > 0 && (room.maxExtraGuests > 0 || room.maxExtraBeds > 0) && (
+                            {roomsData.length > 0 && (
                                 <div className="bg-gray-100 p-4 rounded-xl mb-6">
                                     <h3 className="text-lg font-semibold mb-3">Customize Your Stay</h3>
 
@@ -391,21 +300,72 @@ const BookingPage = () => {
                                                 Room #{data.roomNumber}
                                             </h4>
 
+                                            {/* Guests: Adults + Children */}
+                                            <div className="border border-indigo-200 p-4 mb-5 rounded-xl shadow-sm">
+                                                <h2 className="text-lg font-semibold text-indigo-700 mb-2">Guests</h2>
+                                                <p className="text-gray-500 mb-4">
+                                                    (Max {room.maxPeople} members allowed)
+                                                </p>
+
+                                                <div className="grid grid-cols-2 gap-6">
+                                                    {/* Adults */}
+                                                    <div className="flex flex-col">
+                                                        <label className="text-sm font-medium text-gray-700 mb-1">Adults</label>
+                                                        <input
+                                                            type="number"
+                                                            min={1}
+                                                            value={data.adult}
+                                                            onChange={(e) => {
+                                                                const newAdult = Math.max(1, Number(e.target.value));
+                                                                const maxAdults = room.maxPeople - data.children;
+                                                                setRoomsData((prev) =>
+                                                                    prev.map((r) =>
+                                                                        r.roomNumber === data.roomNumber
+                                                                            ? { ...r, adult: newAdult > maxAdults ? maxAdults : newAdult }
+                                                                            : r
+                                                                    )
+                                                                );
+                                                            }}
+                                                            className="border border-indigo-300 rounded-lg px-3 py-2 text-center font-semibold text-lg focus:ring-2 focus:ring-indigo-400"
+                                                        />
+                                                    </div>
+
+                                                    {/* Children */}
+                                                    <div className="flex flex-col">
+                                                        <label className="text-sm font-medium text-gray-700 mb-1">Children</label>
+                                                        <input
+                                                            type="number"
+                                                            min={0}
+                                                            value={data.children}
+                                                            onChange={(e) => {
+                                                                const newChildren = Math.max(0, Number(e.target.value));
+                                                                const maxChildren = room.maxPeople - data.adult;
+                                                                setRoomsData((prev) =>
+                                                                    prev.map((r) =>
+                                                                        r.roomNumber === data.roomNumber
+                                                                            ? { ...r, children: newChildren > maxChildren ? maxChildren : newChildren }
+                                                                            : r
+                                                                    )
+                                                                );
+                                                            }}
+                                                            className="border border-indigo-300 rounded-lg px-3 py-2 text-center font-semibold text-lg focus:ring-2 focus:ring-indigo-400"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Extra Guests / Extra Beds */}
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                                 {room.maxExtraGuests > 0 && (
                                                     <div>
-                                                        <label className="block font-medium mb-2 text-gray-700">
-                                                            Extra Guests
-                                                        </label>
+                                                        <label className="block font-medium mb-2 text-gray-700">Extra Guests</label>
                                                         <select
                                                             value={data.extraGuests}
                                                             onChange={(e) => {
                                                                 const value = Number(e.target.value);
                                                                 setRoomsData((prev) =>
                                                                     prev.map((r) =>
-                                                                        r.roomNumber === data.roomNumber
-                                                                            ? { ...r, extraGuests: value }
-                                                                            : r
+                                                                        r.roomNumber === data.roomNumber ? { ...r, extraGuests: value } : r
                                                                     )
                                                                 );
                                                             }}
@@ -422,18 +382,14 @@ const BookingPage = () => {
 
                                                 {room.maxExtraBeds > 0 && (
                                                     <div>
-                                                        <label className="block font-medium mb-2 text-gray-700">
-                                                            Extra Beds
-                                                        </label>
+                                                        <label className="block font-medium mb-2 text-gray-700">Extra Beds</label>
                                                         <select
                                                             value={data.extraBeds}
                                                             onChange={(e) => {
                                                                 const value = Number(e.target.value);
                                                                 setRoomsData((prev) =>
                                                                     prev.map((r) =>
-                                                                        r.roomNumber === data.roomNumber
-                                                                            ? { ...r, extraBeds: value }
-                                                                            : r
+                                                                        r.roomNumber === data.roomNumber ? { ...r, extraBeds: value } : r
                                                                     )
                                                                 );
                                                             }}

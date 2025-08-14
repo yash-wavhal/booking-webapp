@@ -23,12 +23,11 @@ interface Booking {
     _id: string;
     title?: string;
   };
+  amountPaid: number;
   roomDetails: Array<{
-    roomNumbers: Array<{
-      number: number;
-      noOfExtraGuests: number;
-      noOfExtraBeds: number;
-    }>;
+    number: number;
+    noOfExtraGuests: number;
+    noOfExtraBeds: number;
     people: {
       adult: number;
       children: number;
@@ -43,7 +42,7 @@ const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const BookingManagementPage: React.FC = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
-  console.log("bookings", bookings)
+  // console.log("bookings", bookings);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const { user } = useAuth();
@@ -102,46 +101,39 @@ const BookingManagementPage: React.FC = () => {
           <table className="min-w-full border border-gray-200 divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Booking ID</th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Hotel</th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Hotel Owner</th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Guest</th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Check-In</th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Check-Out</th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Guests</th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Extras</th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Booked On</th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Actions</th>
+                <th className="py-3 text-center text-sm font-medium text-gray-600">Booking ID</th>
+                <th className="py-2 text-center text-sm font-medium text-gray-600">Hotel</th>
+                <th className="py-2 text-center text-sm font-medium text-gray-600">Hotel Owner</th>
+                <th className="py-2 text-center text-sm font-medium text-gray-600">Guest</th>
+                <th className="py-2 text-center text-sm font-medium text-gray-600">Check-In</th>
+                <th className="py-2 text-center text-sm font-medium text-gray-600">Check-Out</th>
+                <th className="py-2 text-center text-sm font-medium text-gray-600">Total Guests</th>
+                <th className="py-2 text-center text-sm font-medium text-gray-600">Booked On</th>
+                <th className="py-2 text-center text-sm font-medium text-gray-600">Amount Paid</th>
+                <th className="py-2 text-center text-sm font-medium text-gray-600">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filteredBookings.map((booking) => {
-                const totalAdults = booking.roomDetails.reduce(
-                  (sum, detail) => sum + detail.people.adult,
+                const totalAdults = booking.roomDetails?.reduce(
+                  (sum, detail) => sum + (detail.people?.adult || 0),
                   0
-                );
-                const totalChildren = booking.roomDetails.reduce(
-                  (sum, detail) => sum + detail.people.children,
+                ) || 0;
+
+                const totalChildren = booking.roomDetails?.reduce(
+                  (sum, detail) => sum + (detail.people?.children || 0),
                   0
-                );
-                const totalExtraGuests = booking.roomDetails.reduce(
-                  (sum, detail) =>
-                    sum +
-                    detail.roomNumbers.reduce(
-                      (subSum, rn) => subSum + rn.noOfExtraGuests,
-                      0
-                    ),
+                ) || 0;
+
+                const totalExtraGuests = booking.roomDetails?.reduce(
+                  (sum, detail) => sum + (detail.noOfExtraGuests || 0),
                   0
-                );
-                const totalExtraBeds = booking.roomDetails.reduce(
-                  (sum, detail) =>
-                    sum +
-                    detail.roomNumbers.reduce(
-                      (subSum, rn) => subSum + rn.noOfExtraBeds,
-                      0
-                    ),
+                ) || 0;
+
+                const totalExtraBeds = booking.roomDetails?.reduce(
+                  (sum, detail) => sum + (detail.noOfExtraBeds || 0),
                   0
-                );
+                ) || 0;
 
                 return (
                   <tr key={booking._id} className="hover:bg-gray-50">
@@ -149,7 +141,6 @@ const BookingManagementPage: React.FC = () => {
                     <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{booking.hotelId?.name}</td>
                     <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{booking.hotelOwnerId.username}</td>
                     <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
-                      {/* {booking.userId.username} <br /> */}
                       <span className="text-xs text-gray-500">{booking.userId.email}</span>
                     </td>
                     <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
@@ -159,15 +150,16 @@ const BookingManagementPage: React.FC = () => {
                       {new Date(booking.checkOutDate).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
-                      Adults: {totalAdults} <br />
-                      Children: {totalChildren}
+                      {totalAdults + totalChildren + totalExtraGuests}
                     </td>
-                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
-                      Extra Guests: {totalExtraGuests} <br />
-                      Extra Beds: {totalExtraBeds}
-                    </td>
+                    {/* <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
+                      {totalExtraGuests}
+                    </td> */}
                     <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
                       {new Date(booking.createdAt).toLocaleString()}
+                    </td>
+                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                      {booking.amountPaid}
                     </td>
                     <td className="px-4 py-2 whitespace-nowrap text-sm">
                       <button

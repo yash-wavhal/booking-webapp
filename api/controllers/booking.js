@@ -76,10 +76,35 @@ export async function upcomingBookings(req, res, next) {
 }
 
 export async function cancelBooking(req, res, next) {
-    try {
-        await Book.findByIdAndDelete(req.params.bookingId);
-        res.status(200).json({ message: "Booking cancelled successfully" });
-    } catch (err) {
-        next(err);
-    }
+  try {
+      await Book.findByIdAndDelete(req.params.bookingId);
+      res.status(200).json({ message: "Booking cancelled successfully" });
+  } catch (err) {
+      next(err);
+  }
+}
+
+export async function cancelBookingByNumber(req, res, next) {
+  const { bookingId } = req.params;
+  const { number } = req.body;
+
+  if (!number && number !== 0) {
+    return res.status(400).json({ error: "Room number is required" });
+  }
+
+  try {
+    const booking = await Book.findById(bookingId);
+    if (!booking) return res.status(404).json({ error: "Booking not found" });
+
+    const updatedRoomDetails = booking.roomDetails.filter(
+      (room) => room.number !== Number(number)
+    );
+
+    booking.roomDetails = updatedRoomDetails;
+    await booking.save();
+
+    res.status(200).json({ message: "Booking cancelled successfully", booking });
+  } catch (err) {
+    next(err);
+  }
 }

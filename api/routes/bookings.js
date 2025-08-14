@@ -1,5 +1,5 @@
 import express from "express";
-import { cancelBooking, createBooking, getAllBookings, getBooking, getBookingsByUser, upcomingBookings } from "../controllers/booking.js";
+import { cancelBooking, cancelBookingByNumber, createBooking, getAllBookings, getBooking, getBookingsByUser, upcomingBookings } from "../controllers/booking.js";
 import { verifyAdmin, verifyUser } from "../utils/verifyToken.js";
 import Book from "../models/Book.js";
 
@@ -12,5 +12,6 @@ router.get("/upcoming/:id", verifyUser, upcomingBookings);
 router.get("/:id", verifyAdmin, getBooking);
 router.get("/", verifyAdmin, getAllBookings);
 router.delete("/cancel/:bookingId/:id", verifyUser, cancelBooking);
+router.patch("/cancel/:bookingId/:id", verifyUser, cancelBookingByNumber);
 
 export default router;

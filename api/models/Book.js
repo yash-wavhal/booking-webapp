@@ -22,20 +22,19 @@ const BookSchema = new mongoose.Schema(
       ref: "Room",
       required: true,
     },
+    amountPaid: {
+      type: Number,
+    },
     roomDetails: [
       {
-        roomNumbers: [
-          {
-            number: { type: Number, required: true },
-            noOfExtraGuests: { type: Number, default: 0, min: 0 },
-            noOfExtraBeds: { type: Number, default: 0, min: 0 },
-          },
-        ],
+        number: { type: Number, required: true },
+        noOfExtraGuests: { type: Number, default: 0, min: 0 },
+        noOfExtraBeds: { type: Number, default: 0, min: 0 },
         people: {
           adult: { type: Number, default: 1, min: 1 },
           children: { type: Number, default: 0, min: 0 },
         },
-      },
+      }
     ],
     checkInDate: { type: Date, required: true },
     checkOutDate: { type: Date, required: true },

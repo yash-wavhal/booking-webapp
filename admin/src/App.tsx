@@ -18,7 +18,7 @@ import Hotel from './components/hotel/Hotel';
 import EditProfile from './pages/edit-profile/EditProfile';
 import HotelCreationStepper from './pages/hotelcreationstepper/HotelCreationStepper';
 import RoomStep from './components/roomStep/RoomStep';
-import BookingDetailPage from './components/BookingDetailPage/BookingDetailPage';
+import BookingDetailPage from './pages/BookingDetailPage/BookingDetailPage';
 
 function App() {
   return (
