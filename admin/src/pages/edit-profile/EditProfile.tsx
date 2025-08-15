@@ -51,7 +51,7 @@ const EditProfile = () => {
         const value = e.target.value;
 
         if (name.includes("personalDetails.")) {
-            const key = name.split(".")[1];
+            const key = name?.split(".")[1];
             setFormData({
                 ...formData,
                 personalDetails: {
@@ -110,7 +110,7 @@ const EditProfile = () => {
                         <input
                             type="text"
                             name="username"
-                            value={formData.username}
+                            value={formData?.username}
                             onChange={handleChange}
                             className="w-full p-2 border rounded-lg"
                         />
@@ -121,7 +121,7 @@ const EditProfile = () => {
                         <input
                             type="email"
                             name="email"
-                            value={formData.email}
+                            value={formData?.email}
                             onChange={handleChange}
                             className="w-full p-2 border bg-gray-200 rounded-lg"
                             readOnly
@@ -133,7 +133,7 @@ const EditProfile = () => {
                         <input
                             type="text"
                             name="phoneNumber"
-                            value={formData.phoneNumber}
+                            value={formData?.phoneNumber}
                             onChange={handleChange}
                             className="w-full p-2 border rounded-lg"
                         />
@@ -144,7 +144,7 @@ const EditProfile = () => {
                         <input
                             type="date"
                             name="personalDetails.dob"
-                            value={formData?.personalDetails?.dob.split("T")[0]}
+                            value={formData?.personalDetails?.dob?.split("T")[0]}
                             onChange={handleChange}
                             className="w-full p-2 border rounded-lg"
                         />

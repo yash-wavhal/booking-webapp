@@ -137,31 +137,31 @@ const BookingManagementPage: React.FC = () => {
 
                 return (
                   <tr key={booking._id} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700 font-mono">{booking._id}</td>
-                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{booking.hotelId?.name}</td>
-                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{booking.hotelOwnerId.username}</td>
-                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
+                    <td className="px-4 py-2 whitespace-nowrap text-center text-sm text-gray-700 font-mono">{booking._id}</td>
+                    <td className="px-4 py-2 whitespace-nowrap text-center text-sm text-gray-900">{booking.hotelId?.name}</td>
+                    <td className="px-4 py-2 whitespace-nowrap text-center text-sm text-gray-900">{booking.hotelOwnerId.username}</td>
+                    <td className="px-4 py-2 whitespace-nowrap text-center text-sm text-gray-700">
                       <span className="text-xs text-gray-500">{booking.userId.email}</span>
                     </td>
-                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
+                    <td className="px-4 py-2 whitespace-nowrap text-center text-sm text-gray-700">
                       {new Date(booking.checkInDate).toLocaleDateString()}
                     </td>
-                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
+                    <td className="px-5 py-2 whitespace-nowrap text-center text-sm text-gray-700">
                       {new Date(booking.checkOutDate).toLocaleDateString()}
                     </td>
-                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
+                    <td className="px-4 py-2 whitespace-nowrap text-center text-sm text-gray-700">
                       {totalAdults + totalChildren + totalExtraGuests}
                     </td>
                     {/* <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
                       {totalExtraGuests}
                     </td> */}
-                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-4 py-2 whitespace-nowrap text-center text-sm text-gray-500">
                       {new Date(booking.createdAt).toLocaleString()}
                     </td>
-                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-4 py-2 whitespace-nowrap text-center text-sm text-gray-500">
                       {booking.amountPaid}
                     </td>
-                    <td className="px-4 py-2 whitespace-nowrap text-sm">
+                    <td className="px-4 py-2 whitespace-nowrap text-center text-sm">
                       <button
                         onClick={() => navigate(`/bookings/${booking._id}`)}
                         className="mr-2 px-3 py-1 text-indigo-600 border border-indigo-600 rounded hover:bg-indigo-50"

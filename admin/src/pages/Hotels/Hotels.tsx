@@ -97,12 +97,12 @@ export default function HotelManagement() {
               <th className="w-12 px-4 py-3 text-center">
                 <input type="checkbox" />
               </th>
-              <th className="w-40 py-3">ID</th>
-              <th className="w-48 pl-4 py-3">Name</th>
-              <th className="w-32 py-3">Type</th>
-              <th className="w-48 px-4 py-3">Title</th>
-              <th className="w-32 pl-4 py-3">City</th>
-              <th className="w-24 py-3">Min Price</th>
+              <th className="w-40 py-3 text-center">ID</th>
+              <th className="w-48 pl-4 py-3 text-center">Name</th>
+              <th className="w-32 py-3 text-center">Type</th>
+              <th className="w-48 px-4 py-3 text-center">Title</th>
+              <th className="max-w-32 pl-4 py-3 text-center">City</th>
+              <th className="w-24 py-3 pr-3 text-center">Total Rooms</th>
               <th className="w-36 py-3 text-center">Action</th>
             </tr>
           </thead>
@@ -112,23 +112,23 @@ export default function HotelManagement() {
                 <td className="w-12 px-4 py-3 text-center">
                   <input type="checkbox" />
                 </td>
-                <td className="w-40 py-3 text-gray-700">{hotel._id}</td>
-                <td className="w-48 pl-4 py-3">{hotel.name}</td>
-                <td className="w-32 py-3">{hotel?.type ?? "N/A"}</td>
-                <td className="w-48 px-4 py-3">{hotel?.title ?? "N/A"}</td>
-                <td className="w-32 pl-4 py-3">{hotel?.city ?? "N/A"}</td>
-                <td className="w-24 py-3">{hotel.rooms.length}</td>
+                <td className="w-40 py-3 text-gray-700 text-center">{hotel._id}</td>
+                <td className="w-48 pl-4 py-3 text-center">{hotel.name}</td>
+                <td className="w-32 py-3 text-center">{hotel?.type ?? "N/A"}</td>
+                <td className="w-48 px-4 py-3 text-center">{hotel?.title ?? "N/A"}</td>
+                <td className="max-w-32 pl-4 py-3 text-center truncate">{hotel?.city ?? "N/A"}</td>
+                <td className="w-24 py-3 pl-2 pr-3 text-center">{hotel.rooms.length}</td>
                 <td className="w-36 py-3 text-center">
                   <div className="flex gap-2">
                     <button
-                      className="rounded border border-indigo-600 bg-white px-2 py-1 text-indigo-600 text-sm hover:bg-indigo-50"
+                      className="rounded border border-indigo-600 bg-white px-3 py-1 text-indigo-600 text-sm hover:bg-indigo-50"
                       type="button"
                       onClick={() => { navigate(`/hotels/${hotel._id}`) }}
                     >
                       View
                     </button>
                     <button
-                      className="rounded border border-red-400 bg-white px-2 py-1 text-red-500 text-sm hover:bg-red-50"
+                      className="rounded border border-red-400 bg-white px-3 py-1 text-red-500 text-sm hover:bg-red-50"
                       type="button"
                       onClick={() => handleDeleteHotel(hotel._id)}
                     >

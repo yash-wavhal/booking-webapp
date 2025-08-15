@@ -274,43 +274,62 @@ const Profile = () => {
                     {/* Left side: User Details or Toggle */}
                     <div className="flex-1">
                         {viewmore ? (
-                            <div className="space-y-3 p-5 rounded-lg bg-gray-50 shadow-md border border-gray-200 transition-transform scale-100">
-                                <p className="text-gray-800 font-semibold">
-                                    {user?.address?.street}, {user?.address?.city}, {user?.address?.state}, {user?.address?.country} - {user?.address?.pinCode}
-                                </p>
-                                <p>
-                                    <span className="font-semibold text-gray-700">Contact No.:</span>{" "}
-                                    <span className="text-gray-600">{user?.phoneNumber}</span>
-                                </p>
-                                <p>
-                                    <span className="font-semibold text-gray-700">DOB:</span>{" "}
-                                    <span className="text-gray-600">
-                                        {user?.personalDetails?.dob
-                                            ? new Date(user.personalDetails.dob).toLocaleDateString("en-IN", {
-                                                day: "2-digit",
-                                                month: "long",
-                                                year: "numeric",
-                                            })
-                                            : "N/A"}
-                                    </span>
-                                </p>
-                                <p>
-                                    <span className="font-semibold text-gray-700">Gender:</span>{" "}
-                                    <span className="text-gray-600">{user?.personalDetails?.gender || "N/A"}</span>
-                                </p>
-                                <p>
-                                    <span className="font-semibold text-gray-700">Nationality:</span>{" "}
-                                    <span className="text-gray-600">{user?.personalDetails?.nationality || "N/A"}</span>
-                                </p>
-                                <button
-                                    onClick={() => setViewMore(false)}
-                                    className="mt-3 inline-flex items-center gap-1 text-blue-600 font-semibold hover:underline focus:outline-none"
-                                    aria-label="View Less Details"
-                                >
-                                    <ChevronUp size={18} />
-                                    View Less
-                                </button>
-                            </div>
+                            (user?.address &&
+                                user?.phoneNumber &&
+                                user?.personalDetails
+                            ) ? (
+                                <div className="space-y-3 p-5 rounded-lg bg-gray-50 shadow-md border border-gray-200 transition-transform scale-100">
+                                    <p className="text-gray-800 font-semibold">
+                                        {user?.address?.street}, {user?.address?.city}, {user?.address?.state}, {user?.address?.country} - {user?.address?.pinCode}
+                                    </p>
+                                    <p>
+                                        <span className="font-semibold text-gray-700">Contact No.:</span>{" "}
+                                        <span className="text-gray-600">{user?.phoneNumber}</span>
+                                    </p>
+                                    <p>
+                                        <span className="font-semibold text-gray-700">DOB:</span>{" "}
+                                        <span className="text-gray-600">
+                                            {user?.personalDetails?.dob
+                                                ? new Date(user?.personalDetails?.dob).toLocaleDateString("en-IN", {
+                                                    day: "2-digit",
+                                                    month: "long",
+                                                    year: "numeric",
+                                                })
+                                                : "N/A"}
+                                        </span>
+                                    </p>
+                                    <p>
+                                        <span className="font-semibold text-gray-700">Gender:</span>{" "}
+                                        <span className="text-gray-600">{user?.personalDetails?.gender || "N/A"}</span>
+                                    </p>
+                                    <p>
+                                        <span className="font-semibold text-gray-700">Nationality:</span>{" "}
+                                        <span className="text-gray-600">{user?.personalDetails?.nationality || "N/A"}</span>
+                                    </p>
+                                    <button
+                                        onClick={() => setViewMore(false)}
+                                        className="mt-3 inline-flex items-center gap-1 text-blue-600 font-semibold hover:underline focus:outline-none"
+                                        aria-label="View Less Details"
+                                    >
+                                        <ChevronUp size={18} />
+                                        View Less
+                                    </button>
+                                </div>
+                            ) : (
+                                <div>
+                                    <div className="text-center">
+                                        <h3 className="text-gray-600 font-medium space-y-3 p-5 min-h-44 rounded-lg bg-gray-100 shadow-md border border-gray-200 transition-transform scale-100">Edit / Update Your Profile</h3>
+                                    </div>
+                                    <button
+                                        onClick={() => setViewMore(false)}
+                                        className="mt-3 inline-flex items-center gap-1 text-blue-600 font-semibold hover:underline focus:outline-none"
+                                        aria-label="View Less Details"
+                                    >
+                                        <ChevronUp size={18} />
+                                        View Less
+                                    </button>
+                                </div>
+                            )
                         ) : (
                             <button
                                 onClick={() => setViewMore(true)}

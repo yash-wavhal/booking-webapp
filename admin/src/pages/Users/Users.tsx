@@ -95,12 +95,12 @@ export default function UserManagement() {
               <th className="px-4 py-3 text-center">
                 <input type="checkbox" />
               </th>
-              <th className="px-4 py-3">ID</th>
-              <th className="px-4 py-3">User</th>
-              <th className="px-4 py-3">Email</th>
-              <th className="px-4 py-3">Country</th>
-              <th className="px-4 py-3">City</th>
-              <th className="px-4 py-3">Phone</th>
+              <th className="px-4 py-3 text-center">ID</th>
+              <th className="px-4 py-3 text-center">User</th>
+              <th className="px-4 py-3 text-center">Email</th>
+              <th className="px-4 py-3 text-center">Country</th>
+              <th className="px-4 py-3 text-center">City</th>
+              <th className="px-4 py-3 text-center">Phone</th>
               <th className="px-4 py-3 text-center">Action</th>
             </tr>
           </thead>
@@ -125,10 +125,10 @@ export default function UserManagement() {
                     <span>{user.username}</span>
                   </div>
                 </td>
-                <td className="px-4 py-3">{user?.email ? user?.email : "N/A"}</td>
-                <td className="px-4 py-3">{user?.address?.country ? user?.address?.country : "N/A"}</td>
-                <td className="px-4 py-3">{user?.address?.city ? user?.address?.city : "N/A"}</td>
-                <td className="px-4 py-3">{user?.phoneNumber ? user?.phoneNumber : "N/A"}</td>
+                <td className="px-4 py-3 text-center">{user?.email ? user?.email : "N/A"}</td>
+                <td className="px-4 py-3 text-center">{user?.address?.country ? user?.address?.country : "N/A"}</td>
+                <td className="px-4 py-3 text-center">{user?.address?.city ? user?.address?.city : "N/A"}</td>
+                <td className="px-4 py-3 text-center">{user?.phoneNumber ? user?.phoneNumber : "N/A"}</td>
                 <td className="px-4 py-3 text-center">
                   <button
                     className="mr-2 rounded border border-indigo-600 bg-white px-3 py-1 text-indigo-600 text-sm hover:bg-indigo-50"
