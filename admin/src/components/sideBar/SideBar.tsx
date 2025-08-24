@@ -87,7 +87,7 @@ const Sidebar = () => {
                     <p className="text-[10px] font-bold text-gray-500 mt-6 mb-1">ACCOUNT</p>
                     <li className="flex items-center p-1 cursor-pointer hover:bg-[#ece8ff] rounded-sm">
                         <LogOut className="w-4 h-4 text-purple-600" />
-                        <span onClick={handleLogout} className="text-sm font-semibold text-gray-500 ml-2">Logout</span>
+                        <span onClick={() => handleLogout()} className="text-sm font-semibold text-gray-500 ml-2">Logout</span>
                     </li>
                 </ul>
             </div>
