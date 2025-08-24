@@ -77,7 +77,7 @@ export default function UserManagement() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto mt-8 font-sans">
+    <div className="p-6 bg-white rounded-md font-sans">
       <h2 className="mb-5 text-2xl font-semibold">Users</h2>
       <div className="mb-5 flex-grow min-w-[200px] sm:min-w-[100px]">
         <input

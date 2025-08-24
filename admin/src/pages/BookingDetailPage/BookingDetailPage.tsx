@@ -21,10 +21,12 @@ interface Booking {
     cheapestPrice: number;
   };
   hotelOwnerId: {
+    _id: string;
     username: string;
     email: string;
   };
   userId: {
+    _id: string;
     username: string;
     email: string;
   };
@@ -171,19 +173,41 @@ const BookingDetailPage: React.FC = () => {
 
       <div className="grid md:grid-cols-2 gap-6 mt-6">
         <div className="bg-white rounded-lg shadow p-4 border-l-4 border-blue-600">
-          <h2 className="font-semibold text-lg mb-2">Hotel Owner</h2>
+          <div className="flex justify-between">
+            <h2 className="font-semibold text-lg mb-2">Booked By</h2>
+            <button className="bg-blue-600 text-white px-4 py-1.5 text-sm rounded-lg hover:bg-blue-700 transition"
+              onClick={() => { navigate(`/users/${booking.hotelOwnerId._id}`) }}
+            >
+              View User
+            </button>
+          </div>
           <p><strong>{booking.hotelOwnerId.username}</strong></p>
           <p className="text-gray-600">{booking.hotelOwnerId.email}</p>
         </div>
         <div className="bg-white rounded-lg shadow p-4 border-l-4 border-green-600">
-          <h2 className="font-semibold text-lg mb-2">Booked By</h2>
+          <div className="flex justify-between">
+            <h2 className="font-semibold text-lg mb-2">Booked By</h2>
+            <button className="bg-green-600 text-white px-4 py-1.5 text-sm rounded-lg hover:bg-green-700 transition"
+              onClick={() => { navigate(`/users/${booking.userId._id}`) }}
+            >
+              View User
+            </button>
+          </div>
           <p><strong>{booking.userId.username}</strong></p>
           <p className="text-gray-600">{booking.userId.email}</p>
         </div>
       </div>
 
       <div className="mt-8">
-        <h2 className="text-2xl font-semibold mb-4">Booked Rooms</h2>
+        <div className="flex gap-5 mb-4">
+          <h2 className="text-2xl font-semibold">Booked Rooms</h2>
+          <button
+            className="bg-green-600 text-white px-4 py-2 text-sm rounded-lg hover:bg-green-700 transition"
+            onClick={() => navigate(`/hotels/${booking.hotelId._id}`)}
+          >
+            View Room
+          </button>
+        </div>
         <div className="grid md:grid-cols-2 gap-6">
           {booking.roomDetails.map((detail, i) => (
             <div

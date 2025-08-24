@@ -70,7 +70,7 @@ export default function HotelManagement() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto mt-8 font-sans">
+    <div className="p-6 bg-white rounded-md font-sans">
       <div className="flex justify-between items-center mb-5">
         <h2 className="text-2xl font-semibold capitalize">Hotels</h2>
         <button

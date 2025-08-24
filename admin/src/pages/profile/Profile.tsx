@@ -222,7 +222,7 @@ const Profile = () => {
     };
 
     return (
-        <div className="w-full min-h-screen px-4 py-8 space-y-16">
+        <div className="w-full min-h-screen px-4 py-8 space-y-16 font-sans">
             <div className="bg-white shadow rounded-2xl p-6">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">

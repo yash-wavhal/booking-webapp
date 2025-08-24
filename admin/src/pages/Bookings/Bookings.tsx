@@ -82,8 +82,8 @@ const BookingManagementPage: React.FC = () => {
   );
 
   return (
-    <section className="p-6 bg-white rounded-md shadow-md">
-      <h2 className="text-2xl font-semibold mb-4">Booking Management</h2>
+    <section className="p-6 bg-white rounded-md font-sans">
+      <h2 className="text-2xl font-semibold mb-4">Bookings</h2>
       <input
         type="text"
         placeholder="Search bookings by hotel, guest or owner..."
@@ -104,7 +104,7 @@ const BookingManagementPage: React.FC = () => {
                 <th className="py-3 text-center text-sm font-medium text-gray-600">Booking ID</th>
                 <th className="py-2 text-center text-sm font-medium text-gray-600">Hotel</th>
                 <th className="py-2 text-center text-sm font-medium text-gray-600">Hotel Owner</th>
-                <th className="py-2 text-center text-sm font-medium text-gray-600">Guest</th>
+                <th className="py-2 text-center text-sm font-medium text-gray-600">Booked By</th>
                 <th className="py-2 text-center text-sm font-medium text-gray-600">Check-In</th>
                 <th className="py-2 text-center text-sm font-medium text-gray-600">Check-Out</th>
                 <th className="py-2 text-center text-sm font-medium text-gray-600">Total Guests</th>
@@ -141,7 +141,7 @@ const BookingManagementPage: React.FC = () => {
                     <td className="px-4 py-2 whitespace-nowrap text-center text-sm text-gray-900">{booking.hotelId?.name}</td>
                     <td className="px-4 py-2 whitespace-nowrap text-center text-sm text-gray-900">{booking.hotelOwnerId.username}</td>
                     <td className="px-4 py-2 whitespace-nowrap text-center text-sm text-gray-700">
-                      <span className="text-xs text-gray-500">{booking.userId.email}</span>
+                      <span className="px-4 py-2 whitespace-nowrap text-center text-sm text-gray-900">{booking.userId.username}</span>
                     </td>
                     <td className="px-4 py-2 whitespace-nowrap text-center text-sm text-gray-700">
                       {new Date(booking.checkInDate).toLocaleDateString()}

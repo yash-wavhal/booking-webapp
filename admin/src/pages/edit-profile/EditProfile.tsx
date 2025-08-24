@@ -100,7 +100,7 @@ const EditProfile = () => {
     if (error) return <h2 className="text-center text-red-500">Error fetching user details...</h2>;
 
     return (
-        <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-xl">
+        <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-xl font-sans">
             <h2 className="text-2xl font-bold mb-4 text-indigo-600">Edit Profile</h2>
 
             {formData && (

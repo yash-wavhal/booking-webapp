@@ -131,7 +131,7 @@ export default function DashboardPage() {
     ];
 
     return (
-        <div className="flex-1 p-6 space-y-6 bg-gray-50 min-h-screen">
+        <div className="flex-1 p-6 space-y-6 bg-gray-50 min-h-screen font-sans">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {statsData.map((data, idx) => (
                     <Link to={data.href} key={idx}>

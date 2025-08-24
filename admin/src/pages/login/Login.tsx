@@ -43,7 +43,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 p-6 font-sans">
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full">
         <h2 className="text-3xl font-semibold text-center text-indigo-700 mb-8">Login</h2>
         <form onSubmit={handleSubmit}>

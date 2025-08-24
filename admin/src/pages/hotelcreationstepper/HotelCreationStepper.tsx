@@ -51,7 +51,7 @@ const HotelCreationStepper = () => {
 
   return (
     <div>
-      <div className="relative h-full max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
+      <div className="relative h-full max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg font-sans">
         <div className="flex justify-center mb-6 space-x-4">
           <div className="flex gap-44">
             {steps.map((s) => (
