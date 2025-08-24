@@ -32,7 +32,7 @@ mongoose.connection.on("connected", () => {
 
 // middlewares
 app.use(cors({
-    origin: ["http://localhost:3000", process.env.FRONTEND],
+    origin: ["http://localhost:3000", process.env.FRONTEND, process.env.ADMIN],
     credentials: true,
 }));
 app.use(cookieParser());
