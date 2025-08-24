@@ -13,6 +13,7 @@ export default function Login() {
   const { setIsAuthenticated, isAuthenticated, setUser } = useAuth();
   const [data, setData] = useState<LoginData>({ email: "", password: "" });
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -25,9 +26,16 @@ export default function Login() {
       const res = await axios.post(`${BASE_URL}/auth/login`, data, {
         withCredentials: true,
       });
+      const loggedInUser = res.data;
+
+      if (!loggedInUser.isAdmin) {
+        await axios.post(`${BASE_URL}/auth/logout`);
+        toast.error("You are not authorized to access the dashboard!");
+        return;
+      }
+      setIsAuthenticated(true);
       toast.success("You have logged in!");
       setUser(res.data)
-      setIsAuthenticated(true);
       navigate("/");
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Login failed");

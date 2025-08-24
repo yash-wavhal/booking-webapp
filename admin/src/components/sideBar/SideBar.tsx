@@ -92,11 +92,11 @@ const Sidebar = () => {
                 </ul>
             </div>
 
-            <div className="flex items-center m-3">
+            {/* <div className="flex items-center m-3">
                 <div className="w-5 h-5 rounded-sm border border-purple-600 cursor-pointer bg-[whitesmoke] mr-2"></div>
                 <div className="w-5 h-5 rounded-sm border border-purple-600 cursor-pointer bg-[#333] mr-2"></div>
                 <div className="w-5 h-5 rounded-sm border border-purple-600 cursor-pointer bg-[darkblue]"></div>
-            </div>
+            </div> */}
         </div>
     );
 };
