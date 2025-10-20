@@ -11,14 +11,16 @@ import HotelDetailModal from "../../components/hotelDetailModal/HotelDetailModal
 import Footer from "../../components/footer/Footer";
 import toast from "react-hot-toast";
 
-interface RoomNumberDetails {
+// interface RoomNumberDetails {
+//     number: number;
+//     noOfExtraGuests: number;
+//     noOfExtraBeds: number;
+// }
+
+interface RoomDetails {
     number: number;
     noOfExtraGuests: number;
     noOfExtraBeds: number;
-}
-
-interface RoomDetails {
-    roomNumbers: RoomNumberDetails[];
     people: {
         adult: number;
         children: number;
@@ -113,7 +115,7 @@ const Profile = () => {
 
     const handleDeleteHotel = async (id: string) => {
         try {
-            await axios.delete(`${BASE_URL}/hotels/${id}`);
+            await axios.delete(`${BASE_URL}/hotels/${user?._id}/${id}`);
             setHotels((prev) => prev.filter((hotel) => hotel._id !== id));
             toast.success("Hotel Deleted successfully");
         } catch (err) {

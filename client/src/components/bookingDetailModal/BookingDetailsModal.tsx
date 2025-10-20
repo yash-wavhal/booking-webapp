@@ -1,14 +1,16 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-interface RoomNumberDetails {
+// interface RoomNumberDetails {
+//     number: number;
+//     noOfExtraGuests: number;
+//     noOfExtraBeds: number;
+// }
+
+interface RoomDetails {
     number: number;
     noOfExtraGuests: number;
     noOfExtraBeds: number;
-}
-
-interface RoomDetails {
-    roomNumbers: RoomNumberDetails[];
     people: { adult: number; children: number };
 }
 
@@ -110,13 +112,13 @@ const BookingDetailsModal: React.FC<Props> = ({ booking, onClose, onDelete }) =>
                                     className="border rounded-lg p-4 shadow-sm hover:shadow-md transition bg-gradient-to-r from-indigo-50 to-white"
                                 >
                                     <p className="font-medium text-gray-800">
-                                        🏨 Room Numbers: {room.roomNumbers.map(r => r.number).join(", ")}
+                                        🏨 Room Numbers: {room.number}
                                     </p>
                                     <p className="text-sm text-gray-700">
                                         👨 Guests: {room.people.adult} Adults, {room.people.children} Children
                                     </p>
-                                    <p className="text-sm">🛏 Extra Beds: {room.roomNumbers.reduce((acc, r) => acc + r.noOfExtraBeds, 0)}</p>
-                                    <p className="text-sm">➕ Extra Guests: {room.roomNumbers.reduce((acc, r) => acc + r.noOfExtraGuests, 0)}</p>
+                                    <p className="text-sm">🛏 Extra Beds: {room.noOfExtraBeds}</p>
+                                    <p className="text-sm">➕ Extra Guests: {room.noOfExtraGuests}</p>
                                 </div>
                             ))}
                         </div>

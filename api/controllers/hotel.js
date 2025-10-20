@@ -64,7 +64,10 @@ export const getHotel = async (req, res, next) => {
 export const searchHotels = async (req, res, next) => {
     try {
         const { destination, startDate, endDate, adult, children, room } = req.query;
-        const hotels = await Hotel.find({ city: new RegExp(`^${destination}$`, "i") });
+        const hotels = await Hotel.find({
+            city: new RegExp(`^${destination}$`, "i"),
+            ownerId: { $ne: req.user.id }
+        });
         const start = new Date(startDate);
         const end = new Date(endDate);
         const totalPeoples = Number(adult) + Number(children);
@@ -107,7 +110,8 @@ export const getHotels = async (req, res, next) => {
 
 export const getMostBookedHotels = async (req, res, next) => {
     try {
-        const hotels = await Hotel.find()
+        const userId = req.user.id;
+        const hotels = await Hotel.find({ ownerId: { $ne: userId } })
             .sort({ bookingsCount: -1 })
             .limit(10)
             .select("name city address distance photos title desc rating bookingsCount cheapestPrice");
