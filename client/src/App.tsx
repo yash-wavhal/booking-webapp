@@ -36,14 +36,15 @@ function AppContent() {
       {isAuthenticated && !hideNavAndFooter && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/hotels/search" element={<ProtectedRoute><List /></ProtectedRoute>} />
+        <Route path="/hotels/search" element={<List />} />
+        <Route path="/hotels/:hotelid" element={<Hotel />} />
+        <Route path="/hotels/city/:city" element={<HotelByCityPage />} />
+        <Route path="/hotels/type/:type" element={<HotelByTypePage />} />
+
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
         <Route path="/hotels/create" element={<ProtectedRoute><HotelCreationStepper /></ProtectedRoute>} />
-        <Route path="/hotels/:hotelid" element={<ProtectedRoute><Hotel /></ProtectedRoute>} />
         <Route path="/hotels/edit-rooms" element={<RoomStep />} />
-        <Route path="/hotels/city/:city" element={<ProtectedRoute><HotelByCityPage /></ProtectedRoute>} />
-        <Route path="/hotels/type/:type" element={<ProtectedRoute><HotelByTypePage /></ProtectedRoute>} />
         <Route path="/book/:roomId" element={<ProtectedRoute><BookingPage /></ProtectedRoute>} />
         <Route path="/payment/:roomId" element={<ProtectedRoute><PaymentPage /></ProtectedRoute>} />
         <Route path="/login" element={<Login />} />

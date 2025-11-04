@@ -1,6 +1,6 @@
 import express from "express";
 import { countAllCities, countByCity, countByType, createHotel, deleteHotel, getHotel, getHotels, getHotelsByCityName, getHotelsByHotelType, getHotelsOfUser, getMostBookedHotels, searchHotels, updateHotel } from "../controllers/hotel.js";
-import { verifyAdmin, verifyHotelOwner, verifyToken, verifyUser } from "../utils/verifyToken.js";
+import { optionalAuth, verifyAdmin, verifyHotelOwner, verifyToken, verifyUser } from "../utils/verifyToken.js";
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.delete("/admin/:hotelid", verifyAdmin, deleteHotel);
 // DELETE (user can only delete their own hotel)
 router.delete("/:id/:hotelid", verifyUser, verifyHotelOwner, deleteHotel);
 
-router.get("/mostbooked", verifyToken, getMostBookedHotels);
+router.get("/mostbooked", optionalAuth, getMostBookedHotels);
 
 router.get("/countByType", countByType);
 
@@ -23,7 +23,7 @@ router.get("/type/:hotelType", getHotelsByHotelType);
 
 // GET hotel
 router.get("/find/:id", getHotel);
-router.get("/search", verifyToken, searchHotels);
+router.get("/search", optionalAuth, searchHotels);
 
 // GET all hotels
 router.get("/:id", getHotels);

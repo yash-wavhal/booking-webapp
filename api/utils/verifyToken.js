@@ -16,6 +16,24 @@ export const verifyToken = (req, res, next) => {
   });
 };
 
+export const optionalAuth = (req, res, next) => {
+  const token = req.cookies?.access_token;
+
+  if (!token) {
+    req.user = null;
+    return next();
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    req.user = null;
+    next();
+  }
+};
+
 // Verify the user matches the requested id or is admin
 export const verifyUser = (req, res, next) => {
   verifyToken(req, res, () => {
@@ -43,7 +61,7 @@ export const verifyHotelOwner = async (req, res, next) => {
     // console.log("verifyHotelOwner", req.params.hotelid);
     const hotel = await Hotel.findById(req.params.hotelid);
     if (!hotel) return res.status(404).json({ message: "Hotel not found" });
-    if(hotel.ownerId.toString() === req.user.id || req.user.isAdmin) {
+    if (hotel.ownerId.toString() === req.user.id || req.user.isAdmin) {
       next();
     } else {
       return res.status(403).json({ message: "Not authorized to modify this hotel" });

@@ -64,14 +64,23 @@ export const getHotel = async (req, res, next) => {
 export const searchHotels = async (req, res, next) => {
     try {
         const { destination, startDate, endDate, adult, children, room } = req.query;
-        const hotels = await Hotel.find({
+        const userId = req.user?.id;
+
+        const query = {
             city: new RegExp(`^${destination}$`, "i"),
-            ownerId: { $ne: req.user.id }
-        });
+        };
+
+        if (userId) {
+            query.ownerId = { $ne: userId };
+        }
+
+        const hotels = await Hotel.find(query);
+
         const start = new Date(startDate);
         const end = new Date(endDate);
         const totalPeoples = Number(adult) + Number(children);
         const availableHotels = [];
+
         for (const hotel of hotels) {
             const rooms = await Room.find({
                 hotelId: hotel._id,
@@ -89,15 +98,17 @@ export const searchHotels = async (req, res, next) => {
                     },
                 },
             });
+
             if (rooms.length > 0) {
                 availableHotels.push(hotel);
             }
         }
+
         res.status(200).json(availableHotels);
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const getHotels = async (req, res, next) => {
     try {
@@ -110,17 +121,27 @@ export const getHotels = async (req, res, next) => {
 
 export const getMostBookedHotels = async (req, res, next) => {
     try {
-        const userId = req.user.id;
-        const hotels = await Hotel.find({ ownerId: { $ne: userId } })
-            .sort({ bookingsCount: -1 })
-            .limit(10)
-            .select("name city address distance photos title desc rating bookingsCount cheapestPrice");
+        const userId = req.user?.id;
+        let hotels;
+
+        if (userId) {
+            hotels = await Hotel.find({ ownerId: { $ne: userId } })
+                .sort({ bookingsCount: -1 })
+                .limit(10)
+                .select("name city address distance photos title desc rating bookingsCount cheapestPrice");
+        } else {
+            hotels = await Hotel.find()
+                .sort({ bookingsCount: -1 })
+                .limit(10)
+                .select("name city address distance photos title desc rating bookingsCount cheapestPrice");
+        }
 
         res.status(200).json(hotels);
     } catch (err) {
         next(err);
     }
 };
+
 
 export const getHotelsByCityName = async (req, res, next) => {
     const cityName = req.params.city;
